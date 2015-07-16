@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E02E3FEC-B370-4435-BA52-5414FFDB91D0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>QPP</RootNamespace>
+    <AssemblyName>QPP</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\reference\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Core, Version=2.0.0.40000, Culture=neutral, PublicKeyToken=61a3b4cae6aae9f0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\reference\Spring.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="%28Expansion%29\DataAccessExpension.cs" />
+    <Compile Include="%28Expansion%29\StringExpension.cs" />
+    <Compile Include="%28Expansion%29\WebApiServiceExpension.cs" />
+    <Compile Include="AddIn\AddInAttribute.cs" />
+    <Compile Include="AddIn\AddInStore.cs" />
+    <Compile Include="AddIn\AddInToken.cs" />
+    <Compile Include="AddIn\IAddIn.cs" />
+    <Compile Include="Api\ApiContainer.cs" />
+    <Compile Include="Api\ApiContext.cs" />
+    <Compile Include="Api\IApiContainer.cs" />
+    <Compile Include="Api\IApiContext.cs" />
+    <Compile Include="Api\IApiContextProvider.cs" />
+    <Compile Include="Api\IWebApiService.cs" />
+    <Compile Include="Api\WebApiException.cs" />
+    <Compile Include="Collections\BindingCollection.cs" />
+    <Compile Include="Collections\IObservableCollection.cs" />
+    <Compile Include="Collections\NameObjectCollection.cs" />
+    <Compile Include="Command\AbstractReceiver.cs" />
+    <Compile Include="Command\ActionReceiver.cs" />
+    <Compile Include="Command\CancelCommandEventArgs.cs" />
+    <Compile Include="Command\CommandCollection.cs" />
+    <Compile Include="Command\CommandEventArgs.cs" />
+    <Compile Include="Command\CommandIllegalException.cs" />
+    <Compile Include="Command\CommandUsage.cs" />
+    <Compile Include="Command\ICommandContext.cs" />
+    <Compile Include="Command\ICommandModel.cs" />
+    <Compile Include="Command\IReceiver.cs" />
+    <Compile Include="Command\ICommand.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\AutoCompleteAttribute.cs" />
+    <Compile Include="Caching\AbstractCache.cs" />
+    <Compile Include="Caching\ICache.cs" />
+    <Compile Include="Caching\NonExpiringCache.cs" />
+    <Compile Include="Collections\StatefulCollection.cs" />
+    <Compile Include="Collections\IStatefulCollection.cs" />
+    <Compile Include="Collections\Tuple.cs" />
+    <Compile Include="Collections\TupleList%27T1%27T2%27T3.cs" />
+    <Compile Include="Collections\TupleList%27T1%27T2.cs" />
+    <Compile Include="Collections\VirtualizingCollection`T.cs" />
+    <Compile Include="ComponentModel\DataArgs.cs" />
+    <Compile Include="ComponentModel\HierarchicalData.cs" />
+    <Compile Include="ComponentModel\ValueInitializer.cs" />
+    <Compile Include="Layout\IWindow.cs" />
+    <Compile Include="Modularity\IView.cs" />
+    <Compile Include="Modularity\ModuleDownloadProgressChangedEventArgs.cs" />
+    <Compile Include="Modularity\LoadComponentEventArgs.cs" />
+    <Compile Include="Modularity\Module.cs" />
+    <Compile Include="Runtime\ILoadableContainer.cs" />
+    <Compile Include="Runtime\ILoadableItem.cs" />
+    <Compile Include="Context\AppContext.cs" />
+    <Compile Include="DataSource\DataSourceException.cs" />
+    <Compile Include="DataSource\DataSourceProvider.cs" />
+    <Compile Include="DataSource\DataSourceService.cs" />
+    <Compile Include="DataSource\IDataSourceService.cs" />
+    <Compile Include="Data\IDataAccessContext.cs" />
+    <Compile Include="Diagnostic\IExceptionHandler.cs" />
+    <Compile Include="Diagnostic\IStopwatch.cs" />
+    <Compile Include="Diagnostic\ITrace.cs" />
+    <Compile Include="Diagnostic\Stopwatch.cs" />
+    <Compile Include="Dialog\IDialog.cs" />
+    <Compile Include="Layout\ContentCancelEventArgs.cs" />
+    <Compile Include="Layout\ContentEventArgs.cs" />
+    <Compile Include="Layout\IDockingAnchorable.cs" />
+    <Compile Include="Layout\IDockingContent.cs" />
+    <Compile Include="Layout\IDockingDocument.cs" />
+    <Compile Include="Layout\ILayoutManager.cs" />
+    <Compile Include="Runtime\IRunnable.cs" />
+    <Compile Include="Runtime\Serialization\ISerializable.cs" />
+    <Compile Include="Runtime\Serialization\SerializationEventArgs.cs" />
+    <Compile Include="Logging\DebugLogger.cs" />
+    <Compile Include="Logging\DefaultLogInfoProvider.cs" />
+    <Compile Include="Logging\ILog.cs" />
+    <Compile Include="Logging\ILogInfoProvider.cs" />
+    <Compile Include="Memento\CollectionChangedCommand.cs" />
+    <Compile Include="Memento\CommandManager.cs" />
+    <Compile Include="Memento\CustomCommand.cs" />
+    <Compile Include="Memento\IExcutable.cs" />
+    <Compile Include="Memento\MultipleCommand.cs" />
+    <Compile Include="Memento\PropertyChangedCommand.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\CaptionAttribute.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\CreateByAttribute.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\CreateDateAttribute.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\DeleteByAttribute.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\DeleteDateAttribute.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\DeleteMarkAttribute.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\GuidAttribute.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\UpdateByAttribute.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\UpdateDateAttribute.cs" />
+    <Compile Include="ComponentModel\DataState.cs" />
+    <Compile Include="ComponentModel\EntityId.cs" />
+    <Compile Include="Collections\HierarchicalCollection.cs" />
+    <Compile Include="ComponentModel\IDataModel.cs" />
+    <Compile Include="ComponentModel\IHierarchicalData.cs" />
+    <Compile Include="ComponentModel\INotifyValueChanged.cs" />
+    <Compile Include="ComponentModel\IObservableObject.cs" />
+    <Compile Include="ComponentModel\IStatefulObject.cs" />
+    <Compile Include="ComponentModel\Scope.cs" />
+    <Compile Include="ComponentModel\StatefulObject.cs" />
+    <Compile Include="ComponentModel\DataAnnotations\DataSourceAttribute.cs" />
+    <Compile Include="Data\DataMappingAttribute.cs" />
+    <Compile Include="Dialog\DialogMessage.cs" />
+    <Compile Include="Dialog\DialogButton.cs" />
+    <Compile Include="Dialog\DialogImage.cs" />
+    <Compile Include="Dialog\DialogResult.cs" />
+    <Compile Include="Metadata\IMetadataDescriptor.cs" />
+    <Compile Include="Metadata\IMetadataDataProvider.cs" />
+    <Compile Include="Metadata\AttributeMetadataDescriptor.cs" />
+    <Compile Include="Metadata\PresenterMetadata.cs" />
+    <Compile Include="Modularity\ApplicationBase.cs" />
+    <Compile Include="Modularity\ApplicationAttribute.cs" />
+    <Compile Include="Modularity\IModule.cs" />
+    <Compile Include="Modularity\IModuleInitializer.cs" />
+    <Compile Include="Modularity\IModuleTypeLoader.cs" />
+    <Compile Include="Modularity\ModuleCatalogAttribute.cs" />
+    <Compile Include="Modularity\ModuleAttribute.cs" />
+    <Compile Include="Modularity\AppUpdateFaildException.cs" />
+    <Compile Include="Command\CommandCode.cs" />
+    <Compile Include="Modularity\IApplication.cs" />
+    <Compile Include="Runtime\IModularityContainer.cs" />
+    <Compile Include="Runtime\IPresenterContainer.cs" />
+    <Compile Include="Runtime\PresenterClosingEventArgs.cs" />
+    <Compile Include="Runtime\PresenterEventArgs.cs" />
+    <Compile Include="Runtime\LoadEventArgs.cs" />
+    <Compile Include="Runtime\PresenterOpeningEventArgs.cs" />
+    <Compile Include="Runtime\RuntimeException.cs" />
+    <Compile Include="Runtime\Serialization\SerializationInfo.cs" />
+    <Compile Include="Security\Authorization.cs" />
+    <Compile Include="Security\IUserInfo.cs" />
+    <Compile Include="Security\IUserService.cs" />
+    <Compile Include="Security\LoginResult.cs" />
+    <Compile Include="ServiceLocation\ServiceLocatorProvider.cs" />
+    <Compile Include="Threading\WorkItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Modularity\IPresenter.cs" />
+    <Compile Include="Modularity\Manifest.cs" />
+    <Compile Include="Metadata\ModuleMetadata.cs" />
+    <Compile Include="Modularity\PresenterAttribute.cs" />
+    <Compile Include="Net\IResourceLoader.cs" />
+    <Compile Include="Net\IUriResolver.cs" />
+    <Compile Include="Parameter\ISysParameterKey.cs" />
+    <Compile Include="Parameter\ISysParameterService.cs" />
+    <Compile Include="Parameter\ISysParameterValue.cs" />
+    <Compile Include="Parameter\SysParameterKeyModel.cs" />
+    <Compile Include="Parameter\SysParameterManager.cs" />
+    <Compile Include="Criteria`T.cs" />
+    <Compile Include="Data\DeleteHqlSection`T.cs" />
+    <Compile Include="Data\IItemsProvider.cs" />
+    <Compile Include="Data\ParameterValue.cs" />
+    <Compile Include="Data\TransactionContext.cs" />
+    <Compile Include="Data\UpdateHqlSection`T.cs" />
+    <Compile Include="ComponentModel\DataModel.cs" />
+    <Compile Include="Data\ICriteriaQueryable.cs" />
+    <Compile Include="Data\IHqlQueryable.cs" />
+    <Compile Include="Data\INamedQueryable.cs" />
+    <Compile Include="Data\IsolationLevel.cs" />
+    <Compile Include="ActionResult.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Data\ITransactional.cs" />
+    <Compile Include="DisposableBase.cs" />
+    <Compile Include="Collections\DataModelCollection.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Filtering\FilteringExtensions.cs" />
+    <Compile Include="Data\IDataAccess.cs" />
+    <Compile Include="Data\ITransaction.cs" />
+    <Compile Include="ComponentModel\ObservableObject.cs" />
+    <Compile Include="%28Query%29\HqlQuery.cs" />
+    <Compile Include="Localization\ILocalization.cs" />
+    <Compile Include="Net\MailUtility.cs" />
+    <Compile Include="Parameter\SysParameterCollectionValue`T.cs" />
+    <Compile Include="Parameter\SysParameterDescriptionAttribute.cs" />
+    <Compile Include="Parameter\SysParameterKey`T.cs" />
+    <Compile Include="Parameter\SysParameterReadonlyCollectionValue`T.cs" />
+    <Compile Include="Parameter\SysParameterValue.cs" />
+    <Compile Include="Parameter\SysParameterValueModel.cs" />
+    <Compile Include="Parameter\SysParameterValue`T.cs" />
+    <Compile Include="Parameter\SysParameterValue`T1`T2.cs" />
+    <Compile Include="Parameter\SysParameterValue`T1`T2`T3.cs" />
+    <Compile Include="Parameter\SysParameterValue`T1`T2`T3`T4.cs" />
+    <Compile Include="Parameter\SysParameterValue`T1`T2`T3`T4`T5.cs" />
+    <Compile Include="Context\IAppContext.cs" />
+    <Compile Include="Navigation\INavigator.cs" />
+    <Compile Include="Runtime\IRuntimeContainer.cs" />
+    <Compile Include="Runtime\IRuntimeService.cs" />
+    <Compile Include="RuntimeContext.cs" />
+    <Compile Include="Runtime\RuntimeService.cs" />
+    <Compile Include="Runtime\RuntimeServiceBuilder.cs" />
+    <Compile Include="Security\AuthenticationMode.cs" />
+    <Compile Include="Security\Cryptography.cs" />
+    <Compile Include="Security\DomainAuthenticationContext.cs" />
+    <Compile Include="Security\IAuthenticationContext.cs" />
+    <Compile Include="Security\ITicketContainer.cs" />
+    <Compile Include="ServiceLocation\AssembleLocator.cs" />
+    <Compile Include="ServiceLocation\AssemblyLocatorAttribute.cs" />
+    <Compile Include="ServiceLocation\LocatorStrategy.cs" />
+    <Compile Include="ServiceLocation\IServiceLocator.cs" />
+    <Compile Include="Messaging\GenericMessage.cs" />
+    <Compile Include="Messaging\IExecuteWithObject.cs" />
+    <Compile Include="Messaging\IMessenger.cs" />
+    <Compile Include="Messaging\MessageBase.cs" />
+    <Compile Include="Messaging\Messenger.cs" />
+    <Compile Include="Messaging\NotificationMessage.cs" />
+    <Compile Include="Messaging\NotificationMessageAction.cs" />
+    <Compile Include="Messaging\NotificationMessageActionGeneric.cs" />
+    <Compile Include="Messaging\NotificationMessageGeneric.cs" />
+    <Compile Include="Messaging\NotificationMessageWithCallback.cs" />
+    <Compile Include="Messaging\WeakAction.cs" />
+    <Compile Include="Messaging\WeakActionGeneric.cs" />
+    <Compile Include="Security\Authenticator.cs" />
+    <Compile Include="Security\IAuthenticatable.cs" />
+    <Compile Include="Security\UserIdentity.cs" />
+    <Compile Include="ServiceLocation\AssembleTable.cs" />
+    <Compile Include="ServiceLocation\LocatorStrategyFactory.cs" />
+    <Compile Include="ServiceLocation\SpringIoc.cs" />
+    <Compile Include="Filtering\CriteriaToHqlWithParametersProcessor.cs" />
+    <Compile Include="Threading\IAsyncWorker.cs" />
+    <Compile Include="Utils\ObjectAdapter.cs" />
+    <Compile Include="Utils\ObjectHelper.cs" />
+    <Compile Include="ComponentModel\ValueChangedEventArgs.cs" />
+    <Compile Include="ComponentModel\ValueTextEntry.cs" />
+    <Compile Include="AppException.cs" />
+    <Compile Include="Security\NotPermittedException.cs" />
+    <Compile Include="Data\ObjectNotFoundException.cs" />
+    <Compile Include="%28Expansion%29\Expension.cs" />
+    <Compile Include="Filtering\Criteria.cs" />
+    <Compile Include="Filtering\CriteriaLexer.cs" />
+    <Compile Include="Filtering\CriteriaParserTests.cs" />
+    <Compile Include="Filtering\Evaluator.cs" />
+    <Compile Include="Filtering\Exceptions.cs" />
+    <Compile Include="Filtering\grammar.cs" />
+    <Compile Include="%28Query%29\NamedQuery.cs" />
+    <Compile Include="%28Query%29\Order`T.cs" />
+    <Compile Include="PageData`T.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="%28Query%29\CriteriaQuery.cs" />
+    <Compile Include="Security\IIdentity.cs" />
+    <Compile Include="Security\IPrincipal.cs" />
+    <Compile Include="Security\SecurityException.cs" />
+    <Compile Include="Filtering\ExpressionProcessor.cs" />
+    <Compile Include="Utils\UrlHelper.cs" />
+    <Compile Include="Validation\DataValidator.cs" />
+    <Compile Include="Validation\ErrorInfo.cs" />
+    <Compile Include="Validation\ErrorText.cs" />
+    <Compile Include="Validation\IDataValidator.cs" />
+    <Compile Include="Validation\ValidationContext.cs" />
+    <Compile Include="Validation\ValidationException.cs" />
+    <Compile Include="Validation\Validator.cs" />
+    <Compile Include="Modularity\ViewType.cs" />
+    <Compile Include="ZipLib\Checksums\Adler32.cs" />
+    <Compile Include="ZipLib\Checksums\CRC32.cs" />
+    <Compile Include="ZipLib\Checksums\IChecksum.cs" />
+    <Compile Include="ZipLib\Core\FileSystemScanner.cs" />
+    <Compile Include="ZipLib\Core\INameTransform.cs" />
+    <Compile Include="ZipLib\Core\IScanFilter.cs" />
+    <Compile Include="ZipLib\Core\NameFilter.cs" />
+    <Compile Include="ZipLib\Core\PathFilter.cs" />
+    <Compile Include="ZipLib\Core\StreamUtils.cs" />
+    <Compile Include="ZipLib\Encryption\PkzipClassic.cs" />
+    <Compile Include="ZipLib\SharpZipBaseException.cs" />
+    <Compile Include="ZipLib\Zip\Compression\Deflater.cs" />
+    <Compile Include="ZipLib\Zip\Compression\DeflaterConstants.cs" />
+    <Compile Include="ZipLib\Zip\Compression\DeflaterEngine.cs" />
+    <Compile Include="ZipLib\Zip\Compression\DeflaterHuffman.cs" />
+    <Compile Include="ZipLib\Zip\Compression\DeflaterPending.cs" />
+    <Compile Include="ZipLib\Zip\Compression\Inflater.cs" />
+    <Compile Include="ZipLib\Zip\Compression\InflaterDynHeader.cs" />
+    <Compile Include="ZipLib\Zip\Compression\InflaterHuffmanTree.cs" />
+    <Compile Include="ZipLib\Zip\Compression\PendingBuffer.cs" />
+    <Compile Include="ZipLib\Zip\Compression\Streams\DeflaterOutputStream.cs" />
+    <Compile Include="ZipLib\Zip\Compression\Streams\InflaterInputStream.cs" />
+    <Compile Include="ZipLib\Zip\Compression\Streams\OutputWindow.cs" />
+    <Compile Include="ZipLib\Zip\Compression\Streams\StreamManipulator.cs" />
+    <Compile Include="ZipLib\Zip\FastZip.cs" />
+    <Compile Include="ZipLib\Zip\IEntryFactory.cs" />
+    <Compile Include="ZipLib\Zip\ZipConstants.cs" />
+    <Compile Include="ZipLib\Zip\ZipEntry.cs" />
+    <Compile Include="ZipLib\Zip\ZipEntryFactory.cs" />
+    <Compile Include="ZipLib\Zip\ZipException.cs" />
+    <Compile Include="ZipLib\Zip\ZipExtraData.cs" />
+    <Compile Include="ZipLib\Zip\ZipFile.cs" />
+    <Compile Include="ZipLib\Zip\ZipHelperStream.cs" />
+    <Compile Include="ZipLib\Zip\ZipNameTransform.cs" />
+    <Compile Include="ZipLib\Zip\ZipOutputStream.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Filtering\grammar.y" />
+    <None Include="Parameter\SysParameter.cd" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
