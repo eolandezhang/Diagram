@@ -1,0 +1,87 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:editing="clr-namespace:QPP.Wpf.UI.Controls.AvalonEdit.Editing">
+    <ResourceDictionary.MergedDictionaries>
+        <!--<ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI;component/Styles/Colours.xaml" />-->
+        <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI;component/Styles/Fonts.xaml" />
+
+        <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI;Component/Themes/MultiComboBox/MultiComboBox.xaml"/>
+        
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/AppBarButton.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/FlipView.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Flyout.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/FlyoutsControl.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/MetroContentControl.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/MetroImage.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/MetroProgressBar.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/MetroWindow.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Pivot.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Panorama.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/ProgressRing.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/RangeSlider.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/MetroAnimatedSingleRowTabControl.xaml" />
+        <!--<ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/MetroTabControl.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/MetroTabItem.xaml" />-->
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Tile.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/ToggleSwitch.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/TransitioningContentControl.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Glow.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/AvalonDock.xaml" />
+
+
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Generic/Brushes.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Generic/Buttons.xaml" />
+        <!--<ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Generic/Common.xaml" />-->
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/Chromes/Themes/Generic.xaml" />
+
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/BusyIndicator/Themes/Generic.xaml" />
+
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/ButtonSpinner/Themes/Generic.xaml" />
+        
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/TimePicker/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/DateTimeUpDown/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/DateTimePicker/Themes/Generic.xaml" />
+
+        <!--<ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/Calculator/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/CalculatorUpDown/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/Core/Themes/Generic/WindowControl.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/CheckListBox/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/ChildWindow/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/CollectionControl/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/ColorCanvas/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/ColorPicker/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/DropDownButton/Themes/Generic.xaml" />-->
+        <!--<ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/Magnifier/Themes/Generic.xaml" />-->
+        <!--<ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/MessageBox/Themes/Generic.xaml" />
+        
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/MultiLineTextEditor/Themes/Generic.xaml" />-->
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/NumericUpDown/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/SplitButton/Themes/Generic.xaml" />
+        <!--<ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/PropertyGrid/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/WatermarkTextBox/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/Wizard/Themes/Generic.xaml" />-->
+        <!--<ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/Zoombox/Themes/Generic.xaml" />-->
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Expander/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Gantt/Gantt.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/XGantt/XGantt.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI;Component/Themes/Dashboards/Generic.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI;Component/Themes/HyperlinkButton.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI;component/Themes/Content.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI;component/Themes/Pager/PagerBar.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI;component/Themes/Range/RangePanel.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/Core/Themes/Generic/SelectorItem.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/Toolkit/CheckComboBox/Themes/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/FilterControl/FilterControl.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/Accordion/Generic.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/AvalonEdit/TextEditor.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/AvalonEdit/Search/DropDownButton.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/AvalonEdit/Search/SearchPanel.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/AvalonEdit/CodeCompletion/CompletionList.xaml" />
+       <!-- <ResourceDictionary Source="/QPP.Wpf.UI;component/Themes/SplitButton/SplitButton.xaml" />
+        <ResourceDictionary Source="/QPP.Wpf.UI;component/Controls/AvalonEdit/CodeCompletion/InsightWindow.xaml" />-->
+    </ResourceDictionary.MergedDictionaries>
+    <Style TargetType="{x:Type editing:LineNumberMargin}">
+        <Setter Property="Control.Cursor" Value="/QPP.Wpf.UI;component/themes/RightArrow.cur"/>
+    </Style>
+</ResourceDictionary>

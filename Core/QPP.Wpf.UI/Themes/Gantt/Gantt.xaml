@@ -1,0 +1,973 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:gantt="clr-namespace:QPP.Wpf.UI.Controls.Gantt"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:timespanHeader="clr-namespace:QPP.Wpf.UI.Controls.Gantt.TimespanHeader">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI;component/Styles/Controls.DataGrid.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
+    <!-- QPP.Wpf.UI.Controls.Gantt.GanttChart -->
+    <Style TargetType="gantt:GanttChart">
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+        <Setter Property="TimespanBackground" Value="{DynamicResource ControlBackgroundBrush}" />
+        <Setter Property="TimespanBorderBrush" Value="{DynamicResource BorderBrush}" />
+        <Setter Property="TimespanBorderThickness" Value="1" />
+        <Setter Property="GanttRowBorderBrush" Value="Gray" />
+        <Setter Property="GapBackgroundBrush" Value="Pink" />
+        <Setter Property="GapBorderBrush" Value="Red" />
+        <Setter Property="ToolTipContentTemplate" >
+            <Setter.Value >
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="1" Text="Name:" Grid.Column="0" Grid.Row="0" />
+                        <TextBlock Margin="1" Text="{Binding TaskName}" Grid.Column="1" Grid.Row="0" />
+                        <TextBlock Margin="1" Text="Start Date:" Grid.Column="0" Grid.Row="1" />
+                        <TextBlock Margin="1" Text="{Binding StartDate}" Grid.Column="1" Grid.Row="1" />
+                        <TextBlock Margin="1" Text="End Date:" Grid.Column="0" Grid.Row="2" />
+                        <TextBlock Margin="1" Text="{Binding EndDate}" Grid.Column="1" Grid.Row="2" />
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemLeftTemplate" >
+            <Setter.Value >
+                <DataTemplate>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemRightTemplate" >
+            <Setter.Value >
+                <DataTemplate>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemTopTemplate" >
+            <Setter.Value >
+                <DataTemplate>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemBottomTemplate" >
+            <Setter.Value >
+                <DataTemplate>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="gantt:GanttChart">
+                    <Border BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}">
+                        <Grid Name="GanttGrid">
+                            <Grid.Resources>
+                                <gantt:LevelToWidthConverter x:Key="levelConverter" />
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{TemplateBinding GridWidth}" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <gantt:GanttDataGrid 
+                                CanUserResizeRows="False"
+                                IsReadOnly="{TemplateBinding IsGridReadOnly}"
+                                Grid.Column="0" 
+                                Grid.Row="1"
+                                BorderThickness="0,1,1,0"
+                                Margin="0,-24,2,0"
+                                VerticalScrollBarVisibility="Hidden"
+                                x:Name="TaskGrid" 
+                                RowHeight="{TemplateBinding RowHeight}">
+                            </gantt:GanttDataGrid>
+
+                            <GridSplitter 
+                                Grid.Column="0" 
+                                Grid.RowSpan="2"
+                                Width="6"
+                                ShowsPreview="True"
+                                VerticalAlignment="Stretch"                                
+                                x:Name="GridSplitterElement"
+                                Background="Transparent">                                
+                            </GridSplitter>
+
+                            <timespanHeader:TimespanHeader 
+                                Grid.Row="0" 
+                                Grid.Column="1" 
+                                Background="{TemplateBinding TimespanBackground}"
+                                BorderBrush="{TemplateBinding TimespanBorderBrush}"
+                                BorderThickness="1,0,0,1"
+                                x:Name="TimespanElement"
+                                CurrentTime="{TemplateBinding CurrentTime}"/>
+                            <Border
+                                Grid.Column="1"
+                                Grid.Row="1"
+                                Margin="0,1,0,0"
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="1,1,0,0">                                
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <gantt:GanttPanel
+                                    GapBackgroundBrush="{TemplateBinding GapBackgroundBrush}"
+                                    GapBorderBrush="{TemplateBinding GapBorderBrush}"
+                                    IsReadOnly="{TemplateBinding IsChartReadOnly}"
+                                    Grid.Column="0"
+                                    x:Name="PanelElement"
+                                    Margin="0" 
+                                    RowHeight="{TemplateBinding RowHeight}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="0,0,1,1" >
+                                </gantt:GanttPanel>
+                                <ScrollBar 
+                                    Grid.Column="1"
+                                    x:Name="VerticalScrollbar"/>
+                                <ScrollBar 
+                                    Grid.Row="1"
+                                    x:Name="HorizontalScrollbar"
+                                    Orientation="Horizontal"
+                                    Visibility="{TemplateBinding HorizontalScrollbarVisibility}"    />
+                                </Grid>
+                            </Border>
+                            <ContentPresenter 
+                                Grid.Row="0" 
+                                Grid.Column="0" 
+                                Width="Auto"
+                                Margin="0,0,0,23"  />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- QPP.Wpf.UI.Controls.Gantt.GanttPanel -->
+    <Style TargetType="gantt:GanttPanel">
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="LightBlue" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="gantt:GanttPanel">
+                    <Border 
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}" >
+                        <Grid x:Name="MainElement" >
+                            <Grid >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Canvas  
+                                    x:Name="BackgroundCanvas"
+                                    Width="{TemplateBinding Width}"
+                                    Height="{TemplateBinding Height}">
+                                </Canvas>
+                                <gantt:GanttRowsPresenter
+                                    Grid.Row="0"
+                                    x:Name="RowPresenter"  />
+                                <gantt:GanttDependenciesPresenter
+                                    Grid.Row="0"
+                                    x:Name="DependenciesPresenter" />
+                                <ContentPresenter Grid.Row="1" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- QPP.Wpf.UI.Controls.Gantt.GanttDependencyItem -->
+    <Style TargetType="gantt:GanttDependencyItem">
+        <Setter Property="LineWidth" Value="1" />
+        <Setter Property="LineBrush" Value="Black" />
+        <!--<Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate 
+                    TargetType="gantt:GanttDependencyItem">
+                        <Canvas  
+                            x:Name="LineCanvas"
+                            Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}">
+                        </Canvas>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>-->
+    </Style>
+
+    <!-- QPP.Wpf.UI.Controls.Gantt.GanttPanelColumn -->
+    <Style TargetType="gantt:GanttPanelColumn">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate 
+                    TargetType="gantt:GanttPanelColumn">
+                    <Border 
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}"
+                        Margin="0">
+                        <ContentPresenter
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- QPP.Wpf.UI.Controls.Gantt.GanttRow -->
+    <Style TargetType="gantt:GanttRow">
+        <Setter Property="BorderBrush" Value="LightGray" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate 
+                    TargetType="gantt:GanttRow">
+                    <Grid>
+                        <Border 
+                            BorderThickness="0,0,0,1"
+                            Opacity=".6"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="Transparent">
+                        </Border>
+                        <gantt:GanttItemsPresenter
+                            x:Name="ItemsPresenterElement"/>                    
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelecting" Value="True" >
+                            <Setter Property="Background" Value="{DynamicResource AccentColorBrush}"   TargetName="ItemsPresenterElement"/>
+                        </Trigger>
+                        <Trigger Property="IsSelecting" Value="False" >
+                            <Setter Property="Background" Value="{x:Null}" TargetName="ItemsPresenterElement"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="gantt:GanttItemShadow">
+        <Setter Property="BorderBrush" Value="Black" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="gantt:GanttItemShadow" >
+                    <Grid >
+                        <Rectangle  
+                            x:Name="dots"
+                            IsHitTestVisible="False"
+                            StrokeThickness="2"
+                            StrokeDashArray="1 1"
+                            StrokeDashCap="Flat"
+                            Stroke="Red"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- QPP.Wpf.UI.Controls.Gantt.GanttItem -->
+    <Style TargetType="gantt:GanttItem">
+        <Setter Property="BorderBrush" Value="Navy" />
+        <Setter Property="UseLayoutRounding" Value="False"/>
+        <Setter Property="Background" >
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.0">
+                    <GradientStopCollection >
+                        <GradientStop Color="White" Offset="0" />
+                        <GradientStop Color="LightBlue" Offset="0.5" />
+                    </GradientStopCollection>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="gantt:GanttItem" >
+                    <Grid >
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver">
+                                    <!--<Storyboard>
+                                    <DoubleAnimation 
+                                        BeginTime="00:00:00"
+                                        Duration="00:00:00.001"
+                                        Storyboard.TargetName="NodeElement"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="0.75"  />
+                                </Storyboard>-->
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="Selection">
+                                <VisualState x:Name="UnSelected" />
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <DoubleAnimation 
+                                        Storyboard.TargetName="dots"
+                                        Storyboard.TargetProperty="Opacity"
+                                        Duration="0"
+                                        To="0" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="0" />
+                        </Grid.ColumnDefinitions>
+                        <ToolTipService.ToolTip>
+                            <ToolTip 
+                                Content="{TemplateBinding ItemContent}"
+                                ContentTemplate="{TemplateBinding ToolTipContentTemplate}" />
+                        </ToolTipService.ToolTip>
+                        <Canvas
+                            Grid.Column="0"
+                            Grid.RowSpan="2">
+                            <ContentControl 
+                                Canvas.Right="5"
+                                Content="{TemplateBinding ItemContent}"
+                                ContentTemplate="{TemplateBinding ItemLeftTemplate}" />
+                        </Canvas>
+                        <Canvas
+                            Grid.Column="2"
+                            Grid.RowSpan="2">
+                            <ContentControl 
+                                Canvas.Left="5"
+                                Content="{TemplateBinding ItemContent}"
+                                ContentTemplate="{TemplateBinding ItemRightTemplate}" />
+                        </Canvas>
+                        <Canvas
+                            Grid.Column="1"
+                            Grid.RowSpan="2">
+                            <ContentControl 
+                                Canvas.Top="-15"
+                                Content="{TemplateBinding ItemContent}"
+                                ContentTemplate="{TemplateBinding ItemTopTemplate}" />
+                            <ContentControl 
+                                Canvas.Top="15"
+                                Content="{TemplateBinding ItemContent}"
+                                ContentTemplate="{TemplateBinding ItemBottomTemplate}" />
+                        </Canvas>
+                        <Polygon
+                            Grid.Column="1"
+                            x:Name="MileStoke"
+                            Stroke="Black"
+                            Margin="0,0,-20,0"
+                            Grid.RowSpan="2" 
+                            StrokeThickness="0" 
+                            Stretch="None"
+                            Fill="Black"
+                            Visibility="Collapsed">
+                            <Polygon.Points >
+                                <Point X="0" Y="10"/>
+                                <Point X="9" Y="1" />
+                                <Point X="18" Y="10" />
+                                <Point X="9" Y="19"/>
+                            </Polygon.Points>
+                        </Polygon>
+                        <Rectangle  
+                            Grid.Column="1"
+                            x:Name="dots"
+                            IsHitTestVisible="False"
+                            StrokeThickness="2"
+                            StrokeDashArray="1 1"
+                            StrokeDashCap="Flat"
+                            Stroke="Black"
+                            Grid.RowSpan="2"
+                            Opacity="0" />
+                        <Rectangle 
+                            Grid.Column="1"
+                            Stretch="Fill" 
+                            Grid.RowSpan="2" 
+                            x:Name="NodeElement"
+                            Opacity="1"
+                            StrokeThickness="1"
+                            RadiusX="2"
+                            RadiusY="2"
+                            Margin="0,2,0,3"
+                            Fill="{TemplateBinding Background}"
+                            Stroke="{TemplateBinding BorderBrush}"  />
+                        <!--完成百分比线-->
+                        <Grid 
+                            Grid.Column="1"
+                            x:Name="PercentCompleteElement"
+                            Width="{TemplateBinding PercentCompleteWidth}"
+                            Grid.Row="1"
+                            Height="2"
+                            Margin="0,1,0,5"
+                            Background="Red"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMilestone" Value="True" >
+                            <Setter Property="Visibility" Value="Visible"  TargetName="MileStoke"/>
+                            <Setter Property="Visibility" Value="Collapsed"  TargetName="PercentCompleteElement"/>
+                            <Setter Property="Opacity" Value="0"  TargetName="NodeElement"/>
+                        </Trigger>
+                        <Trigger Property="IsMilestone" Value="False" >
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="MileStoke"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="PercentCompleteElement"/>
+                            <Setter Property="Opacity" Value="1" TargetName="NodeElement"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>                   
+                </ControlTemplate>
+            </Setter.Value>
+            
+        </Setter>
+    </Style>
+    
+    <Style TargetType="gantt:GanttActualItem">
+        <Setter Property="BorderBrush" Value="Green" />
+        <Setter Property="UseLayoutRounding" Value="False"/>
+        <Setter Property="Margin" Value="0,0"/>
+        <Setter Property="Background" >
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.0" Opacity=".6">
+                    <GradientStopCollection >
+                        <GradientStop Color="White" Offset="0" />
+                        <GradientStop Color="LightGreen" Offset="0.5" />
+                    </GradientStopCollection>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template" >
+            <Setter.Value>
+                <ControlTemplate TargetType="gantt:GanttActualItem" >
+                    <ContentControl Grid.Column="1"
+                    Content="{TemplateBinding ItemContent}">
+                    <ContentControl.ContentTemplate>
+                        <DataTemplate  >
+                            <Grid>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="MouseOver"/>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <!--<ToolTipService.ToolTip>
+                                    <ToolTip 
+                                        Content="{TemplateBinding ItemContent}"
+                                        ContentTemplate="{TemplateBinding ToolTipContentTemplate}" />
+                                </ToolTipService.ToolTip>-->
+                                <Rectangle 
+                                    Grid.Column="1"
+                                    Stretch="Fill" 
+                                    Grid.RowSpan="2" 
+                                    x:Name="NodeElement"
+                                    Opacity="1"
+                                    StrokeThickness="1"
+                                    RadiusX="2"
+                                    RadiusY="2"
+                                    Margin="0,2,0,3"/>
+                                        <!--Fill="{TemplateBinding Background}"
+                                    Stroke="{TemplateBinding BorderBrush}"  />-->
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=HasChild}">
+                                    <DataTrigger.Value>
+                                        <sys:Boolean>true</sys:Boolean>
+                                    </DataTrigger.Value>
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Hidden"  TargetName="NodeElement"/>
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=PercentComplete}">
+                                    <DataTrigger.Value>
+                                        <sys:Double>100</sys:Double>
+                                    </DataTrigger.Value>
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Stroke"
+                                    Value="Green" TargetName="NodeElement">
+                                        </Setter>
+                                        <Setter Property="Fill"  TargetName="NodeElement">
+                                            <Setter.Value>
+                                                <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.0" Opacity=".6">
+                                                    <GradientStopCollection >
+                                                        <GradientStop Color="White" Offset="0" />
+                                                        <GradientStop Color="LightGreen" Offset="0.5" />
+                                                    </GradientStopCollection>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Path=PercentComplete}">
+                                    <DataTrigger.Value>
+                                        <sys:Double>0</sys:Double>
+                                    </DataTrigger.Value>
+                                    <DataTrigger.Setters>
+                                            <Setter Property="Stroke" Value="Green"  TargetName="NodeElement">
+                                        </Setter>
+                                        <Setter Property="Fill"  TargetName="NodeElement">
+                                            <Setter.Value>
+                                                <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.0" Opacity=".6">
+                                                    <GradientStopCollection >
+                                                        <GradientStop Color="White" Offset="0" />
+                                                        <GradientStop Color="Yellow" Offset="0.5" />
+                                                    </GradientStopCollection>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ContentControl.ContentTemplate>
+
+                </ContentControl>
+                </ControlTemplate>
+       
+            </Setter.Value>
+
+        </Setter>
+        
+    </Style>
+
+    <!-- <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="gantt:GanttActualItem" >
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                
+                        <VisualState x:Name="MouseOver"/>
+                        </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ToolTipService.ToolTip>
+                            <ToolTip 
+                                Content="{TemplateBinding ItemContent}"
+                                ContentTemplate="{TemplateBinding ToolTipContentTemplate}" />
+                        </ToolTipService.ToolTip>
+                        <Rectangle 
+                            Grid.Column="1"
+                            Stretch="Fill" 
+                            Grid.RowSpan="2" 
+                            x:Name="NodeElement"
+                            Opacity="1"
+                            StrokeThickness="1"
+                            RadiusX="2"
+                            RadiusY="2"
+                            Margin="0,2,0,3"
+                            Fill="{TemplateBinding Background}"
+                            Stroke="{TemplateBinding BorderBrush}"  />
+            </Grid>
+    <ControlTemplate.Triggers>
+        <Trigger Property="IsFinished"
+                                 Value="True">
+            <Setter Property="BorderBrush"
+                                    Value="Green">
+            </Setter>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.0" Opacity=".6">
+                        <GradientStopCollection >
+                            <GradientStop Color="White" Offset="0" />
+                            <GradientStop Color="LightGreen" Offset="0.5" />
+                        </GradientStopCollection>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Trigger>
+        <Trigger Property="IsFinished"
+                                 Value="False">
+            <Setter Property="BorderBrush" Value="Navy">
+            </Setter>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.0" Opacity=".6">
+                        <GradientStopCollection >
+                            <GradientStop Color="White" Offset="0" />
+                            <GradientStop Color="Yellow" Offset="0.5" />
+                        </GradientStopCollection>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Trigger>
+    </ControlTemplate.Triggers>
+    </ControlTemplate>
+    </Setter.Value>
+    </Setter> -->
+
+
+
+
+
+    <!-- QPP.Wpf.UI.Controls.Gantt.HeaderGanttItem -->
+    <Style TargetType="gantt:HeaderGanttItem">
+        <Setter Property="UseLayoutRounding" Value="False"/>
+        <Setter Property="BorderBrush" Value="Black" />
+        <Setter Property="Background" Value="Black" />
+        <Setter Property="IsDragDropEnabled" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="gantt:HeaderGanttItem" >
+                    <Grid 
+                        Margin="0,4,0,2"
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        x:Name="NodeElement" >
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            BeginTime="00:00:00"
+                                            Duration="00:00:00.001" 
+                                            Storyboard.TargetName="NodeElement" 
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0.75"  />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="Selection">
+                                <VisualState x:Name="UnSelected" />
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="dots"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0"
+                                            To="0" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ToolTipService.ToolTip>
+                            <ToolTip 
+                                Content="{TemplateBinding ItemContent}"
+                                ContentTemplate="{TemplateBinding ToolTipContentTemplate}" />
+                        </ToolTipService.ToolTip>
+                        <Rectangle 
+                            x:Name="dots"
+                            IsHitTestVisible="False"
+                            StrokeThickness="2"
+                            StrokeDashArray="1 1"
+                            StrokeDashCap="Flat"
+                            Stroke="Black"
+                            Opacity="0"
+                            Grid.ColumnSpan="3"
+                            Grid.RowSpan="2"/>
+                        <Border
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="0"
+                            Background="{TemplateBinding Background}"
+                            Grid.ColumnSpan="3" />                        
+                        <Polygon
+                            Grid.Column="0"
+                            x:Name="LeftSide"
+                            Grid.Row="1"
+                            Stroke="{TemplateBinding BorderBrush}"
+                            StrokeThickness="0"
+                            Fill="{TemplateBinding Background}" >
+                            <Polygon.Points >
+                                <Point X="0" Y="0" />
+                                <Point X="0" Y="5" />
+                                <Point X="5" Y="0" />
+                            </Polygon.Points>
+                        </Polygon>
+                        <Polygon
+                            Grid.Column="2"
+                            x:Name="RightSide"
+                            Grid.Row="1"
+                            Stroke="{TemplateBinding BorderBrush}"
+                            StrokeThickness="0"
+                            Fill="{TemplateBinding Background}" >
+                            <Polygon.Points >
+                                <Point X="0" Y="0" />
+                                <Point X="5" Y="5" />
+                                <Point X="5" Y="0" />
+                            </Polygon.Points>
+                        </Polygon>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- QPP.Wpf.UI.Controls.Gantt.SimpleExpander -->
+    <!--<Style TargetType="gantt:SimpleExpander">
+        <Setter Property="IsExpanded" Value="False" />
+        <Setter Property="Margin" Value="3,0,3,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="gantt:SimpleExpander" >
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups >
+                            <VisualStateGroup 
+                                x:Name="IsExpandedStates"  >
+                                <VisualState 
+                                    x:Name="Collapsed">
+                                    <Storyboard>
+                                        <DoubleAnimation 
+                                            x:Name="CollapseAnimation"
+                                            Storyboard.TargetName="ExpanderRotate"
+                                            Storyboard.TargetProperty="Angle"
+                                            To="0"
+                                            Duration="00:00:00.15"
+                                            AutoReverse="False" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState 
+                                    x:Name="Expanded">
+                                    <Storyboard>
+                                        <DoubleAnimation 
+                                            x:Name="ExpandAnimation"
+                                            Storyboard.TargetName="ExpanderRotate"
+                                            Storyboard.TargetProperty="Angle"
+                                            To="90"
+                                            Duration="00:00:00.15"
+                                            AutoReverse="False" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Rectangle 
+                            Fill="Transparent"
+                            Stretch="Fill" 
+                            Cursor="Hand" 
+                            IsHitTestVisible="True" />
+                        <Polygon 
+                            Fill="Black"
+                            Stroke="Black"
+                            IsHitTestVisible="True"
+                            x:Name="Triangle"  >
+                            <Polygon.Points>
+                                <Point X="5" Y="4"/>
+                                <Point X="10" Y="8"/>
+                                <Point X="5" Y="12"/>
+                            </Polygon.Points>
+                            <Polygon.RenderTransform>
+                                <RotateTransform 
+                                    Angle="0"
+                                    CenterX="7"
+                                    CenterY="8"
+                                    x:Name="ExpanderRotate"  />
+                            </Polygon.RenderTransform>
+                        </Polygon>
+                        <TextBlock />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>-->
+
+    <!-- QPP.Wpf.UI.Controls.Gantt.TimespanHeader.TimespanHeader -->
+    <Style TargetType="timespanHeader:TimespanHeader" >
+        <Setter Property="Template">
+            <Setter.Value >
+                <ControlTemplate 
+                    TargetType="timespanHeader:TimespanHeader" >
+                    <Border 
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}">
+                        <timespanHeader:TimespanHeaderRowsPresenter
+                            x:Name="RowsPresenter" >
+                            <!--   <tsh:TimespanHeaderRow BorderThickness="0"
+                                                   BorderBrush="{TemplateBinding BorderBrush}"
+                                                   CurrentTime="{TemplateBinding CurrentTime}"
+                                                   Height="30"
+                                                   x:Name="YearRow"
+                                                   TimeUnit="Years"        
+                                                   CellFormat="yyyy"
+                                                   CellBorderThickness="0,0,1,0"     
+                                                   CellBorderBrush="LightBlue"
+                                                   CellHorizontalAlignment="Left"
+                                                   CellVerticalAlignment="Center"
+                                                         >
+                                <tsh:TimespanHeaderRow.CellBackground>
+                                    <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.0">
+                                        <GradientStopCollection >
+                                            <GradientStop Color="White" Offset="0" />
+                                            <GradientStop Color="LightBlue" Offset="0.5" />
+                                        </GradientStopCollection>
+                                    </LinearGradientBrush>
+                                </tsh:TimespanHeaderRow.CellBackground>
+                            </tsh:TimespanHeaderRow>
+                            -->
+                            <timespanHeader:TimespanHeaderRow 
+                                BorderThickness="0"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CurrentTime="{TemplateBinding CurrentTime}"
+                                Height="30"
+                                x:Name="MonthRow"
+                                TimeUnit="Months"
+                                CellFormat="MMMM yyyy"
+                                CellBorderThickness="0,0,1,0"
+                                CellBorderBrush="{DynamicResource BorderBrush}"
+                                CellHorizontalAlignment="Left"
+                                CellVerticalAlignment="Center">
+                                <!--<timespanHeader:TimespanHeaderRow.CellBackground>
+                                    <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.0">
+                                        <GradientStopCollection >
+                                            <GradientStop Color="White" Offset="0" />
+                                            <GradientStop Color="{DynamicResource AccentColor}" Offset="0.5" />
+                                        </GradientStopCollection>
+                                    </LinearGradientBrush>
+                                </timespanHeader:TimespanHeaderRow.CellBackground>-->
+                            </timespanHeader:TimespanHeaderRow>
+
+                            <timespanHeader:TimespanHeaderRow 
+                                BorderThickness="0,1,0,0"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CurrentTime="{TemplateBinding CurrentTime}"
+                                Height="30"
+                                x:Name="DaysRow"
+                                TimeUnit="Days"
+                                CellFormat="dd"
+                                CellBorderThickness="0,0,1,0"
+                                CellBorderBrush="{DynamicResource BorderBrush}">
+                                <!--<timespanHeader:TimespanHeaderRow.CellBackground>
+                                    <LinearGradientBrush 
+                                        EndPoint="0.5,0.0" 
+                                        StartPoint="0.5,1.0" 
+                                        SpreadMethod="Reflect" >
+                                        <GradientStopCollection >
+                                            <GradientStop Color="White" Offset="0"   />
+                                            <GradientStop Color="{DynamicResource AccentColor}" Offset="0.5" />
+                                        </GradientStopCollection>
+                                    </LinearGradientBrush>
+                                </timespanHeader:TimespanHeaderRow.CellBackground>-->
+                            </timespanHeader:TimespanHeaderRow>
+                        </timespanHeader:TimespanHeaderRowsPresenter>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- QPP.Wpf.UI.Controls.Gantt.TimespanHeader.TimespanHeaderRow -->
+    <Style TargetType="timespanHeader:TimespanHeaderRow">
+        <Setter Property="TimeUnit" Value="Months" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate 
+                    TargetType="timespanHeader:TimespanHeaderRow">
+                    <Border 
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}">
+                        <timespanHeader:TimespanHeaderCellsPresenter 
+                            x:Name="CellsPresenter" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- QPP.Wpf.UI.Controls.Gantt.TimespanHeader.TimespanHeaderCell -->
+    <Style TargetType="timespanHeader:TimespanHeaderCell">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template" >
+            <Setter.Value>
+                <ControlTemplate 
+                    TargetType="timespanHeader:TimespanHeaderCell">
+                    <Border
+                        x:Name="cell"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}">
+                        <Grid >
+                            <TextBlock x:Name="txtElement"
+                                Text="{TemplateBinding Text}"
+                                Foreground="Black"
+                                Margin="0,0"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsWorking"
+                                 Value="false">
+                            <Setter TargetName="txtElement"
+                                    Property="Foreground"
+                                    Value="Red">                                
+                            </Setter>
+                        </Trigger>                                 
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Silverlight.Charting.Controls.Cross
+    <Style TargetType="chartControls:Cross">
+        <Setter Property="Background" Value="Black" />
+        <Setter Property="LineWidth" Value="1.0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="chartControls:Cross">
+                    <Border BorderBrush="Green" BorderThickness="1" >
+                        <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.5*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="0.5*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="0.5*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="0.5*" />
+                            </Grid.RowDefinitions>
+
+                            <Rectangle Visibility="Collapsed"   Stretch="Fill" Fill="{TemplateBinding Background}" Grid.Column="1"               x:Name="UpLine"     Width="{TemplateBinding LineWidth}" />
+
+                            <Rectangle Visibility="Collapsed"   Stretch="Fill" Fill="{TemplateBinding Background}" Grid.Column="0" Grid.Row="1"  x:Name="LeftLine"   Height="{TemplateBinding LineWidth}" />
+                            <Rectangle Visibility="Visible"     Stretch="Fill" Fill="{TemplateBinding Background}" Grid.Column="1" Grid.Row="1"  x:Name="CenterLine"  />
+                            <Rectangle Visibility="Collapsed"   Stretch="Fill" Fill="{TemplateBinding Background}" Grid.Column="2" Grid.Row="1"  x:Name="RightLine"  Height="{TemplateBinding LineWidth}" />
+
+                            <Rectangle Visibility="Collapsed"   Stretch="Fill" Fill="{TemplateBinding Background}" Grid.Column="1" Grid.Row="2"  x:Name="DownLine"   Width="{TemplateBinding LineWidth}" />
+
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style> -->
+</ResourceDictionary>

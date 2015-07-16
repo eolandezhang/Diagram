@@ -1,0 +1,21 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:lib="http://qpp.com/winfx/xaml/lib"
+                    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+                    xmlns:local="clr-namespace:QPP.Wpf.UI.Controls">
+    <Style TargetType="{x:Type local:Content}" BasedOn="{StaticResource {x:Type ContentControl}}">
+        <Setter Property="Template">            
+            <Setter.Value>
+                <ControlTemplate
+                        TargetType="ContentControl">
+                    <Grid Background="{DynamicResource ControlBackgroundBrush}">
+                        <ContentPresenter
+                            Content="{TemplateBinding ContentControl.Content}"
+                            ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                            ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

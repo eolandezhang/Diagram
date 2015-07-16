@@ -1,0 +1,95 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:local="clr-namespace:QPP.Wpf.UI.Controls.Expander"
+    xmlns:Controls="clr-namespace:QPP.Wpf.UI.Controls"
+    xmlns:Converters="clr-namespace:QPP.Wpf.UI.Converters"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Duration x:Key="animTime">0:0:0.4</Duration>
+    <Style TargetType="{x:Type local:ExpanderItem}">
+        <!--<Setter Property="Background" Value="{x:Static SystemColors.WindowBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource WindowTitleColorBrush}"/>
+        <Setter Property="MouseOverHeaderBackground" Value="{DynamicResource WindowTitleColorBrush}"/>-->
+        <Setter Property="HeaderBackground" Value="{DynamicResource WindowTitleColorBrush}"/>
+        <Setter Property="HeaderBorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="ShowEllipse" Value="False"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">               
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ExpanderItem}">
+                    <Border>
+                        <StackPanel>
+                            <local:ExpanderHeader 
+                                x:Name="header"  
+                                SnapsToDevicePixels="True"
+                                Content="{TemplateBinding Header}"
+                                BorderThickness="{TemplateBinding HeaderBorderThickness}"
+                                BorderBrush="{TemplateBinding HeaderBorderBrush}"   
+                                Background="{TemplateBinding HeaderBackground}" 
+                                Foreground="{TemplateBinding Foreground}"
+                                Controls:HeaderHelper.HeaderCommands="{TemplateBinding Controls:HeaderHelper.HeaderCommands}"
+                                IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsExpanded}"
+                                ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                ShowEllipse="{TemplateBinding ShowEllipse}"
+                                Image="{TemplateBinding Image}"/>
+                            <local:AnimationDecorator Grid.Row="1"  
+                                              SnapsToDevicePixels="True"
+                                              Duration="{StaticResource animTime}"
+                                              MinHeight="{TemplateBinding MinHeight}"
+                                              MaxHeight="{TemplateBinding MaxHeight}"
+                                              Height="{TemplateBinding Height}"
+                                             IsExpanded="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsExpanded}">
+                                <Border x:Name="panel"
+                                        Grid.Row="1" 
+                                        Padding="{TemplateBinding Padding}" 
+                                        Background="{TemplateBinding Background}"
+                                        BorderThickness="1,0,1,1"
+                                        BorderBrush="{TemplateBinding BorderBrush}">
+                                        <ContentPresenter 
+                                              VerticalAlignment="Bottom"
+                                              Content="{TemplateBinding Content}" 
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"/>                                    
+                                </Border>
+                            </local:AnimationDecorator>
+                        </StackPanel>
+                        <Border.LayoutTransform>
+                            <ScaleTransform x:Name="scaleT" ScaleY="1"/>
+                        </Border.LayoutTransform>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True" SourceName="header">
+                            <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent},Path=MouseOverHeaderBackground}" TargetName="header"/>
+                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent},Path=MouseOverHeaderForeground}" TargetName="header"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsPressed" Value="True" SourceName="header"/>
+                                <Condition Property="HasPressedBackground" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent},Path=PressedHeaderBackground}" TargetName="header"/>
+                        </MultiTrigger>
+                        <!--<EventTrigger RoutedEvent="local:ExpanderItem.MaximizedEvent">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard Storyboard.TargetProperty="ScaleY" >
+                                        <DoubleAnimation  To="1" Duration="{StaticResource animTime}" Storyboard.TargetName="scaleT" DecelerationRatio="0.8"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="local:ExpanderItem.MinimizedEvent">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard Storyboard.TargetProperty="ScaleY" >
+                                        <DoubleAnimation  To="0" Duration="{StaticResource animTime}" Storyboard.TargetName="scaleT" DecelerationRatio="0.8"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>-->
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
