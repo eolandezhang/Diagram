@@ -1,25 +1,12 @@
-﻿using QPP.Api;
-using QPP.Client;
-using QPP.ComponentModel;
+﻿using QPP.ComponentModel;
 using QPP.Layout;
-using QPP.Messaging;
 using QPP.Modularity;
 using QPP.Runtime;
-using QPP.ServiceLocation;
-using QPP.Wpf.Command;
-using QPP.Wpf.Diagnostic;
-using QPP.Wpf.Dialogs;
-using QPP.Wpf.Layout;
-using QPP.Wpf.Localization;
-using QPP.Wpf.Security;
-using QPP.Wpf.Threading;
 using QPP.Wpf.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Input;
 
 namespace QPP.Wpf.Runtime
 {

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using QPP.Wpf.ComponentModel;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
@@ -36,6 +37,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         Connector GetItemConnector/*根据名称，取得元素连接点*/(DesignerItem item, string name)
         {
+            item.UpdateLayout();
             var itemConnectorDecorator = item.Template.FindName("PART_ConnectorDecorator", item) as Control;
             if (itemConnectorDecorator == null) return null;
             var itemConnector = itemConnectorDecorator.Template.FindName(name, itemConnectorDecorator) as Connector;
@@ -113,11 +115,11 @@ namespace QPP.Wpf.UI.TreeEditor
 
         public void SetSelectItem(DesignerItem designerItem)
         {
+            if (designerItem == null) return;
             _diagramControl.DesignerCanvas.SelectionService.ClearSelection();
             _diagramControl.DesignerCanvas.SelectionService.SelectItem(designerItem);
-            _diagramControl.SelectedItem = designerItem;
             _diagramControl.SelectedItems.Clear();
-            _diagramControl.SelectedItems.Add(designerItem);
+            _diagramControl.SelectedItems.Add(designerItem.Data as TreeItemNode);
         }
 
         #endregion
@@ -204,7 +206,7 @@ namespace QPP.Wpf.UI.TreeEditor
             #endregion
             childItem.CanCollapsed = true;
         }
-        void DrawDesignerItem/*创建元素*/(DesignerItem item, double topOffset = 0d, double leftOffset = 0d)
+        void DrawDesignerItem/*创建元素*/(DesignerItem item, double topOffset = 5d, double leftOffset = 5d)
         {
             if (item.Data == null) return;
             GenerateDesignerItemContent(item, DEFAULT_FONT_COLOR_BRUSH);

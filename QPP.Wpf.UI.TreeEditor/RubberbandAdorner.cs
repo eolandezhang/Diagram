@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using QPP.Wpf.ComponentModel;
 
 
 namespace QPP.Wpf.UI.TreeEditor
@@ -62,12 +63,10 @@ namespace QPP.Wpf.UI.TreeEditor
             if (DiagramControl != null)
             {
                 var selectedItems = designerCanvas.SelectionService.CurrentSelection;
-                if (selectedItems.Count == 1)
-                { DiagramControl.SelectedItem = selectedItems.FirstOrDefault() as DesignerItem; }
                 foreach (var selectedItem in selectedItems.ConvertAll(x => x as DesignerItem))
                 {
                     DiagramControl.SelectedItems.Clear();
-                    DiagramControl.SelectedItems.Add(selectedItem);
+                    DiagramControl.SelectedItems.Add(selectedItem.Data as TreeItemNode);
                 }
             }
         }

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using QPP.Wpf.ComponentModel;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
@@ -268,23 +269,18 @@ namespace QPP.Wpf.UI.TreeEditor
                     if (IsSelected)
                     {
                         designer.SelectionService.RemoveFromSelection(this);
-
-                        DiagramControl.SelectedItem = null;
-                        DiagramControl.SelectedItems.Remove(this);
+                        DiagramControl.SelectedItems.Remove(this.Data as TreeItemNode);
                     }
                     else
                     {
                         designer.SelectionService.AddToSelection(this);
-                        DiagramControl.SelectedItem = this;
-                        DiagramControl.SelectedItems.Add(this);
+                        DiagramControl.SelectedItems.Add(this.Data as TreeItemNode);
                     }
                 }
                 else if (!IsSelected)
                 {
                     designer.SelectionService.SelectItem(this);
-
-                    DiagramControl.SelectedItem = this;
-                    DiagramControl.SelectedItems.Add(this);
+                    DiagramControl.SelectedItems.Add(this.Data as TreeItemNode);
                 }
                 Focus();
             }
