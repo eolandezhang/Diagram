@@ -1549,7 +1549,7 @@
     <Resource Include="Themes\Generic\Images\VTabGroup.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\QPP\QPP.csproj">
+    <ProjectReference Include="..\QPP\QPP.csproj">
       <Project>{e02e3fec-b370-4435-ba52-5414ffdb91d0}</Project>
       <Name>QPP</Name>
     </ProjectReference>
