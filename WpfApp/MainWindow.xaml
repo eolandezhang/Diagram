@@ -1,8 +1,42 @@
 ﻿<Window x:Class="WpfApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:treeEditor="clr-namespace:QPP.Wpf.UI.TreeEditor;assembly=QPP.Wpf.UI.TreeEditor"
+        xmlns:vm="clr-namespace:WpfApp.ViewModel;assembly=WpfApp.ViewModel"
+        Title="{Binding Title}" Height="350" Width="525">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
     <Grid>
-        
+        <!--<treeEditor:DiagramControl
+            x:Name="Diagram" 
+            DiagramHeader="树状图" 
+            ZoomBoxControl="{Binding ElementName=ZoomBox}"
+            ItemDatas="{Binding ItemDatas}"
+            DesignerItems="{Binding DesignerItems}"
+            SelectedItem="{Binding SelectedItem,Mode=OneWayToSource}"
+            SelectedItems="{Binding SelectedItems,Mode=OneWayToSource}"
+            LoadDataCommand="{Binding LoadData,Mode=OneWay}"
+            >
+            <treeEditor:DiagramControl.DesignerItemTemplate>
+                <DataTemplate>
+                    <Border x:Name="Bdr"  BorderThickness="2" BorderBrush="SkyBlue">
+                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
+                    </Border>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsDragItemChild}" Value="True">
+                            <Setter TargetName="Bdr" Property="BorderBrush" Value="Transparent"></Setter>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </treeEditor:DiagramControl.DesignerItemTemplate>
+            <treeEditor:DesignerItem.ItemContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add Sibling" Command="{Binding AddSiblingCommand}"></MenuItem>
+                    <MenuItem Header="Add After" Command="{Binding AddAfterCommand}"></MenuItem>
+                    <MenuItem Header="Delete" Command="{Binding DeleteCommand}"></MenuItem>
+                </ContextMenu>
+            </treeEditor:DesignerItem.ItemContextMenu>
+        </treeEditor:DiagramControl>-->
     </Grid>
 </Window>

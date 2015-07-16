@@ -90,6 +90,24 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\QPP.Wpf.UI\QPP.Wpf.UI.csproj">
+      <Project>{25be43ca-1238-477a-b232-83fba7a9d452}</Project>
+      <Name>QPP.Wpf.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\QPP\QPP.csproj">
+      <Project>{e02e3fec-b370-4435-ba52-5414ffdb91d0}</Project>
+      <Name>QPP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QPP.Wpf.UI.TreeEditor\QPP.Wpf.UI.TreeEditor.csproj">
+      <Project>{e505fdbe-d147-4679-ae17-2aa56f713b5e}</Project>
+      <Name>QPP.Wpf.UI.TreeEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfApp.ViewModel\WpfApp.ViewModel.csproj">
+      <Project>{b82a158a-22b3-42d9-ab11-d02fa8c73169}</Project>
+      <Name>WpfApp.ViewModel</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

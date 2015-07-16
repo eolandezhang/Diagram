@@ -1,8 +1,30 @@
 ﻿<Application x:Class="WpfApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="http://qpp.com/winfx/xaml/lib"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI;component/Styles/Colours.xaml" />-->
+                <!--<ResourceDictionary Source="Resources/Styles/Shared.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ToolBar.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/GroupBox.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/Expander.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ScrollBar.xaml"/>-->
+                <!--<ResourceDictionary Source="Resources/ApplicationToolbar.xaml"/>-->
+                <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/DesignerItem.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/ToolboxItem.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/Toolbox.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/Connection.xaml"/>
+                <!--<ResourceDictionary Source="Resources/Stencils/FlowChartStencils.xaml"/>
+                <ResourceDictionary Source="Resources/Stencils/ShapeStencils.xaml"/>-->
+                <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/ZoomBoxControl.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/DiagramControl.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/DiagramDataEditorControl.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/FlatButton.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <models:DataContextSpy x:Key="dataContext" DataContext="{Binding}" />
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
