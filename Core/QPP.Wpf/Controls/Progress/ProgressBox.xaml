@@ -1,0 +1,52 @@
+﻿<docking:DockingAnchorable
+    xmlns:local="clr-namespace:QPP.Wpf.Controls.Progress"
+    xmlns:docking="clr-namespace:QPP.Wpf.Layout"
+    xmlns:wpf="http://qpp.com/winfx/xaml/controls"
+    xmlns:markup="clr-namespace:QPP.Wpf.Markup"
+    xmlns:lib="http://qpp.com/winfx/xaml/lib"
+    Title="{Binding Source={markup:L10N}, Path=[標題.進度]}"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="QPP.Wpf.Controls.Progress.ProgressBox"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    IconSource="/QPP.Resources;component/Images/progress.16.png"   
+    wpf:EventHelper.EventToCommand="{Binding CommandContext, Converter={lib:EventToCommandConverter}}"
+    mc:Ignorable="d"
+    AutoHideHeight="200"
+    DockArea="DockBottom"
+    d:DesignHeight="400"
+    d:DesignWidth="600">
+    <docking:DockingAnchorable.DataContext>
+        <x:StaticExtension Member="local:Progresser.Default"/>
+    </docking:DockingAnchorable.DataContext>
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Background="{DynamicResource GrayBrush13}" Margin="2">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right" Margin="2" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" CommandParameter="{Binding}" Command="{Binding Source={StaticResource dataContext},Path=DataContext.CancelCommand}" IsEnabled="{Binding CanCancel}">
+                                    <Image Source="/QPP.Resources;component/Images/Cancel.png" Width="16"/>
+                                </Button>
+                                <StackPanel>
+                                    <TextBlock Margin="4,2,4,0" Text="{Binding Name}"></TextBlock>
+                                    <ProgressBar Margin="4,2,2,2" SnapsToDevicePixels="True" Value="{Binding Progress}" IsIndeterminate="{Binding IsIndeterminate}" Maximum="100"/>
+                                </StackPanel>
+                            </DockPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Margin="4,0,0,0" Source="/QPP.Resources;component/Images/exclamation.png" Visibility="{Binding HasError, Converter={lib:BoolToVisibilityConverter}}" Width="16"/>
+                                <TextBlock Margin="4,0,0,0" Text="{Binding Message}"/>
+                            </StackPanel>
+                            <Expander Margin="2" Header="{Binding [詳細信息],Source={markup:L10N}}" Visibility="{Binding Details, Converter={lib:BoolToVisibilityConverter}}">
+                                <TextBox IsReadOnly="True" TextWrapping="WrapWithOverflow" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Text="{Binding Details}"/>
+                            </Expander>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <Label Visibility="{Binding Path=Items.Count, Converter={lib:BoolToVisibilityConverter IsReversed=True}}" Content="{Binding [當前沒有項目可以顯示], Source={markup:L10N}}"/>
+    </Grid>
+</docking:DockingAnchorable>
