@@ -1,0 +1,72 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:QPP.Wpf.Controls"
+    xmlns:wpf="http://qpp.com/winfx/xaml/controls"
+    xmlns:Converters="clr-namespace:QPP.Wpf.UI.Converters;assembly=QPP.Wpf.UI">
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <!--<Style TargetType="local:FormViewDesigner" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Image Source="/QPP.Resources;component/Images/form_gear.png"></Image>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>-->
+    <Style TargetType="wpf:FormView">
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="HeaderedContentControl">
+                    <StackPanel>
+                        <ContentPresenter Content="{TemplateBinding HeaderedContentControl.Header}" ContentTemplate="{TemplateBinding HeaderedContentControl.HeaderTemplate}" ContentStringFormat="{TemplateBinding HeaderedContentControl.HeaderStringFormat}" ContentSource="Header" />
+                        <ContentPresenter Margin="{TemplateBinding Padding}" Content="{TemplateBinding ContentControl.Content}" ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="wpf:FormView" x:Key="QueryForm">
+        <Setter Property="ColumnMaxWidth" Value="220"/>
+        <Setter Property="Padding" Value="20,10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="wpf:FormView">
+                    <wpf:ExpanderItem
+                        Margin="0"
+                        HeaderBorderBrush="{DynamicResource BorderBrush}"
+                        Foreground="{DynamicResource WhiteBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        MouseOverHeaderForeground="{DynamicResource WhiteBrush}"
+                        MouseOverHeaderBackground="{DynamicResource WindowTitleColorBrush}"
+                        PressedHeaderBackground="{DynamicResource WindowTitleColorBrush}"
+                        HeaderBackground="{DynamicResource WindowTitleColorBrush}" 
+                        ShowEllipse="False"
+                        Padding="0,5,0,0"
+                        Header="{TemplateBinding Header}">
+                        <wpf:HeaderHelper.HeaderCommands>
+                            <StackPanel Orientation="Horizontal">
+                                <ContentControl 
+                                            VerticalAlignment="Center"
+                                            Grid.Column="1"
+                                            Content="{TemplateBinding wpf:HeaderHelper.HeaderCommands}">
+                                </ContentControl>
+                                <!--<local:FormViewDesigner
+                                            Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=(local:FormViewDesigner.CanDesign), Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                            Grid.Column="2" 
+                                            FormView="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}">
+                                </local:FormViewDesigner>-->
+                            </StackPanel>
+                        </wpf:HeaderHelper.HeaderCommands>
+                        <ContentPresenter 
+                                Margin="{TemplateBinding Padding}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Cursor="{TemplateBinding Cursor}" />
+                    </wpf:ExpanderItem>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

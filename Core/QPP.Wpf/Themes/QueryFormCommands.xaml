@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:lib="clr-namespace:QPP.Wpf.Markup;assembly=QPP.Wpf"
+                    xmlns:local="clr-namespace:QPP.Wpf.Query;assembly=QPP.Wpf">
+    <Style TargetType="{x:Type local:QueryFormCommands}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:QueryFormCommands}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Name="findButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                ToolTip="{Binding Source={lib:L10N}, Path=[Query.DynamicQuery]}">
+                            <Image Source="/QPP.Resources;component/Images/find.png" Height="16"/>
+                        </Button>
+                        <Button Name="saveButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                ToolTip="{Binding Source={lib:L10N}, Path=[Query.SaveQuery]}">
+                            <Image Source="/QPP.Resources;component/Images/find_save.png" Height="16"/>
+                        </Button>
+                        <Button Name="searchButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                ToolTip="{Binding Source={lib:L10N}, Path=[Query.SavedQuery]}">
+                            <Image Source="/QPP.Resources;component/Images/find_go.png" Height="16"/>
+                        </Button>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

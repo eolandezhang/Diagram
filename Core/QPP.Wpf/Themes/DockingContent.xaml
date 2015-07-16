@@ -1,0 +1,25 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:shell="clr-namespace:Microsoft.Windows.Shell"
+                    xmlns:wpf="http://qpp.com/winfx/xaml/controls"
+                    xmlns:avalonDock="clr-namespace:QPP.Wpf.Layout">
+
+
+    <Style TargetType="{x:Type avalonDock:DockingContent}" BasedOn="{StaticResource {x:Type ContentControl}}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate
+                    TargetType="ContentControl">
+                    <Grid Background="{DynamicResource ControlBackgroundBrush}">
+                        <wpf:BusyIndicator IsBusy="{Binding ViewStatus.IsBusy}" BusyContent="{Binding ViewStatus.StatusText}" Cursor="{Binding ViewStatus.Cursor}">
+                            <ContentPresenter
+                                Content="{TemplateBinding ContentControl.Content}"
+                                ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" />
+                        </wpf:BusyIndicator>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
