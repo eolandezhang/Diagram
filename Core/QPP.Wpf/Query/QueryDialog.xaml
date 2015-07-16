@@ -1,0 +1,50 @@
+﻿<wpf:MetroWindow 
+    xmlns:local="clr-namespace:QPP.Wpf"
+    xmlns:wpf="http://qpp.com/winfx/xaml/controls"
+    xmlns:lib="http://qpp.com/winfx/xaml/lib"
+    xmlns:mark="clr-namespace:QPP.Wpf.Markup"
+    Title="{Binding Source={mark:L10N}, Path=[Title.QueryDialog]}"  
+    WindowStartupLocation="CenterOwner" 
+    x:Class="QPP.Wpf.Query.QueryDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    Loaded="MetroWindow_Loaded"
+    mc:Ignorable="d"
+    MinHeight="300"
+    MinWidth="440"
+    ShowInTaskbar="False"
+    Topmost="True"
+    Height="360"
+    Width="600">
+    <wpf:Content>
+        <DockPanel>
+            <ToolBarPanel DockPanel.Dock="Top">
+                <ToolBar>
+                    <TextBox Name="txt" Text="{Binding Path=QueryValue}" KeyUp="txt_KeyUp" Width="180" Margin="0,0,5,0">
+                        <wpf:TextboxHelper.Accessory>
+                            <Button Style="{DynamicResource Magnify}" Command="{Binding FilterCommand}"/>
+                        </wpf:TextboxHelper.Accessory>
+                    </TextBox>
+                </ToolBar>
+            </ToolBarPanel>
+            <Grid DockPanel.Dock="Bottom">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Margin="5" MinWidth="60" Content="{Binding [Cmd.Apply], Source={mark:L10N}}" IsDefault="True" Click="btnApply_Click"/>
+                    <wpf:HyperlinkButton Margin="5" Click="btnCancel_Click" Content="{Binding [Cmd.Cancel], Source={mark:L10N}}" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+            <DataGrid Name="grid" Margin="4,0,4,4" LoadingRow="grid_LoadingRow">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{Binding Source={mark:L10N}, Path=[QueryModel.Name]}" Binding="{Binding Name}"/>
+                    <DataGridTextColumn Header="{Binding Source={mark:L10N}, Path=[QueryModel.Description]}" Binding="{Binding Description}"/>
+                    <DataGridCheckBoxColumn Header="{Binding Source={mark:L10N}, Path=[QueryModel.IsShared]}" Binding="{Binding IsShared}"/>
+                    <DataGridTextColumn Header="{Binding Source={mark:L10N}, Path=[Domain.CreateBy]}" Binding="{Binding CreateBy}"/>
+                    <DataGridTextColumn Header="{Binding Source={mark:L10N}, Path=[Domain.CreateDate]}" Binding="{Binding CreateDate, Converter={lib:FormatConverter FormatString=yyyy/MM/dd}}"/>
+                    <wpf:DataGridCommandColumn EditCommand="{Binding Source={StaticResource dataContext}, Path=DataContext.EditCommand}" DeleteCommand="{Binding Source={StaticResource dataContext}, Path=DataContext.DeleteCommand}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </wpf:Content>
+</wpf:MetroWindow>

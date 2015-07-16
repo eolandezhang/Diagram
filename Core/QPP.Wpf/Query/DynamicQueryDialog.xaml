@@ -1,0 +1,30 @@
+﻿<wpf:MetroWindow 
+    xmlns:local="clr-namespace:QPP.Wpf"
+    xmlns:wpf="http://qpp.com/winfx/xaml/controls"
+    xmlns:lib="http://qpp.com/winfx/xaml/lib"
+    xmlns:mark="clr-namespace:QPP.Wpf.Markup" 
+    wpf:EventHelper.EventToCommand="{Binding CommandContext, Converter={mark:EventToCommandConverter}}"
+    WindowStartupLocation="CenterOwner" 
+    x:Class="QPP.Wpf.Query.DynamicQueryDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    mc:Ignorable="d" 
+    SizeToContent="Height"
+    MaxHeight="600"
+    MinHeight="300"
+    MinWidth="360"
+    Width="560"
+    d:DesignHeight="300" d:DesignWidth="300">
+    <DockPanel>
+        <Grid DockPanel.Dock="Bottom">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Margin="5" MinWidth="60" Click="Apply_Click" Content="{Binding [Cmd.Apply], Source={mark:L10N}}" IsDefault="True"/>
+                <Button Margin="5" MinWidth="60" Click="Save_Click" Content="{Binding [Cmd.Save], Source={mark:L10N}}"/>
+                <wpf:HyperlinkButton Margin="5" Content="{Binding [Cmd.Cancel], Source={mark:L10N}}" VerticalContentAlignment="Center" Click="Cancel_Click"/>
+            </StackPanel>
+        </Grid>
+        <wpf:FilterControl Name="filter" Margin="5"></wpf:FilterControl>    
+    </DockPanel>
+</wpf:MetroWindow>
