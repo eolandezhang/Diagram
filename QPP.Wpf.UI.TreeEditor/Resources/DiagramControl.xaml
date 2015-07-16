@@ -1,0 +1,32 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:DiagramDesigner"
+                    xmlns:treeEditor="clr-namespace:QPP.Wpf.UI.TreeEditor">
+
+    <Style TargetType="treeEditor:DiagramControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <GroupBox x:Name="DiagramHeader">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto" Name="DesignerScrollViewer">
+                            <treeEditor:DesignerCanvas
+                                    Focusable="true" 
+                                    x:Name="Designer"
+                                    Background="{StaticResource WindowBackgroundBrush}"
+                                    FocusVisualStyle="{x:Null}"
+                                    />
+                            <!--<s:DesignerCanvas
+                                    Focusable="true" 
+                                    x:Name="Designer"
+                                    Background="Azure"
+                                    Margin="2" 
+                                    FocusVisualStyle="{x:Null}"
+                                    />-->
+                        </ScrollViewer>
+                    </GroupBox>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

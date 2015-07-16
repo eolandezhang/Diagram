@@ -30,17 +30,96 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="ConnectionAdorner.cs" />
+    <Compile Include="Connector.cs" />
+    <Compile Include="ConnectorAdorner.cs" />
+    <Compile Include="DesignerCanvas.cs" />
+    <Compile Include="DesignerItem.cs" />
+    <Compile Include="DiagramControl.cs" />
+    <Compile Include="DiagramDataEditorControl.cs" />
+    <Compile Include="DiagramManager.cs" />
+    <Compile Include="DragThumb.cs" />
+    <Compile Include="IGroupable.cs" />
+    <Compile Include="InputBindingManager.cs" />
+    <Compile Include="InputBindingsBehavior.cs" />
+    <Compile Include="ISelectable.cs" />
+    <Compile Include="PathFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RelativePositionPanel.cs" />
+    <Compile Include="ResizeThumb.cs" />
+    <Compile Include="RubberbandAdorner.cs" />
+    <Compile Include="SelectionService.cs" />
+    <Compile Include="Toolbox.cs" />
+    <Compile Include="ToolboxItem.cs" />
+    <Compile Include="ZoomBoxControl.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\QPP.Wpf.UI\QPP.Wpf.UI.csproj">
+      <Project>{25be43ca-1238-477a-b232-83fba7a9d452}</Project>
+      <Name>QPP.Wpf.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\QPP.Wpf\QPP.Wpf.csproj">
+      <Project>{49ae1a60-9616-4720-be0c-a937c3e702e9}</Project>
+      <Name>QPP.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\QPP\QPP.csproj">
+      <Project>{e02e3fec-b370-4435-ba52-5414ffdb91d0}</Project>
+      <Name>QPP</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BOM设计器.xmind" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Images\tree_32.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Resources\Connection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\DesignerItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\DiagramControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\DiagramDataEditorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\FlatButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Toolbox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\ToolboxItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\ZoomBoxControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
