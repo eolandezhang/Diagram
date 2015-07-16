@@ -1,0 +1,91 @@
+﻿<!--***********************************************************************************
+
+   Extended WPF Toolkit
+
+   Copyright (C) 2007-2013 Xceed Software Inc.
+
+   This program is provided to you under the terms of the Microsoft Public
+   License (Ms-PL) as published at http://wpftoolkit.codeplex.com/license 
+
+   For more features, controls, and fast professional support,
+   pick up the Plus Edition at http://xceed.com/wpf_toolkit
+
+   Stay informed: follow @datagrid on Twitter or Like http://facebook.com/datagrids
+
+  **********************************************************************************-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:QPP.Wpf.UI.Controls.Toolkit"
+                    xmlns:themes="clr-namespace:QPP.Wpf.UI.Controls.Toolkit.Themes"
+                    xmlns:prim="clr-namespace:QPP.Wpf.UI.Controls.Toolkit.Primitives"
+                    xmlns:conv="clr-namespace:QPP.Wpf.UI.Controls.Toolkit.Core.Converters">
+
+    <conv:InverseBoolConverter x:Key="InverseBoolConverter" />
+
+    <DataTemplate x:Key="DefaultWatermarkTemplate">
+        <ContentControl Content="{Binding}" Foreground="Gray" Focusable="False" Margin="0,0,3,0" />
+    </DataTemplate>
+
+    <Style x:Key="NumericUpDown" TargetType="{x:Type prim:InputBase}">
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource TextBoxBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+        <Setter Property="HorizontalContentAlignment" Value="Right" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="MinHeight" Value="24" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Right" />
+        <Setter Property="WatermarkTemplate" Value="{StaticResource DefaultWatermarkTemplate}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Control">
+                    <local:ButtonSpinner x:Name="PART_Spinner"
+                                    IsTabStop="False" Padding="0"
+                                    Background="{TemplateBinding Background}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    AllowSpin="{Binding AllowSpin, RelativeSource={RelativeSource TemplatedParent}}"
+                                    ShowButtonSpinner="{Binding ShowButtonSpinner, RelativeSource={RelativeSource TemplatedParent}}">
+                        <TextBox x:Name="PART_TextBox"
+                                          BorderThickness="0"
+                                          Background="{TemplateBinding Background}"
+                                          ContextMenu="{TemplateBinding ContextMenu}"
+                                          FontFamily="{TemplateBinding FontFamily}" 
+                                          FontSize="{TemplateBinding FontSize}" 
+                                          FontStretch="{TemplateBinding FontStretch}"
+                                          FontStyle="{TemplateBinding FontStyle}" 
+                                          FontWeight="{TemplateBinding FontWeight}" 
+                                          Foreground="{TemplateBinding Foreground}" 
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
+                                          MinWidth="20"
+                                          MinHeight="18"
+                                          AcceptsReturn="False"
+                                          Padding="{TemplateBinding Padding}"
+                                          TextAlignment="{Binding TextAlignment, RelativeSource={RelativeSource TemplatedParent}}"
+                                          TextWrapping="NoWrap" 
+                                          TabIndex="{TemplateBinding TabIndex}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </local:ButtonSpinner>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <!--<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />-->
+                            <!--<Setter Property="BorderThickness" Value="0"></Setter>-->
+                            <Setter TargetName="PART_Spinner" Property="ShowButtonSpinner" Value="False"></Setter>
+                            <Setter Property="Background" Value="#efefef"></Setter>
+                            <!--<Setter TargetName="PART_Spinner" Property="HorizontalContentAlignment" Value="Left"></Setter>-->
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="PART_TextBox" Property="FocusManager.FocusedElement" Value="{Binding ElementName=PART_TextBox}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:NumericUpDown}" BasedOn="{StaticResource NumericUpDown}" />
+</ResourceDictionary>
