@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="QPP.Parameter.SysParameterDescriptionAttribute" Collapsed="true">
+    <Position X="18.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterDescriptionAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterKey&lt;T&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAAAAAAAAQAAABAAAAAAAAAAAAACgA=</HashCode>
+      <FileName>Parameter\SysParameterKey`T.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterKeyModel" Collapsed="true">
+    <Position X="22.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgACAAAAAAAAQAAAAAAAAAAAAgAAAACAA=</HashCode>
+      <FileName>Parameter\SysParameterKeyModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterManager" Collapsed="true">
+    <Position X="18.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAIAQAACAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterValue" Collapsed="true">
+    <Position X="11.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterValue.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterValue&lt;T&gt;" Collapsed="true">
+    <Position X="11.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterValue`T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterValue&lt;T1, T2, T3, T4, T5&gt;" Collapsed="true">
+    <Position X="16.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterValue`T1`T2`T3`T4`T5.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterValue&lt;T1, T2, T3, T4&gt;" Collapsed="true">
+    <Position X="7.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterValue`T1`T2`T3`T4.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterValue&lt;T1, T2, T3&gt;" Collapsed="true">
+    <Position X="9.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterValue`T1`T2`T3.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterValue&lt;T1, T2&gt;" Collapsed="true">
+    <Position X="14" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterValue`T1`T2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterValueModel" Collapsed="true">
+    <Position X="20.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterValueModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterCollectionValue&lt;T&gt;" Collapsed="true">
+    <Position X="7" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterCollectionValue`T.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="QPP.Parameter.SysParameterReadonlyCollectionValue&lt;T&gt;" Collapsed="true">
+    <Position X="7" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Parameter\SysParameterReadonlyCollectionValue`T.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="QPP.Parameter.ISysParameterKey" Collapsed="true">
+    <Position X="18.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Parameter\ISysParameterKey.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="QPP.Parameter.ISysParameterManager" Collapsed="true">
+    <Position X="20.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Parameter\ISysParameterManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="QPP.Parameter.ISysParameterValue" Collapsed="true">
+    <Position X="22.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Parameter\ISysParameterValue.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
