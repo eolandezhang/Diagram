@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using QPP.Wpf.ComponentModel;
 
 /*
  * 树状图控件
@@ -44,14 +40,14 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #region Dependency Property 用于数据绑定
 
-        #region ItemDatasProperty 数据源
+        #region IItemSource Property 数据源
 
         public static readonly DependencyProperty ItemSourceProperty = DependencyProperty.Register(
             "ItemSource", typeof(ObservableCollection<TreeItemNode>), typeof(DiagramControl),
             new FrameworkPropertyMetadata(new ObservableCollection<TreeItemNode>(), (d, e) =>
             {
                 var dc = d as DiagramControl;
-                //开始用TreeNode数据结构，初始化节点控件DesignerItem
+                if (dc == null) return;
                 dc.DesignerItems = dc.GenerateDesignerItemList();
             }));
 
@@ -63,7 +59,6 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #endregion
         #region SelectedItems 选中项,用于向界面返回选中项
-
         public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
             "SelectedItems", typeof(ObservableCollection<TreeItemNode>), typeof(DiagramControl),
             new FrameworkPropertyMetadata(new ObservableCollection<TreeItemNode>()));
@@ -73,7 +68,6 @@ namespace QPP.Wpf.UI.TreeEditor
             get { return (ObservableCollection<TreeItemNode>)GetValue(SelectedItemsProperty); }
             set { SetValue(SelectedItemsProperty, value); }
         }
-
         #endregion
         #region ZoomBoxControlProperty 缩放控件，以后需要修改
 
@@ -148,21 +142,19 @@ namespace QPP.Wpf.UI.TreeEditor
                     }
                 }
             };
-            Loaded += (d, e) => { DiagramManager.GenerateDesignerItems(); };
+            Loaded += (d, e) => { Bind(); };/*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
         }
 
         #endregion
 
         #region 用数据源创建节点
-
         internal ObservableCollection<DesignerItem> GenerateDesignerItemList()
         {
             ObservableCollection<DesignerItem> list = new ObservableCollection<DesignerItem>();
-            var ctxm = DesignerItem.GetItemContextMenu(this);
+
             foreach (var t in ItemSource)
             {
-                var newitem = new DesignerItem(t.Id, t.Parent == null ? "" : t.Parent.Id, t.Text, t.Tag, this);
-                newitem.ContextMenu = ctxm;
+                var newitem = new DesignerItem(t.Id, t.Parent == null ? "" : t.Parent.Id, t.Tag, this);
                 list.Add(newitem);
                 var childs = GenerateDesignerItemList(t);
                 foreach (var c in childs)
@@ -172,13 +164,12 @@ namespace QPP.Wpf.UI.TreeEditor
             }
             return list;
         }
-
         internal ObservableCollection<DesignerItem> GenerateDesignerItemList(TreeItemNode node)
         {
             ObservableCollection<DesignerItem> list = new ObservableCollection<DesignerItem>();
             foreach (var t in node.Children)
             {
-                list.Add(new DesignerItem(t.Id, t.Parent.Id, t.Text, t.Tag, this));
+                list.Add(new DesignerItem(t.Id, t.Parent.Id, t.Tag, this));
                 var childs = GenerateDesignerItemList(t);
                 foreach (var c in childs)
                 {
@@ -187,10 +178,17 @@ namespace QPP.Wpf.UI.TreeEditor
             }
             return list;
         }
-
-
-
         #endregion
 
+        #region 绑定
+        public void Bind()
+        {
+            if (IsLoaded && DesignerItems.Any()) DiagramManager.Draw();
+            DesignerItems.ToList().ForEach(designerItem =>
+           {
+               designerItem.ContextMenu = DesignerItem.GetItemContextMenu(this);
+           });
+        }
+        #endregion
     }
 }

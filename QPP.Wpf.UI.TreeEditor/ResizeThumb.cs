@@ -72,7 +72,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 e.Handled = true;
                 var diagramControl = designer.TemplatedParent as DiagramControl;
-                if (diagramControl != null) diagramControl.DiagramManager.ArrangeWithRootItems();/*重新布局*/
+                if (diagramControl != null) diagramControl.DiagramManager.Arrange();/*重新布局*/
             }
         }
 

@@ -1,21 +1,8 @@
-﻿using QPP.Wpf.ComponentModel;
-/* ============================================================================== 
-* 类名称：DataToTreeNodeAdapter 
-* 类描述： 
-* 创建人：eolandecheung 
-* 创建时间：2015/7/16 17:25:14 
-* 修改人： 
-* 修改时间： 
-* 修改备注： 
-* @version 1.0 
-* ==============================================================================*/
-using System;
+﻿using QPP;
+using QPP.Wpf.UI.TreeEditor;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using QPP;
-using QPP.Collections;
-using QPP.Wpf.UI.TreeEditor;
 
 namespace WpfApp.ViewModel.App_Data
 {

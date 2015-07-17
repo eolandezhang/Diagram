@@ -129,7 +129,6 @@ namespace QPP.Wpf.UI.TreeEditor
             if (item == null) return;
             var textblock = new TextBlock()
             {
-                Name = "DesignerItemText",
                 IsHitTestVisible = false,
                 VerticalAlignment = VerticalAlignment.Center,
                 Padding = new Thickness(5, 2, 5, 2),
@@ -143,29 +142,17 @@ namespace QPP.Wpf.UI.TreeEditor
         }
 
         #region Draw
-        public void GenerateDesignerItems/*利用数据源在画布上添加节点及连线*/()
-        {
-            //var roots = InitDesignerItems();/*利用数据源ItemDatas创建DesignerItem*/
-            //if (roots == null) return;
-            //if (!roots.Any()) return;/*创建DesignerItems*/
-            DrawItems();
-
-            ArrangeWithRootItems();/*将DesignerItems放到画布上，并且创建连线*/
-
-            SetSelectItem(_diagramControl.DesignerItems.FirstOrDefault(x => String.IsNullOrEmpty(x.ItemParentId)));
-        }
-        void DrawItems()
+        public void Draw/*利用数据源在画布上添加节点及连线*/()
         {
             _diagramControl.DesignerCanvas.Children.Clear();
             if (_diagramControl.DesignerItems == null) return;
             if (!_diagramControl.DesignerItems.Any()) return;
             var roots = _diagramControl.DesignerItems.Where(x => String.IsNullOrEmpty(x.ItemParentId)).ToList();
-            roots.ForEach(root =>
-            {
-                DrawDesignerItems(root);
-            });
+            roots.ForEach(root => { DrawDesignerItems(root); });
+            Arrange();/*将DesignerItems放到画布上，并且创建连线*/
+            SetSelectItem(_diagramControl.DesignerItems.FirstOrDefault(x => String.IsNullOrEmpty(x.ItemParentId)));
         }
-        List<DesignerItem> DrawDesignerItems(DesignerItem parentItem)
+        private List<DesignerItem> DrawDesignerItems(DesignerItem parentItem)
         {
             var designerItems = new List<DesignerItem>();
             if (parentItem == null) return designerItems;
@@ -180,13 +167,13 @@ namespace QPP.Wpf.UI.TreeEditor
             }
             return designerItems;
         }
-        void DrawRoot/*创建根节点*/(DesignerItem item, double topOffset, double leftOffset)
+        private void DrawRoot/*创建根节点*/(DesignerItem item, double topOffset, double leftOffset)
         {
             DrawDesignerItem(item, topOffset, leftOffset);
             item.CanCollapsed = false;
             item.IsExpanderVisible = false;
         }
-        void DrawChild /*创建非根节点时，同时创建与父节点之间的连线*/(DesignerItem parent, DesignerItem childItem)
+        private void DrawChild /*创建非根节点时，同时创建与父节点之间的连线*/(DesignerItem parent, DesignerItem childItem)
         {
             if (parent == null) return;
             DrawDesignerItem(childItem);/*创建子节点*/
@@ -206,7 +193,7 @@ namespace QPP.Wpf.UI.TreeEditor
             #endregion
             childItem.CanCollapsed = true;
         }
-        void DrawDesignerItem/*创建元素*/(DesignerItem item, double topOffset = 5d, double leftOffset = 5d)
+        private void DrawDesignerItem/*创建元素*/(DesignerItem item, double topOffset = 5d, double leftOffset = 5d)
         {
             if (item.Data == null) return;
             GenerateDesignerItemContent(item, DEFAULT_FONT_COLOR_BRUSH);
@@ -218,8 +205,8 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #endregion
 
-        #region Arrange Items
-        public void ArrangeWithRootItems()
+        #region Arrange
+        public void Arrange()
         {
             var items = _diagramControl.DesignerItems.ToList();
             var roots = items.Where(x => string.IsNullOrEmpty(x.ItemParentId));
@@ -232,10 +219,10 @@ namespace QPP.Wpf.UI.TreeEditor
                 root.Oldy = Canvas.GetTop(root);
                 root.XIndex = Canvas.GetLeft(root);
                 root.Oldx = Canvas.GetLeft(root);
-                ArrangeWithRootItems(root);
+                Arrange(root);
             }
         }
-        void ArrangeWithRootItems/*递归方法，给定根节点，重新布局*/(DesignerItem designerItem/*根节点*/)
+        void Arrange/*递归方法，给定根节点，重新布局*/(DesignerItem designerItem/*根节点*/)
         {
             if (designerItem == null) return;
             designerItem.SetTemplate();
@@ -266,7 +253,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 #endregion
                 //设定节点宽度
                 SetWidth(subItems.ElementAt(i));
-                ArrangeWithRootItems(subItems.ElementAt(i));/*递归*/
+                Arrange(subItems.ElementAt(i));/*递归*/
             }
         }
         public void SetWidth(DesignerItem designerItem)
@@ -275,9 +262,9 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         double GetWidth(DesignerItem designerItem)
         {
-            if (designerItem.Data != null && designerItem.Text != null)
+            if (designerItem.Data != null)
             {
-                string text = designerItem.Text;
+                string text = GetTextBlock(designerItem).Text;
                 FormattedText formattedText = new FormattedText(text, CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight, new Typeface("Arial"), FONT_SIZE, Brushes.Black);
                 double width = formattedText.Width + 12;
@@ -297,23 +284,17 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #region Style
 
-        #region Get Visual Item
-
+        #region FontColor
         private TextBlock GetTextBlock/*元素文字控件*/(DesignerItem item)
         {
             return item.Content as TextBlock;
         }
-        #endregion
-
-        #region Set Visual Item
-
         private void SetItemFontColor/*设定元素文字颜色*/(DesignerItem item, SolidColorBrush fontColorBrush)
         {
             var textBlock = GetTextBlock(item);
             if (textBlock == null) return;
             textBlock.SetValue(TextBlock.ForegroundProperty, fontColorBrush);
         }
-
         #endregion
 
         private void BringToFront/*将制定元素移到最前面*/(DesignerItem designerItem)
@@ -420,7 +401,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     }
                 }
             }
-            ArrangeWithRootItems();
+            Arrange();
         }
         #endregion
 
@@ -543,7 +524,7 @@ namespace QPP.Wpf.UI.TreeEditor
             _diagramControl.DesignerItems.ToList().ForEach(x => { x.IsNewParent = false; x.YIndex = Canvas.GetTop(x); });
             ConnectToNewParent(newParent);/*根据取得的newParent,改变特定item的连线*/
             RemoveShadows();/*移除所有shadow*/
-            ArrangeWithRootItems();/*重新布局*/
+            Arrange();/*重新布局*/
         }
         #endregion
 
@@ -727,13 +708,11 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 IsShadow = true,
                 ShadowOrignal = item,
-                DataContext = item,
+                Data = item.Data,
                 Oldx = item.Oldx,
                 Oldy = item.Oldy,
-                Text = item.Text,
                 XIndex = item.XIndex,
                 YIndex = item.YIndex,
-                //Data = { Text = item.Data.Text, XIndex = item.Oldx, YIndex = item.Oldy },
                 Width = item.Width
             };
             Canvas.SetLeft(shadow, item.Oldx);
@@ -742,6 +721,7 @@ namespace QPP.Wpf.UI.TreeEditor
             GenerateDesignerItemContent(shadow, SHADOW_FONT_COLOR_BRUSH);
             _diagramControl.DesignerCanvas.Children.Add(shadow);
             ChangeOriginalItemConnectionToShadow(item, shadow);
+
             return shadow;
         }
         void RemoveShadows/*移除画布上所有shadow*/()
@@ -770,17 +750,16 @@ namespace QPP.Wpf.UI.TreeEditor
         public void Edit(DesignerItem item)
         {
             _diagramControl.IsOnEditing = true;
-            var textBox = new TextBox();
-            textBox.AcceptsReturn = true;
-            textBox.TextWrapping = TextWrapping.Wrap;
-            textBox.MinHeight = 24;
-            textBox.DataContext = item.Data;
+            var textBox = new TextBox
+            {
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                MinHeight = 24,
+                DataContext = item.Data
+            };
             textBox.SetBinding(TextBox.TextProperty, new Binding("Text") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
-
             Canvas.SetLeft(textBox, Canvas.GetLeft(item));
             Canvas.SetTop(textBox, Canvas.GetTop(item));
-
-            _diagramControl.DesignerCanvas.Children.Remove(textBox);
             _diagramControl.DesignerCanvas.Children.Add(textBox);
             BringToFront(textBox);
             textBox.SelectAll();
@@ -788,12 +767,11 @@ namespace QPP.Wpf.UI.TreeEditor
 
             var t = textBox;
             EditorKeyBindings(t);
-
             t.MinWidth = MIN_ITEM_WIDTH;
             t.LostFocus += (sender, e) =>
             {
                 _diagramControl.DesignerCanvas.Children.Remove(textBox);
-                ArrangeWithRootItems();
+                Arrange();
                 _diagramControl.IsOnEditing = false;
                 GlobalInputBindingManager.Default.Recover();
             };
@@ -823,7 +801,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     if (_diagramControl.IsOnEditing)
                     {
                         _diagramControl.DesignerCanvas.Children.Remove(t);
-                        ArrangeWithRootItems();
+                        Arrange();
                         _diagramControl.IsOnEditing = false;
                     }
                 })
@@ -900,8 +878,6 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         #endregion
         #endregion
-
-
 
         #region Select Operations
         public void SelectUpDown(DesignerItem selectedItem, bool selectUp)

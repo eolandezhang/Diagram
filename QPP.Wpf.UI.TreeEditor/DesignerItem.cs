@@ -27,7 +27,7 @@ namespace QPP.Wpf.UI.TreeEditor
         #region Property
         public string ItemId { get; set; }
         public string ItemParentId { get; set; }
-        public string Text { get; set; }
+        //public string Text { get; set; }
         public double YIndex { get; set; }
         public double XIndex { get; set; }
         //public Guid ID { get; set; }
@@ -218,14 +218,11 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Constructors
-        public DesignerItem(string id, string text, DiagramControl diagramControl)
+        public DesignerItem(string id, DiagramControl diagramControl)
         {
-            this.ItemId = id;
-            Text = text;
+            ItemId = id;
             ItemParentId = string.Empty;
             Loaded += DesignerItem_Loaded;
-            //Data = new CustomItemData(id);
-            //Data.DiagramControl = diagramControl;
             DiagramControl = diagramControl;
             Focusable = false;
             MouseDoubleClick += (sender, e) =>
@@ -234,15 +231,15 @@ namespace QPP.Wpf.UI.TreeEditor
              };
         }
         public DesignerItem(DiagramControl diagramControl)
-            : this(Guid.NewGuid().ToString(), "New Item", diagramControl) { }
-        public DesignerItem(string id, string text, object itemData, DiagramControl diagramControl)
-            : this(id, text, diagramControl)
+            : this(Guid.NewGuid().ToString(), diagramControl) { }
+        public DesignerItem(string id, object itemData, DiagramControl diagramControl)
+            : this(id, diagramControl)
         {
             Data = itemData;
             //itemData.DiagramControl = diagramControl;
         }
-        public DesignerItem(string id, string parentItemId, string text, object itemData, DiagramControl diagramControl)
-            : this(id, text, itemData, diagramControl)
+        public DesignerItem(string id, string parentItemId, object itemData, DiagramControl diagramControl)
+            : this(id, itemData, diagramControl)
         {
             ItemParentId = parentItemId;
             Data = itemData;
@@ -329,6 +326,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             }
         }
+
 
         //public object Clone()
         //{

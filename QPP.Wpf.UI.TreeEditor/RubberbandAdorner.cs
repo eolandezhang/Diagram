@@ -62,10 +62,11 @@ namespace QPP.Wpf.UI.TreeEditor
 
             if (DiagramControl != null)
             {
+                DiagramControl.SelectedItems.Clear();
                 var selectedItems = designerCanvas.SelectionService.CurrentSelection;
                 foreach (var selectedItem in selectedItems.ConvertAll(x => x as DesignerItem))
                 {
-                    DiagramControl.SelectedItems.Clear();
+                    
                     DiagramControl.SelectedItems.Add(selectedItem.Data as TreeItemNode);
                 }
             }
