@@ -83,7 +83,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="BOM设计器.xmind" />
+    <None Include="TreeEditor.xmind" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Images\tree_32.ico" />
