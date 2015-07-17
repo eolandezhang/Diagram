@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{49AE1A60-9616-4720-BE0C-A937C3E702E9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>QPP.Wpf</RootNamespace>
+    <AssemblyName>QPP.Wpf</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\reference\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI">
+      <HintPath>..\..\..\..\..\reference\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\reference\System.Windows.Interactivity.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="%28Expension%29\CommandContextExpension.cs" />
+    <Compile Include="%28Expension%29\DispatcherExpension.cs" />
+    <Compile Include="%28Expension%29\RuntimeExpension.cs" />
+    <Compile Include="%28ViewModel%29\EditViewModel.cs" />
+    <Compile Include="%28ViewModel%29\GridViewModel.cs" />
+    <Compile Include="%28ViewModel%29\GridViewModelBase.cs" />
+    <Compile Include="%28ViewModel%29\ModifiedMessage.cs" />
+    <Compile Include="%28ViewModel%29\PagingGridViewModel.cs" />
+    <Compile Include="%28ViewModel%29\ViewModelBase.cs" />
+    <Compile Include="%28ViewModel%29\WindowModel.cs" />
+    <Compile Include="Balloon\BalloonMessage.cs" />
+    <Compile Include="Balloon\BalloonTipMessage.cs" />
+    <Compile Include="Command\CommandContext.cs" />
+    <Compile Include="Command\RelayCommandModel.cs" />
+    <Compile Include="Command\EventCommandAttribute.cs" />
+    <Compile Include="Command\EventCommands.cs" />
+    <Compile Include="Command\EventCommandModel.cs" />
+    <Compile Include="Command\RelayCommands.cs" />
+    <Compile Include="Command\RelayCommand.cs" />
+    <Compile Include="Command\RelayCommandAttribute.cs" />
+    <Compile Include="Command\RelayCommandGeneric.cs" />
+    <Compile Include="ComponentModel\FieldExpression.cs" />
+    <Compile Include="ComponentModel\FilterCriteria.cs" />
+    <Compile Include="ComponentModel\FilterExpression.cs" />
+    <Compile Include="ComponentModel\ICriteriaTemplate.cs" />
+    <Compile Include="ComponentModel\StatusBusy.cs" />
+    <Compile Include="ComponentModel\TreeNode.cs" />
+    <Compile Include="ComponentModel\ViewStatus.cs" />
+    <Compile Include="Controls\Output\OutputBox.xaml.cs">
+      <DependentUpon>OutputBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Output\Outputer.cs" />
+    <Compile Include="Controls\Progress\ProgressBox.xaml.cs">
+      <DependentUpon>ProgressBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Progress\Progresser.cs" />
+    <Compile Include="Controls\SeparatorTemplateSelector.cs" />
+    <Compile Include="Converters\HasCommandConverter.cs" />
+    <Compile Include="Converters\EventToCommandConverter.cs" />
+    <Compile Include="Converters\InputBindingConverter.cs" />
+    <Compile Include="Converters\CommandToMenuItemConverter.cs" />
+    <Compile Include="Converters\ToolBarCommandConverter.cs" />
+    <Compile Include="Converters\UserIdToNameConverter.cs" />
+    <Compile Include="Diagnostic\ExceptionHandler.cs" />
+    <Compile Include="Diagnostic\Trace.cs" />
+    <Compile Include="Diagnostic\TraceMessage.cs" />
+    <Compile Include="Dialogs\ExportResultDialog.xaml.cs">
+      <DependentUpon>ExportResultDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\FindDialogViewModel.cs" />
+    <Compile Include="Layout\DockAreas.cs" />
+    <Compile Include="Layout\DockingAnchorable.cs" />
+    <Compile Include="Layout\DockingContent.cs" />
+    <Compile Include="Layout\DockingDocument.cs" />
+    <Compile Include="Layout\Extand.cs" />
+    <Compile Include="Layout\LayoutContentCollection.cs" />
+    <Compile Include="Diagnostic\FileTracer.cs" />
+    <Compile Include="Layout\Serialization\ContentXmlSerializer.cs" />
+    <Compile Include="Localization\LanguageParameterKey.cs" />
+    <Compile Include="Markup\EventToCommandConverterExtension.cs" />
+    <Compile Include="Markup\InputBindingConverterExtension.cs" />
+    <Compile Include="Markup\DataSourceExtension.cs" />
+    <Compile Include="Modularity\ModuleTypeLoader.cs" />
+    <Compile Include="Navigation\Snapshot.cs" />
+    <Compile Include="Query\QueryDialog.xaml.cs">
+      <DependentUpon>QueryDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\XDialog.cs" />
+    <Compile Include="Controls\Finder\IFindService.cs" />
+    <Compile Include="Layout\DockingWrapper.cs" />
+    <Compile Include="Localization\IResourceModel.cs" />
+    <Compile Include="Localization\IResourceService.cs" />
+    <Compile Include="Localization\L10N.cs" />
+    <Compile Include="Logging\LogInfoProvider.cs" />
+    <Compile Include="Markup\HasCommandConverterExtension.cs" />
+    <Compile Include="Markup\L10NExtension.cs" />
+    <Compile Include="Markup\CommandToMenuItemConverterExtension.cs" />
+    <Compile Include="Markup\ToolBarCommandConverterExtension.cs" />
+    <Compile Include="Markup\UserIdToNameConverterExtension.cs" />
+    <Compile Include="Navigation\Navigator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <DependentUpon>Settings.settings</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Query\DynamicQueryDialog.xaml.cs">
+      <DependentUpon>DynamicQueryDialog.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\IQueryModel.cs" />
+    <Compile Include="Query\IQueryService.cs" />
+    <Compile Include="Query\QueryFormCommands.cs" />
+    <Compile Include="RuntimeContainers.cs" />
+    <Compile Include="Controls\Runnable.cs" />
+    <Compile Include="Runtime\RuntimeContainer.cs" />
+    <Compile Include="Security\DomainTicketContainer.cs" />
+    <Compile Include="Threading\AsyncWorker.cs" />
+    <Compile Include="Threading\ProgressItem.cs" />
+    <Compile Include="Utils\ExportHelper.cs" />
+    <Compile Include="Windows\MainMenu\IMainMenu.cs" />
+    <Compile Include="Windows\MainMenu\MainMenuItem.cs" />
+    <Compile Include="Windows\SmartContent\ISmartContent.cs" />
+    <Compile Include="Windows\SmartContent\SmartContent.cs" />
+    <Compile Include="Windows\ToolBar\IToolBar.cs" />
+    <Compile Include="Windows\ToolBar\ToolBarItem.cs" />
+    <Compile Include="Windows\MetroWin.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\QPP.Client\QPP.Client.csproj">
+      <Project>{05630167-39d7-4d71-90d6-99334f57dac7}</Project>
+      <Name>QPP.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QPP\QPP.csproj">
+      <Project>{e02e3fec-b370-4435-ba52-5414ffdb91d0}</Project>
+      <Name>QPP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QPP.Wpf.UI\QPP.Wpf.UI.csproj">
+      <Project>{25be43ca-1238-477a-b232-83fba7a9d452}</Project>
+      <Name>QPP.Wpf.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\Output\OutputBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Progress\ProgressBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ExportResultDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Query\QueryDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Query\DynamicQueryDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\DockingContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\FormView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Resource Include="Themes\QueryFormCommands.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
