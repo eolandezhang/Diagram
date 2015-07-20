@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -75,8 +76,20 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 var dc = d as DiagramControl;
                 if (dc == null) return;
-                dc.DesignerItems = dc.GenerateDesignerItemList();
+                if (dc.Check())
+                {
+                    dc.DesignerItems = dc.GenerateDesignerItemList();
+                }
             }));
+
+        bool Check/*检查是否设定了id,pid,text的列名*/()
+        {
+            var textField = TextField.IsNotEmpty();
+            var idField = IdField.IsNotEmpty();
+            var parentIdField = ParentIdField.IsNotEmpty();
+            if (textField && idField && parentIdField) { return true; }
+            return false;
+        }
 
         public IList ItemSource
         {
