@@ -42,8 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Data\DataToTreeNodeAdapter.cs" />
-    <Compile Include="App_Data\IDataToTreeNodeAdapter.cs" />
     <Compile Include="App_Data\ItemData.cs" />
     <Compile Include="App_Data\ItemDataRepository.cs" />
     <Compile Include="MainViewModel.cs" />

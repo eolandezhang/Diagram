@@ -19,7 +19,9 @@ namespace WpfApp.ViewModel.App_Data
     public class ItemDataRepository
     {
         public static ItemDataRepository Default;
-        public List<ItemData> DataCollection;
+        public List<ItemData> DataCollection { get; set; }
+
+
         static ItemDataRepository()
         {
             Default = new ItemDataRepository();
@@ -30,7 +32,7 @@ namespace WpfApp.ViewModel.App_Data
             DataCollection = new List<ItemData>()
             {
                 new ItemData("d342e6d4-9e76-4a21-b4f8-41f8fab0f93c","","Root1","Root　Item1"),
-                new ItemData("d342e6d4-9e76-4a21-b4f8-41f8fab0f931","d342e6d4-9e76-4a21-b4f8-41f8fab0f93c", "Item-1", "1"),
+                new ItemData("d342e6d4-9e76-4a21-b4f8-41f8fab0f931","d342e6d4-9e76-4a21-b4f8-41f8fab0f93c", "Item-1_asdfasdfasdfasdfasdfasdfasdfasdfasdfasdf", "1"),
                 new ItemData("d342e6d4-9e76-4a21-b4f8-41f8fab0f932","d342e6d4-9e76-4a21-b4f8-41f8fab0f93c", "Item-2", "2"),
                 new ItemData("d342e6d4-9e76-4a21-b4f8-41f8fab0f933","d342e6d4-9e76-4a21-b4f8-41f8fab0f931", "Item-3", "3"),
                 new ItemData("d342e6d4-9e76-4a21-b4f8-41f8fab0f934","d342e6d4-9e76-4a21-b4f8-41f8fab0f93c", "Item-4", "4"),

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
@@ -39,21 +40,47 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Dependency Property 用于数据绑定
-
+        #region IdField Property
+        public static readonly DependencyProperty IdFieldProperty = DependencyProperty.Register(
+            "IdField", typeof(string), typeof(DiagramControl), new PropertyMetadata(default(string)));
+        public string IdField
+        {
+            get { return (string)GetValue(IdFieldProperty); }
+            set { SetValue(IdFieldProperty, value); }
+        }
+        #endregion
+        #region ParentIdField Property
+        public static readonly DependencyProperty ParentIdFieldProperty = DependencyProperty.Register(
+            "ParentIdField", typeof(string), typeof(DiagramControl), new PropertyMetadata(default(string)));
+        public string ParentIdField
+        {
+            get { return (string)GetValue(ParentIdFieldProperty); }
+            set { SetValue(ParentIdFieldProperty, value); }
+        }
+        #endregion
+        #region TextField Property
+        public static readonly DependencyProperty TextFieldProperty = DependencyProperty.Register(
+            "TextField", typeof(string), typeof(DiagramControl), new PropertyMetadata(default(string)));
+        public string TextField
+        {
+            get { return (string)GetValue(TextFieldProperty); }
+            set { SetValue(TextFieldProperty, value); }
+        }
+        #endregion
         #region IItemSource Property 数据源
 
         public static readonly DependencyProperty ItemSourceProperty = DependencyProperty.Register(
-            "ItemSource", typeof(ObservableCollection<TreeItemNode>), typeof(DiagramControl),
-            new FrameworkPropertyMetadata(new ObservableCollection<TreeItemNode>(), (d, e) =>
+            "ItemSource", typeof(IList), typeof(DiagramControl),
+            new FrameworkPropertyMetadata(null, (d, e) =>
             {
                 var dc = d as DiagramControl;
                 if (dc == null) return;
                 dc.DesignerItems = dc.GenerateDesignerItemList();
             }));
 
-        public ObservableCollection<TreeItemNode> ItemSource
+        public IList ItemSource
         {
-            get { return (ObservableCollection<TreeItemNode>)GetValue(ItemSourceProperty); }
+            get { return (IList)GetValue(ItemSourceProperty); }
             set { SetValue(ItemSourceProperty, value); }
         }
 
@@ -106,15 +133,12 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #endregion
         #region DesignerItemTemplate 节点模板
-
         public static readonly DependencyProperty DesignerItemTemplateProperty =
             DependencyProperty.RegisterAttached("DesignerItemTemplate", typeof(DataTemplate), typeof(DiagramControl));
-
         public static DataTemplate GetDesignerItemTemplate(UIElement element)
         {
             return (DataTemplate)element.GetValue(DesignerItemTemplateProperty);
         }
-
         public static void SetDesignerItemTemplate(UIElement element, DataTemplate value)
         {
             element.SetValue(DesignerItemTemplateProperty, value);
@@ -129,52 +153,19 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             DiagramManager = new DiagramManager(this);
             DesignerItems = new ObservableCollection<DesignerItem>();
-            DesignerItems.CollectionChanged += (s, e) =>
-            {
-                if (Suppress) return;
-                if (e.Action == NotifyCollectionChangedAction.Add)
-                {
-                    var items = e.NewItems.Cast<DesignerItem>().ToList();
-                    if (!items.Any()) return;
-                    foreach (var designerItem in items)
-                    {
-                        designerItem.ContextMenu = DesignerItem.GetItemContextMenu(this);
-                    }
-                }
-            };
             Loaded += (d, e) => { Bind(); };/*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
         }
 
         #endregion
 
         #region 用数据源创建节点
+
         internal ObservableCollection<DesignerItem> GenerateDesignerItemList()
         {
             ObservableCollection<DesignerItem> list = new ObservableCollection<DesignerItem>();
-
             foreach (var t in ItemSource)
             {
-                var newitem = new DesignerItem(t.Id, t.Parent == null ? "" : t.Parent.Id, t.Tag, this);
-                list.Add(newitem);
-                var childs = GenerateDesignerItemList(t);
-                foreach (var c in childs)
-                {
-                    list.Add(c);
-                }
-            }
-            return list;
-        }
-        internal ObservableCollection<DesignerItem> GenerateDesignerItemList(TreeItemNode node)
-        {
-            ObservableCollection<DesignerItem> list = new ObservableCollection<DesignerItem>();
-            foreach (var t in node.Children)
-            {
-                list.Add(new DesignerItem(t.Id, t.Parent.Id, t.Tag, this));
-                var childs = GenerateDesignerItemList(t);
-                foreach (var c in childs)
-                {
-                    list.Add(c);
-                }
+                list.Add(new DesignerItem(t, this));
             }
             return list;
         }
@@ -183,11 +174,10 @@ namespace QPP.Wpf.UI.TreeEditor
         #region 绑定
         public void Bind()
         {
-            if (IsLoaded && DesignerItems.Any()) DiagramManager.Draw();
-            DesignerItems.ToList().ForEach(designerItem =>
-           {
-               designerItem.ContextMenu = DesignerItem.GetItemContextMenu(this);
-           });
+            if (IsLoaded && DesignerItems.Any())
+            {
+                DiagramManager.Draw();
+            }
         }
         #endregion
     }

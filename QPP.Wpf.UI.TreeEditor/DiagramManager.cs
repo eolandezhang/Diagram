@@ -1,7 +1,6 @@
 ﻿using QPP.Wpf.Command;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -10,8 +9,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Threading;
-using QPP.Wpf.ComponentModel;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
@@ -74,7 +71,7 @@ namespace QPP.Wpf.UI.TreeEditor
         List<DesignerItem> GetDirectSubItems/*取得直接子节点*/(DesignerItem item)
         {
             var list =
-                _diagramControl.DesignerItems.Where(x => x.ItemParentId == item.ItemId).OrderBy(x => x.YIndex).ToList();
+                _diagramControl.DesignerItems.Where(x => x.ItemParentId == item.ItemId).OrderBy(x => x.Top).ToList();
 
             if (item.CanCollapsed == false)
             {
@@ -96,7 +93,7 @@ namespace QPP.Wpf.UI.TreeEditor
             var child = new List<DesignerItem>();
             var list = _diagramControl.DesignerItems
                 .Where(x => x.ItemParentId == item.ItemId)
-                .OrderBy(x => x.YIndex).ToList();
+                .OrderBy(x => x.Top).ToList();
             foreach (var subItem in list.Where(subItem => !result.Contains(subItem)))
             {
                 child.Add(subItem);
@@ -119,7 +116,7 @@ namespace QPP.Wpf.UI.TreeEditor
             _diagramControl.DesignerCanvas.SelectionService.ClearSelection();
             _diagramControl.DesignerCanvas.SelectionService.SelectItem(designerItem);
             _diagramControl.SelectedItems.Clear();
-            _diagramControl.SelectedItems.Add(designerItem.Data as TreeItemNode);
+            _diagramControl.SelectedItems.Add(designerItem.DataContext as TreeItemNode);
         }
 
         #endregion
@@ -135,7 +132,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 FontFamily = new FontFamily("Arial"),
                 FontSize = FONT_SIZE,
                 Foreground = fontColorBrush,
-                DataContext = item.Data
+                DataContext = item.DataContext
             };
             textblock.SetBinding(TextBlock.TextProperty, new Binding("Text"));
             item.Content = textblock;
@@ -158,7 +155,7 @@ namespace QPP.Wpf.UI.TreeEditor
             if (parentItem == null) return designerItems;
             if (designerItems.All(x => !x.ItemId.Equals(parentItem.ItemId))
                 && String.IsNullOrEmpty(parentItem.ItemParentId))
-            { DrawRoot(parentItem, parentItem.YIndex, parentItem.XIndex); }
+            { DrawRoot(parentItem, parentItem.Top, parentItem.Left); }
             var childs = _diagramControl.DesignerItems.Where(x => x.ItemParentId == (parentItem.ItemId));
             foreach (var childItem in childs)
             {
@@ -195,7 +192,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         private void DrawDesignerItem/*创建元素*/(DesignerItem item, double topOffset = 5d, double leftOffset = 5d)
         {
-            if (item.Data == null) return;
+            if (item.DataContext == null) return;
             GenerateDesignerItemContent(item, DEFAULT_FONT_COLOR_BRUSH);
             _diagramControl.DesignerCanvas.Children.Add(item);
             _diagramControl.UpdateLayout();
@@ -215,9 +212,9 @@ namespace QPP.Wpf.UI.TreeEditor
                 //设定节点宽度
                 SetWidth(root);
                 //设定节点位置
-                root.YIndex = Canvas.GetTop(root);
+                root.Top = Canvas.GetTop(root);
                 root.Oldy = Canvas.GetTop(root);
-                root.XIndex = Canvas.GetLeft(root);
+                root.Left = Canvas.GetLeft(root);
                 root.Oldx = Canvas.GetLeft(root);
                 Arrange(root);
             }
@@ -230,25 +227,25 @@ namespace QPP.Wpf.UI.TreeEditor
             if (directSubItems == null || directSubItems.Count == 0) return;
             var subItems = directSubItems
                 .Where(x => x.Visibility.Equals(Visibility.Visible)).
-                OrderBy(x => x.YIndex).ToList();
+                OrderBy(x => x.Top).ToList();
             double h1 = 0;/*父节点的直接子节点总高度*/
             for (var i = 0; i < subItems.Count; i++)
             {
                 if (i != 0) h1 += subItems[i - 1].ActualHeight;
                 var list = new List<DesignerItem>();
                 for (var j = 0; j < i; j++) { list.AddRange(GetAllSubItems(subItems.ElementAt(j)).Where(item => !list.Contains(item))/**/); }
-                var preChilds = list.OrderBy(x => x.YIndex).Where(x => x.Visibility.Equals(Visibility.Visible));
+                var preChilds = list.OrderBy(x => x.Top).Where(x => x.Visibility.Equals(Visibility.Visible));
                 var h2 = preChilds.Sum(preChild => preChild.ActualHeight);/*父节点的直接子节点的所有子节点的总高度*/
                 #region 设定节点位置
                 //上
-                var top = designerItem.YIndex + designerItem.ActualHeight + h1 + h2;
+                var top = designerItem.Top + designerItem.ActualHeight + h1 + h2;
                 Canvas.SetTop(subItems.ElementAt(i), top);
-                subItems.ElementAt(i).YIndex = top;
+                subItems.ElementAt(i).Top = top;
                 subItems.ElementAt(i).Oldy = top;
                 //左
-                var left = designerItem.XIndex + GetOffset(designerItem);
+                var left = designerItem.Left + GetOffset(designerItem);
                 Canvas.SetLeft(subItems.ElementAt(i), left);
-                subItems.ElementAt(i).XIndex = left;
+                subItems.ElementAt(i).Left = left;
                 subItems.ElementAt(i).Oldx = left;
                 #endregion
                 //设定节点宽度
@@ -262,13 +259,13 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         double GetWidth(DesignerItem designerItem)
         {
-            if (designerItem.Data != null)
+            if (designerItem.DataContext != null)
             {
                 string text = GetTextBlock(designerItem).Text;
                 FormattedText formattedText = new FormattedText(text, CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight, new Typeface("Arial"), FONT_SIZE, Brushes.Black);
                 double width = formattedText.Width + 12;
-                double height = formattedText.Height;
+                //double height = formattedText.Height;
                 return width < MIN_ITEM_WIDTH ? MIN_ITEM_WIDTH : width;
             }
             else
@@ -521,7 +518,7 @@ namespace QPP.Wpf.UI.TreeEditor
             ShowOthers();/*恢复显示选中元素,之前调用了HideOthers隐藏了除了drag item以外的selected items*/
             RemoveHelperConnection();/*移除找parent的辅助红线*/
             ChangeShadowConnectionsToOriginalItem();/*将连接到shadow上的连线，恢复到item上*/
-            _diagramControl.DesignerItems.ToList().ForEach(x => { x.IsNewParent = false; x.YIndex = Canvas.GetTop(x); });
+            _diagramControl.DesignerItems.ToList().ForEach(x => { x.IsNewParent = false; x.Top = Canvas.GetTop(x); });
             ConnectToNewParent(newParent);/*根据取得的newParent,改变特定item的连线*/
             RemoveShadows();/*移除所有shadow*/
             Arrange();/*重新布局*/
@@ -552,7 +549,7 @@ namespace QPP.Wpf.UI.TreeEditor
                               && designerItem.IsShadow == false
                         select designerItem).ToList();
             if (!list.Any()) return null;
-            var parent = list.Aggregate((a, b) => a.YIndex > b.YIndex ? a : b);
+            var parent = list.Aggregate((a, b) => a.Top > b.Top ? a : b);
             return parent;
         }
         #endregion
@@ -708,11 +705,11 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 IsShadow = true,
                 ShadowOrignal = item,
-                Data = item.Data,
+                DataContext = item.DataContext,
                 Oldx = item.Oldx,
                 Oldy = item.Oldy,
-                XIndex = item.XIndex,
-                YIndex = item.YIndex,
+                Left = item.Left,
+                Top = item.Top,
                 Width = item.Width
             };
             Canvas.SetLeft(shadow, item.Oldx);
@@ -755,7 +752,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 AcceptsReturn = true,
                 TextWrapping = TextWrapping.Wrap,
                 MinHeight = 24,
-                DataContext = item.Data
+                DataContext = item.DataContext
             };
             textBox.SetBinding(TextBox.TextProperty, new Binding("Text") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
             Canvas.SetLeft(textBox, Canvas.GetLeft(item));
@@ -889,11 +886,11 @@ namespace QPP.Wpf.UI.TreeEditor
             if (selectUp)
             {
                 var top = siblingDesignerItems
-                    .Where(x => x.YIndex < selectedItem.YIndex).ToList();
+                    .Where(x => x.Top < selectedItem.Top).ToList();
                 if (top.Any())
                 {
                     selectedDesignerItem =
-                        top.Aggregate((a, b) => a.YIndex > b.YIndex ? a : b);
+                        top.Aggregate((a, b) => a.Top > b.Top ? a : b);
                 }
                 else
                 {
@@ -906,10 +903,10 @@ namespace QPP.Wpf.UI.TreeEditor
             else //move down
             {
                 var down = siblingDesignerItems
-                    .Where(x => x.YIndex > selectedItem.YIndex).ToList();
+                    .Where(x => x.Top > selectedItem.Top).ToList();
                 if (down.Any()) //1.优先找相邻节点，处于下方的节点
                 {
-                    selectedDesignerItem = down.Aggregate((a, b) => a.YIndex < b.YIndex ? a : b);
+                    selectedDesignerItem = down.Aggregate((a, b) => a.Top < b.Top ? a : b);
                 }
                 else //没有处于下方的相邻节点，2.有父亲节点，则找其父亲的，处于下方的相邻节点，3.如果没有父亲节点，就找子节点
                 {
@@ -923,11 +920,11 @@ namespace QPP.Wpf.UI.TreeEditor
                             var parentSibling =
                                 _diagramControl.DesignerItems.Where(
                                     x => x.ItemParentId == parent.ItemParentId
-                                         && x.YIndex > parent.YIndex).ToList();
+                                         && x.Top > parent.Top).ToList();
                             if (parentSibling.Any())
                             {
                                 selectedDesignerItem =
-                                    parentSibling.Aggregate((a, b) => a.YIndex > b.YIndex ? a : b);
+                                    parentSibling.Aggregate((a, b) => a.Top > b.Top ? a : b);
                             }
                         }
                     }
@@ -936,7 +933,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         var child = _diagramControl.DesignerItems.Where(x => x.ItemParentId == selectedItem.ItemId).ToList();
                         if (child.Any())
                         {
-                            selectedDesignerItem = child.Aggregate((a, b) => a.YIndex < b.YIndex ? a : b);
+                            selectedDesignerItem = child.Aggregate((a, b) => a.Top < b.Top ? a : b);
                         }
                     }
                 }
@@ -954,7 +951,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     var child = _diagramControl.DesignerItems.Where(x => x.ItemParentId == selectedItem.ItemId).ToList();
                     if (child.Any())
                     {
-                        selectedDesignerItem = child.Aggregate((a, b) => a.YIndex < b.YIndex ? a : b);
+                        selectedDesignerItem = child.Aggregate((a, b) => a.Top < b.Top ? a : b);
                     }
                 }
                 else
@@ -962,7 +959,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     var parent = _diagramControl.DesignerItems.Where(x => x.ItemId == selectedItem.ItemParentId).ToList();
                     if (parent.Any())
                     {
-                        selectedDesignerItem = parent.Aggregate((a, b) => a.YIndex > b.YIndex ? a : b);
+                        selectedDesignerItem = parent.Aggregate((a, b) => a.Top > b.Top ? a : b);
                     }
                 }
             }

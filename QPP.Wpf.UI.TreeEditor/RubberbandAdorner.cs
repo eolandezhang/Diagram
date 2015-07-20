@@ -67,7 +67,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 foreach (var selectedItem in selectedItems.ConvertAll(x => x as DesignerItem))
                 {
                     
-                    DiagramControl.SelectedItems.Add(selectedItem.Data as TreeItemNode);
+                    DiagramControl.SelectedItems.Add(selectedItem.DataContext as TreeItemNode);
                 }
             }
         }

@@ -13,7 +13,8 @@ namespace WpfApp.ViewModel
     public class MainViewModel : ObservableObject
     {
         public string Title { get { return Get<string>("Title"); } set { Set("Title", value); } }
-        public ObservableCollection<TreeItemNode> TreeNodeCollection { get; set; }
+        //public ObservableCollection<TreeItemNode> TreeNodeCollection { get; set; }
+        public ObservableCollection<ItemData> ItemDatas { get; set; }
         public MainViewModel()
         {
             Title = "Tree Editor";
@@ -22,7 +23,13 @@ namespace WpfApp.ViewModel
 
         private void LoadData()
         {
-            TreeNodeCollection = DataToTreeNodeAdapter.Default.CreateNodes(ItemDataRepository.Default.DataCollection);
+            ItemDatas=new ObservableCollection<ItemData>();
+            var list = ItemDataRepository.Default.DataCollection;
+            foreach (var itemData in list)
+            {
+                ItemDatas.Add(itemData);
+            }
+            //TreeNodeCollection = DataToTreeNodeAdapter.Default.CreateNodes(ItemDataRepository.Default.DataCollection);
         }
     }
 }

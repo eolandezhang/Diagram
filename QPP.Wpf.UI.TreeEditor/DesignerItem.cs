@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using QPP.Wpf.ComponentModel;
@@ -25,13 +26,41 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Property
-        public string ItemId { get; set; }
-        public string ItemParentId { get; set; }
-        //public string Text { get; set; }
-        public double YIndex { get; set; }
-        public double XIndex { get; set; }
-        //public Guid ID { get; set; }
-        public object Data { get; set; }/*存放数据*/
+
+        #region ItemId Property
+        public static readonly DependencyProperty ItemIdProperty = DependencyProperty.Register(
+            "ItemId", typeof(string), typeof(DesignerItem), new PropertyMetadata(default(string)));
+
+        public string ItemId
+        {
+            get { return (string)GetValue(ItemIdProperty); }
+            set { SetValue(ItemIdProperty, value); }
+        }
+        #endregion
+
+        #region ItemParentId Property
+        public static readonly DependencyProperty ItemParentIdProperty = DependencyProperty.Register(
+            "ItemParentId", typeof(string), typeof(DesignerItem), new PropertyMetadata(default(string)));
+        public string ItemParentId
+        {
+            get { return (string)GetValue(ItemParentIdProperty); }
+            set { SetValue(ItemParentIdProperty, value); }
+        }
+        #endregion
+
+        #region Text Property
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+            "Text", typeof(string), typeof(DesignerItem), new PropertyMetadata(""));
+        public string Text
+        {
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+        #endregion
+
+        public double Top { get; set; }
+        public double Left { get; set; }
+
         #region IsSelected Property 被选中的
         public bool IsSelected
         {
@@ -221,7 +250,6 @@ namespace QPP.Wpf.UI.TreeEditor
         public DesignerItem(string id, DiagramControl diagramControl)
         {
             ItemId = id;
-            ItemParentId = string.Empty;
             Loaded += DesignerItem_Loaded;
             DiagramControl = diagramControl;
             Focusable = false;
@@ -232,18 +260,17 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         public DesignerItem(DiagramControl diagramControl)
             : this(Guid.NewGuid().ToString(), diagramControl) { }
-        public DesignerItem(string id, object itemData, DiagramControl diagramControl)
-            : this(id, diagramControl)
+        public DesignerItem(object itemData, DiagramControl diagramControl)
         {
-            Data = itemData;
-            //itemData.DiagramControl = diagramControl;
-        }
-        public DesignerItem(string id, string parentItemId, object itemData, DiagramControl diagramControl)
-            : this(id, itemData, diagramControl)
-        {
-            ItemParentId = parentItemId;
-            Data = itemData;
-            //itemData.DiagramControl = diagramControl;
+            DiagramControl = diagramControl;
+            DataContext = itemData;
+            SetBinding(TextProperty, new Binding(diagramControl.TextField));
+            SetBinding(ItemIdProperty, new Binding(diagramControl.IdField));
+            SetBinding(ItemParentIdProperty, new Binding(diagramControl.ParentIdField));
+            ContextMenu = GetItemContextMenu(diagramControl);
+            Focusable = false;
+            Loaded += DesignerItem_Loaded;
+            MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
         }
         static DesignerItem()
         {
@@ -266,18 +293,18 @@ namespace QPP.Wpf.UI.TreeEditor
                     if (IsSelected)
                     {
                         designer.SelectionService.RemoveFromSelection(this);
-                        DiagramControl.SelectedItems.Remove(this.Data as TreeItemNode);
+                        DiagramControl.SelectedItems.Remove(this.DataContext as TreeItemNode);
                     }
                     else
                     {
                         designer.SelectionService.AddToSelection(this);
-                        DiagramControl.SelectedItems.Add(this.Data as TreeItemNode);
+                        DiagramControl.SelectedItems.Add(this.DataContext as TreeItemNode);
                     }
                 }
                 else if (!IsSelected)
                 {
                     designer.SelectionService.SelectItem(this);
-                    DiagramControl.SelectedItems.Add(this.Data as TreeItemNode);
+                    DiagramControl.SelectedItems.Add(this.DataContext as TreeItemNode);
                 }
                 Focus();
             }
