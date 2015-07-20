@@ -1,12 +1,8 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using QPP.Wpf.ComponentModel;
 
 
 namespace QPP.Wpf.UI.TreeEditor
@@ -67,7 +63,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 foreach (var selectedItem in selectedItems.ConvertAll(x => x as DesignerItem))
                 {
                     
-                    DiagramControl.SelectedItems.Add(selectedItem.DataContext as TreeItemNode);
+                    DiagramControl.SelectedItems.Add(selectedItem.DataContext);
                 }
             }
         }

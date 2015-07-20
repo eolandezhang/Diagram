@@ -116,7 +116,7 @@ namespace QPP.Wpf.UI.TreeEditor
             _diagramControl.DesignerCanvas.SelectionService.ClearSelection();
             _diagramControl.DesignerCanvas.SelectionService.SelectItem(designerItem);
             _diagramControl.SelectedItems.Clear();
-            _diagramControl.SelectedItems.Add(designerItem.DataContext as TreeItemNode);
+            _diagramControl.SelectedItems.Add(designerItem.DataContext);
         }
 
         #endregion

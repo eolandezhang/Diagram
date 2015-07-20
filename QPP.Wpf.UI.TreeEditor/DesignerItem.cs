@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using QPP.Wpf.ComponentModel;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
@@ -293,18 +291,18 @@ namespace QPP.Wpf.UI.TreeEditor
                     if (IsSelected)
                     {
                         designer.SelectionService.RemoveFromSelection(this);
-                        DiagramControl.SelectedItems.Remove(this.DataContext as TreeItemNode);
+                        DiagramControl.SelectedItems.Remove(this.DataContext);
                     }
                     else
                     {
                         designer.SelectionService.AddToSelection(this);
-                        DiagramControl.SelectedItems.Add(this.DataContext as TreeItemNode);
+                        DiagramControl.SelectedItems.Add(this.DataContext);
                     }
                 }
                 else if (!IsSelected)
                 {
                     designer.SelectionService.SelectItem(this);
-                    DiagramControl.SelectedItems.Add(this.DataContext as TreeItemNode);
+                    DiagramControl.SelectedItems.Add(this.DataContext);
                 }
                 Focus();
             }

@@ -65,22 +65,7 @@
     <Compile Include="SelectionService.cs" />
     <Compile Include="Toolbox.cs" />
     <Compile Include="ToolboxItem.cs" />
-    <Compile Include="TreeItemNode.cs" />
     <Compile Include="ZoomBoxControl.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Core\QPP.Wpf.UI\QPP.Wpf.UI.csproj">
-      <Project>{25be43ca-1238-477a-b232-83fba7a9d452}</Project>
-      <Name>QPP.Wpf.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Core\QPP.Wpf\QPP.Wpf.csproj">
-      <Project>{49ae1a60-9616-4720-be0c-a937c3e702e9}</Project>
-      <Name>QPP.Wpf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Core\QPP\QPP.csproj">
-      <Project>{e02e3fec-b370-4435-ba52-5414ffdb91d0}</Project>
-      <Name>QPP</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="TreeEditor.xmind" />
@@ -141,6 +126,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\QPP.Wpf\QPP.Wpf.csproj">
+      <Project>{49ae1a60-9616-4720-be0c-a937c3e702e9}</Project>
+      <Name>QPP.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\QPP\QPP.csproj">
+      <Project>{e02e3fec-b370-4435-ba52-5414ffdb91d0}</Project>
+      <Name>QPP</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

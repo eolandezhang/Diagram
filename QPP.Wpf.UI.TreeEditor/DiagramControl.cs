@@ -87,12 +87,12 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
         #region SelectedItems 选中项,用于向界面返回选中项
         public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
-            "SelectedItems", typeof(ObservableCollection<TreeItemNode>), typeof(DiagramControl),
-            new FrameworkPropertyMetadata(new ObservableCollection<TreeItemNode>()));
+            "SelectedItems", typeof(IList), typeof(DiagramControl),
+            new FrameworkPropertyMetadata(null));
 
-        public ObservableCollection<TreeItemNode> SelectedItems
+        public IList SelectedItems
         {
-            get { return (ObservableCollection<TreeItemNode>)GetValue(SelectedItemsProperty); }
+            get { return (IList)GetValue(SelectedItemsProperty); }
             set { SetValue(SelectedItemsProperty, value); }
         }
         #endregion

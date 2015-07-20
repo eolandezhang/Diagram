@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using QPP.ComponentModel;
-using QPP.Wpf.ComponentModel;
-using QPP.Wpf.UI.TreeEditor;
+using System.Collections.ObjectModel;
 using WpfApp.ViewModel.App_Data;
 
 namespace WpfApp.ViewModel
@@ -15,15 +10,17 @@ namespace WpfApp.ViewModel
         public string Title { get { return Get<string>("Title"); } set { Set("Title", value); } }
         //public ObservableCollection<TreeItemNode> TreeNodeCollection { get; set; }
         public ObservableCollection<ItemData> ItemDatas { get; set; }
+        public ObservableCollection<ItemData> SelectedItems { get; set; }
         public MainViewModel()
         {
+            SelectedItems=new ObservableCollection<ItemData>();
             Title = "Tree Editor";
             LoadData();
         }
 
         private void LoadData()
         {
-            ItemDatas=new ObservableCollection<ItemData>();
+            ItemDatas = new ObservableCollection<ItemData>();
             var list = ItemDataRepository.Default.DataCollection;
             foreach (var itemData in list)
             {
