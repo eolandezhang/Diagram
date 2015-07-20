@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -31,6 +32,8 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Fields & Properties
+
+        public ObservableCollection<DiagramItem> Items { get; set; }
 
         public ObservableCollection<DesignerItem> DesignerItems { get; set; }
         /*节点元素*/
@@ -164,6 +167,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         public DiagramControl()
         {
+            Items = new ObservableCollection<DiagramItem>();
             DiagramManager = new DiagramManager(this);
             DesignerItems = new ObservableCollection<DesignerItem>();
             Loaded += (d, e) => { Bind(); };/*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
@@ -187,11 +191,64 @@ namespace QPP.Wpf.UI.TreeEditor
         #region 绑定
         public void Bind()
         {
-            if (IsLoaded && DesignerItems.Any())
+            if (IsLoaded)
             {
-                DiagramManager.Draw();
+                if (ItemSource == null && Items.Any())
+                {
+                    SetItemsParent();
+                    DesignerItems.Clear();
+                    GenerateFromItems();
+                }
+                if (DesignerItems.Any())
+                {
+                    DiagramManager.Draw();
+                }
             }
         }
+        #region SetItemsParent
+        public void SetItemsParent()
+        {
+            foreach (var diagramItem in Items)
+            {
+                SetItemsParent(diagramItem);
+            }
+        }
+        void SetItemsParent(DiagramItem diagramItem)
+        {
+            foreach (var item in diagramItem.Items)
+            {
+                item.PId = diagramItem.Id;
+            }
+        }
+        #endregion
+        #region GenerateFromItems
+        void GenerateFromItems()
+        {
+            if (ItemSource != null) return;
+            if (DesignerItems.Any()) return;
+            var list = new List<DesignerItem>();
+            foreach (var x in Items)
+            {
+                list.Add(new DesignerItem(x.Id, x.PId, x.Text, this));
+                list.AddRange(GenerateFromItems(x));
+            }
+            foreach (var designerItem in list)
+            {
+                DesignerItems.Add(designerItem);
+            }
+        }
+
+        List<DesignerItem> GenerateFromItems(DiagramItem diagramItem)
+        {
+            var list = new List<DesignerItem>();
+            foreach (var x in diagramItem.Items)
+            {
+                list.Add(new DesignerItem(x.Id, x.PId, x.Text, this));
+                list.AddRange(GenerateFromItems(x));
+            }
+            return list;
+        }
+        #endregion
         #endregion
     }
 }

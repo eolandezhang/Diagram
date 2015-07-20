@@ -258,6 +258,14 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         public DesignerItem(DiagramControl diagramControl)
             : this(Guid.NewGuid().ToString(), diagramControl) { }
+
+        public DesignerItem(string id, string pid, string text, DiagramControl diagramControl)
+        {
+            ItemId = id;
+            ItemParentId = pid;
+            DiagramControl = diagramControl;
+            DataContext = new { Text = text };
+        }
         public DesignerItem(object itemData, DiagramControl diagramControl)
         {
             DiagramControl = diagramControl;
@@ -291,18 +299,18 @@ namespace QPP.Wpf.UI.TreeEditor
                     if (IsSelected)
                     {
                         designer.SelectionService.RemoveFromSelection(this);
-                        DiagramControl.SelectedItems.Remove(this.DataContext);
+                        //DiagramControl.SelectedItems.Remove(this.DataContext);
                     }
                     else
                     {
                         designer.SelectionService.AddToSelection(this);
-                        DiagramControl.SelectedItems.Add(this.DataContext);
+                        //DiagramControl.SelectedItems.Add(this.DataContext);
                     }
                 }
                 else if (!IsSelected)
                 {
                     designer.SelectionService.SelectItem(this);
-                    DiagramControl.SelectedItems.Add(this.DataContext);
+                    //DiagramControl.SelectedItems.Add(this.DataContext);
                 }
                 Focus();
             }

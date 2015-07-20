@@ -51,6 +51,7 @@
     <Compile Include="DesignerItem.cs" />
     <Compile Include="DiagramControl.cs" />
     <Compile Include="DiagramDataEditorControl.cs" />
+    <Compile Include="DiagramItem.cs" />
     <Compile Include="DiagramManager.cs" />
     <Compile Include="DragThumb.cs" />
     <Compile Include="IGroupable.cs" />

@@ -48,7 +48,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 // if you click directly on the canvas all 
                 // selected items are 'de-selected'
                 SelectionService.ClearSelection();
-                DiagramControl.SelectedItems.Clear();
+                //DiagramControl.SelectedItems.Clear();
                 Focus();
                 e.Handled = true;
             }
