@@ -1564,9 +1564,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\AvalonDock\%28Extentions%29\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Controls\AvalonEdit\Highlighting\Resources\ASPX.xshd" />
     <EmbeddedResource Include="Controls\AvalonEdit\Highlighting\Resources\Boo.xshd" />
