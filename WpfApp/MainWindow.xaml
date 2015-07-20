@@ -8,15 +8,33 @@
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
-    <Grid>
-        <treeEditor:DiagramControl
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <Menu.Items>
+                <MenuItem Header="Menu">
+                    <MenuItem Header="Menu Item A">
+                        <MenuItem Header="Menu Item B"></MenuItem>
+                    </MenuItem>
+                </MenuItem>
+            </Menu.Items>
+
+        </Menu>
+        <!--<treeEditor:DiagramControl
             x:Name="Diagram" 
             DiagramHeader="树状图"
             ItemSource="{Binding ItemDatas}"
             IdField="ItemId"
             ParentIdField="ItemParentId"
             TextField="Text"
-            SelectedItems="{Binding SelectedItems}">
+            SelectedItems="{Binding SelectedItems}">-->
+        <treeEditor:DiagramControl
+            x:Name="Diagram" 
+            DiagramHeader="树状图"
+            
+            IdField="ItemId"
+            ParentIdField="ItemParentId"
+            TextField="Text"
+            >
             <treeEditor:DiagramControl.DesignerItemTemplate>
                 <DataTemplate>
                     <Border x:Name="Bdr"  BorderThickness="2" BorderBrush="SkyBlue">
@@ -36,6 +54,12 @@
                     <MenuItem Header="Delete"></MenuItem>
                 </ContextMenu>
             </treeEditor:DesignerItem.ItemContextMenu>
+            <treeEditor:DiagramControl.Items>
+                <treeEditor:DiagramItem Text="Root">
+                    <treeEditor:DiagramItem Text="Item 1"/>
+                    <treeEditor:DiagramItem Text="Item 2"/>
+                </treeEditor:DiagramItem>
+            </treeEditor:DiagramControl.Items>
         </treeEditor:DiagramControl>
-    </Grid>
+    </DockPanel>
 </Window>

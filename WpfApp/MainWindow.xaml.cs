@@ -22,6 +22,9 @@ namespace WpfApp
         public MainWindow()
         {
             InitializeComponent();
+            Menu menu=new Menu();
+            var items=menu.Items;
+            MenuItem menuItem=new MenuItem();
         }
     }
 }
