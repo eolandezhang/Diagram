@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -154,13 +155,45 @@ namespace QPP.Wpf.UI.TreeEditor
             if (diagramControl == null) return;
             if (_shadows != null)
                 diagramControl.DiagramManager.FinishChangeParent(NewParent);
+            //ShowId(diagramControl);
             _shadows = null;
             NewParent = null;
             DiagramControl.DiagramManager.RestoreDragItemChildFlag();
             _verticalOffset = 0;
             _horizontalOffset = 0;
+
         }
 
+        void ShowId/*测试父id是否正确设置*/(DiagramControl diagramControl)
+        {
+            if (NewParent != null)
+            {
+                var item = DataContext as DesignerItem;
 
+                if (item != null)
+                {
+                    if (diagramControl.Items.Any())
+                    {
+                        var dc = item.DataContext as DiagramItem;
+                        if (dc != null)
+                        {
+                            MessageBox.Show(item.ItemId + "[" + item.ItemParentId + "]" + "\r\n" + dc.Id + "[" + dc.PId + "]");
+                        }
+                    }
+                    else
+                    {
+                        var oType = DataContext.GetType();
+                        var idField = _diagramControl.IdField;
+                        var parentIdField = _diagramControl.ParentIdField;
+                        var id = oType.GetProperty(idField);
+                        var pid = oType.GetProperty(parentIdField);
+                        var idValue = id.GetValue(DataContext, null);
+                        var parentIdValue = pid.GetValue(DataContext, null);
+
+                        MessageBox.Show(item.ItemId + "[" + item.ItemParentId + "]" + "\r\n" + idValue + "[" + parentIdValue + "]");
+                    }
+                }
+            }
+        }
     }
 }

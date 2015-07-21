@@ -264,7 +264,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 string text = GetTextBlock(designerItem).Text;
                 FormattedText formattedText = new FormattedText(text, CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight, new Typeface("Arial"), FONT_SIZE, Brushes.Black);
-                double width = formattedText.Width + 12;
+                double width = formattedText.Width + 20;
                 //double height = formattedText.Height;
                 return width < MIN_ITEM_WIDTH ? MIN_ITEM_WIDTH : width;
             }
@@ -599,6 +599,21 @@ namespace QPP.Wpf.UI.TreeEditor
             foreach (var designerItem in itemsToChangeParent)
             {
                 designerItem.ItemParentId = newParent == null ? null : newParent.ItemId;
+                if (_diagramControl.Items.Any())//用items初始化的
+                {
+                    var x = designerItem.DataContext as DiagramItem;
+                    if (x != null)
+                    {
+                        x.PId = designerItem.ItemParentId;
+                    }
+                }
+                else //用ItemsSource初始化的
+                {
+                    var oType = designerItem.DataContext.GetType();
+                    var parentIdField = _diagramControl.ParentIdField;
+                    var pid = oType.GetProperty(parentIdField);
+                    pid.SetValue(designerItem.DataContext, designerItem.ItemParentId, null);
+                }
                 var connections = GetItemConnections(designerItem).Where(x => Equals(x.Sink.ParentDesignerItem, designerItem)).ToList();
                 if (connections.Any())//有连线
                 {

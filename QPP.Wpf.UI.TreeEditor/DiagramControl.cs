@@ -73,8 +73,8 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
         #region IItemSource Property 数据源
 
-        public static readonly DependencyProperty ItemSourceProperty = DependencyProperty.Register(
-            "ItemSource", typeof(IList), typeof(DiagramControl),
+        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
+            "ItemsSource", typeof(IList), typeof(DiagramControl),
             new FrameworkPropertyMetadata(null, (d, e) =>
             {
                 var dc = d as DiagramControl;
@@ -94,10 +94,10 @@ namespace QPP.Wpf.UI.TreeEditor
             return false;
         }
 
-        public IList ItemSource
+        public IList ItemsSource
         {
-            get { return (IList)GetValue(ItemSourceProperty); }
-            set { SetValue(ItemSourceProperty, value); }
+            get { return (IList)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
         }
 
         #endregion
@@ -180,7 +180,7 @@ namespace QPP.Wpf.UI.TreeEditor
         internal ObservableCollection<DesignerItem> GenerateDesignerItemList()
         {
             ObservableCollection<DesignerItem> list = new ObservableCollection<DesignerItem>();
-            foreach (var t in ItemSource)
+            foreach (var t in ItemsSource)
             {
                 list.Add(new DesignerItem(t, this));
             }
@@ -193,12 +193,20 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             if (IsLoaded)
             {
-                if (ItemSource == null && Items.Any())
+                if (Items.Any())
                 {
-                    SetItemsParent();
-                    DesignerItems.Clear();
-                    GenerateFromItems();
+                    if (ItemsSource == null)
+                    {
+                        SetItemsParent();
+                        DesignerItems.Clear();
+                        GenerateFromItems();
+                    }
+                    else
+                    {
+                        throw new Exception("在使用 ItemsSource 之前，项集Items合必须为空");
+                    }
                 }
+
                 if (DesignerItems.Any())
                 {
                     DiagramManager.Draw();
@@ -210,6 +218,9 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             foreach (var diagramItem in Items)
             {
+#if DEBUG
+                diagramItem.Text += "_" + diagramItem.Id;
+#endif
                 SetItemsParent(diagramItem);
             }
         }
@@ -217,19 +228,23 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             foreach (var item in diagramItem.Items)
             {
+#if DEBUG
+                item.Text += "_" + item.Id;
+#endif
                 item.PId = diagramItem.Id;
+                SetItemsParent(item);
             }
         }
         #endregion
         #region GenerateFromItems
         void GenerateFromItems()
         {
-            if (ItemSource != null) return;
+            if (ItemsSource != null) return;
             if (DesignerItems.Any()) return;
             var list = new List<DesignerItem>();
             foreach (var x in Items)
             {
-                list.Add(new DesignerItem(x.Id, x.PId, x.Text, this));
+                list.Add(new DesignerItem(x, this));
                 list.AddRange(GenerateFromItems(x));
             }
             foreach (var designerItem in list)
@@ -243,8 +258,9 @@ namespace QPP.Wpf.UI.TreeEditor
             var list = new List<DesignerItem>();
             foreach (var x in diagramItem.Items)
             {
-                list.Add(new DesignerItem(x.Id, x.PId, x.Text, this));
+                list.Add(new DesignerItem(x, this));
                 list.AddRange(GenerateFromItems(x));
+
             }
             return list;
         }

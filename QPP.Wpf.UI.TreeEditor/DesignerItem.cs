@@ -259,12 +259,18 @@ namespace QPP.Wpf.UI.TreeEditor
         public DesignerItem(DiagramControl diagramControl)
             : this(Guid.NewGuid().ToString(), diagramControl) { }
 
-        public DesignerItem(string id, string pid, string text, DiagramControl diagramControl)
+        public DesignerItem(DiagramItem diagramItem, DiagramControl diagramControl)
         {
-            ItemId = id;
-            ItemParentId = pid;
+            //ItemId = id;
+            //ItemParentId = pid;
             DiagramControl = diagramControl;
-            DataContext = new { Text = text };
+            DataContext = diagramItem;
+            SetBinding(TextProperty, new Binding("Text"));
+            SetBinding(ItemIdProperty, new Binding("Id"));
+            SetBinding(ItemParentIdProperty, new Binding("PId"));
+            ContextMenu = GetItemContextMenu(diagramControl);
+            Focusable = false;
+            MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
         }
         public DesignerItem(object itemData, DiagramControl diagramControl)
         {
