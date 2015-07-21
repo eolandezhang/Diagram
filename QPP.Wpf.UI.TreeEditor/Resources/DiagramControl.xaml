@@ -7,22 +7,27 @@
             <Setter.Value>
                 <ControlTemplate>
                     <GroupBox x:Name="DiagramHeader">
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                        <DockPanel>
+                            <ToolBar DockPanel.Dock="Top">
+                                <Button Content="Refresh" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RefreshCommand}"></Button>
+                            </ToolBar>
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto" Name="DesignerScrollViewer">
-                            <treeEditor:DesignerCanvas
+                                <treeEditor:DesignerCanvas
                                     Focusable="true" 
                                     x:Name="Designer"
                                     Background="White"
                                     FocusVisualStyle="{x:Null}"
                                     />
-                            <!--<s:DesignerCanvas
+                                <!--<s:DesignerCanvas
                                     Focusable="true" 
                                     x:Name="Designer"
                                     Background="Azure"
                                     Margin="2" 
                                     FocusVisualStyle="{x:Null}"
                                     />-->
-                        </ScrollViewer>
+                            </ScrollViewer>
+                        </DockPanel>
                     </GroupBox>
                 </ControlTemplate>
             </Setter.Value>

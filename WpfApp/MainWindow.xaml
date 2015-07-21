@@ -9,16 +9,9 @@
         <vm:MainViewModel/>
     </Window.DataContext>
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <Menu.Items>
-                <MenuItem Header="Menu">
-                    <MenuItem Header="Menu Item A">
-                        <MenuItem Header="Menu Item B"></MenuItem>
-                    </MenuItem>
-                </MenuItem>
-            </Menu.Items>
-
-        </Menu>
+        <ToolBar DockPanel.Dock="Top">
+            <Button Content="Add New" Command="{Binding AddNew}"></Button>
+        </ToolBar>
         <treeEditor:DiagramControl
             x:Name="Diagram" 
             DiagramHeader="树状图"

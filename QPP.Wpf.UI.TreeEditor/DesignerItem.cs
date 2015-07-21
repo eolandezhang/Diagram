@@ -261,8 +261,8 @@ namespace QPP.Wpf.UI.TreeEditor
 
         public DesignerItem(DiagramItem diagramItem, DiagramControl diagramControl)
         {
-            //ItemId = id;
-            //ItemParentId = pid;
+            Top = 5d;
+            Left = 5d;
             DiagramControl = diagramControl;
             DataContext = diagramItem;
             SetBinding(TextProperty, new Binding("Text"));
@@ -274,6 +274,8 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         public DesignerItem(object itemData, DiagramControl diagramControl)
         {
+            Top = 5d;
+            Left = 5d;
             DiagramControl = diagramControl;
             DataContext = itemData;
             SetBinding(TextProperty, new Binding(diagramControl.TextField));
@@ -305,18 +307,32 @@ namespace QPP.Wpf.UI.TreeEditor
                     if (IsSelected)
                     {
                         designer.SelectionService.RemoveFromSelection(this);
-                        //DiagramControl.SelectedItems.Remove(this.DataContext);
+                        if (DiagramControl.SelectedItems.Contains(DataContext))
+                        {
+                            DiagramControl.SelectedItems.Remove(DataContext);
+                        }
                     }
                     else
                     {
                         designer.SelectionService.AddToSelection(this);
-                        //DiagramControl.SelectedItems.Add(this.DataContext);
+                        if (DiagramControl.SelectedItems != null)
+                        {
+                            if (!DiagramControl.SelectedItems.Contains(DataContext))
+                            {
+                                DiagramControl.SelectedItems.Add(DataContext);
+                            }
+                        }
                     }
                 }
                 else if (!IsSelected)
                 {
                     designer.SelectionService.SelectItem(this);
-                    //DiagramControl.SelectedItems.Add(this.DataContext);
+                    if (DiagramControl.SelectedItems != null)
+                    {
+                        DiagramControl.SelectedItems.Clear();
+                        DiagramControl.SelectedItems.Add(DataContext);
+                    }
+
                 }
                 Focus();
             }

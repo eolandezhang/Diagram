@@ -1,4 +1,6 @@
-﻿using System;
+﻿using QPP.Command;
+using QPP.Wpf.Command;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -72,19 +74,30 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         #endregion
         #region IItemSource Property 数据源
-
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
             "ItemsSource", typeof(IList), typeof(DiagramControl),
             new FrameworkPropertyMetadata(null, (d, e) =>
             {
                 var dc = d as DiagramControl;
                 if (dc == null) return;
+                if (dc.ItemsSource == null) return;
                 if (dc.Check())
                 {
                     dc.DesignerItems = dc.GenerateDesignerItemList();
                 }
+                if (e.NewValue is INotifyCollectionChanged)
+                {
+                    ((INotifyCollectionChanged)e.NewValue).CollectionChanged += (x, y) =>
+                    {
+                        dc.Bind();
+                    };
+                }
             }));
-
+        public IList ItemsSource
+        {
+            get { return (IList)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
         bool Check/*检查是否设定了id,pid,text的列名*/()
         {
             var textField = TextField.IsNotEmpty();
@@ -93,13 +106,6 @@ namespace QPP.Wpf.UI.TreeEditor
             if (textField && idField && parentIdField) { return true; }
             return false;
         }
-
-        public IList ItemsSource
-        {
-            get { return (IList)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
-        }
-
         #endregion
         #region SelectedItems 选中项,用于向界面返回选中项
         public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
@@ -170,7 +176,9 @@ namespace QPP.Wpf.UI.TreeEditor
             Items = new ObservableCollection<DiagramItem>();
             DiagramManager = new DiagramManager(this);
             DesignerItems = new ObservableCollection<DesignerItem>();
-            Loaded += (d, e) => { Bind(); };/*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
+            /*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
+            Loaded += (d, e) => { Bind(); };
+
         }
 
         #endregion
@@ -205,6 +213,10 @@ namespace QPP.Wpf.UI.TreeEditor
                     {
                         throw new Exception("在使用 ItemsSource 之前，项集Items合必须为空");
                     }
+                }
+                if (ItemsSource != null)
+                {
+                    DesignerItems = GenerateDesignerItemList();
                 }
 
                 if (DesignerItems.Any())
@@ -265,6 +277,14 @@ namespace QPP.Wpf.UI.TreeEditor
             return list;
         }
         #endregion
+        #endregion
+
+        #region Command
+
+        public ICommand RefreshCommand
+        {
+            get { return new RelayCommand(Bind); }
+        }
         #endregion
     }
 }
