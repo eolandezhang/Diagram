@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using QPP.ComponentModel;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Windows;
+﻿using QPP;
 using QPP.Command;
+using QPP.ComponentModel;
 using QPP.Wpf.Command;
+using System.Collections.ObjectModel;
+using System.Linq;
 using WpfApp.ViewModel.App_Data;
 
 namespace WpfApp.ViewModel
@@ -13,13 +11,10 @@ namespace WpfApp.ViewModel
     public class MainViewModel : ObservableObject
     {
         public string Title { get { return Get<string>("Title"); } set { Set("Title", value); } }
-        //public ObservableCollection<TreeItemNode> TreeNodeCollection { get; set; }
         public ObservableCollection<ItemData> ItemsSource
         {
             get;
             private set;
-            //get { return Get<ObservableCollection<ItemData>>("ItemsSource"); }
-            //set { Set("ItemsSource", value); }
         }
         public ObservableCollection<object> SelectedItems { get; set; }
         public MainViewModel()
@@ -48,25 +43,13 @@ namespace WpfApp.ViewModel
 
         private void LoadData()
         {
-            
-            ItemsSource = new ObservableCollection<ItemData>()
-            {
-                new ItemData("0","","0","Root　Item1"),
-                new ItemData("1","0", "1", "1"),
-                new ItemData("2","0", "2", "2"),
-                new ItemData("3","1", "3", "3"),
-                new ItemData("4","2", "4", "4"),
-                new ItemData("5","3", "5\r\nasdf", "5")
-            };
+
+            ItemsSource = ItemDataRepository.Default.DataCollection;
         }
 
         #region Commands
-
-
-
         ItemData GetSelectedItem()
         {
-
             if (SelectedItems.Count == 1)
             {
                 var item = SelectedItems.FirstOrDefault();
@@ -76,14 +59,12 @@ namespace WpfApp.ViewModel
             return null;
 
         }
-        #region AddNew
-
-        public ICommand AddNew
+        #region AddAfterCommand
+        public ICommand AddAfterCommand
         {
-            get { return new RelayCommand(AddNewAction); }
+            get { return new RelayCommand(AddAfterAction); }
         }
-
-        void AddNewAction()
+        void AddAfterAction()
         {
             var selectedItem = GetSelectedItem();
             if (selectedItem != null)
@@ -93,17 +74,25 @@ namespace WpfApp.ViewModel
             }
         }
         #endregion
-        //#region Load
-        //public ICommand Load
-        //{
-        //    get { return new RelayCommand(LoadAction); }
-        //}
+        #region AddSiblingCommand
 
-        //void LoadAction()
-        //{
-        //    LoadData();
-        //}
-        //#endregion
+        public ICommand AddSiblingCommand
+        {
+            get { return new RelayCommand(AddSiblingAction); }
+        }
+
+        private void AddSiblingAction()
+        {
+            var selectedItem = GetSelectedItem();
+            if (selectedItem != null)
+            {
+                if (selectedItem.ItemParentId.IsNullOrEmpty()) return;
+                var newItem = ItemDataRepository.Default.AddNew(selectedItem.ItemParentId);
+                ItemsSource.Add(newItem);
+            }
+        }
+        #endregion
+
         #endregion
     }
 }

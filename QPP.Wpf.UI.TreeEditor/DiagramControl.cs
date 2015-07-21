@@ -34,13 +34,9 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Fields & Properties
-
         public ObservableCollection<DiagramItem> Items { get; set; }
-
         public ObservableCollection<DesignerItem> DesignerItems { get; set; }
-        /*节点元素*/
         public DesignerCanvas DesignerCanvas { get; set; }
-        public bool Suppress /*阻止通知*/ { get; set; }
         public bool IsOnEditing;/*双击出现编辑框，标识编辑状态，此时回车按键按下之后，会阻止新增相邻节点命令*/
         public DiagramManager DiagramManager { get; set; }
         #endregion
@@ -73,7 +69,7 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(TextFieldProperty, value); }
         }
         #endregion
-        #region IItemSource Property 数据源
+        #region ItemSource Property 数据源
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
             "ItemsSource", typeof(IList), typeof(DiagramControl),
             new FrameworkPropertyMetadata(null, (d, e) =>
@@ -89,7 +85,37 @@ namespace QPP.Wpf.UI.TreeEditor
                 {
                     ((INotifyCollectionChanged)e.NewValue).CollectionChanged += (x, y) =>
                     {
-                        dc.Bind();
+                        var newItems = y.NewItems;
+                        if (newItems == null || newItems.Count == 0) return;
+                        foreach (var newItem in newItems)
+                        {
+                            var item = new DesignerItem(newItem, dc);
+                            dc.DesignerItems.Add(item);
+                            var parentid = dc.DiagramManager.GetPId(item);
+                            if (parentid.IsNotEmpty())
+                            {
+                                var msg = dc.DiagramManager.GetTime(() =>
+                                  {
+                                      var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
+                                      dc.DiagramManager.DrawChild(parent, item);
+                                      dc.DiagramManager.SetSelectItem(item);
+
+                                  });
+                                dc.AddToMessage("增加节点", msg);
+
+                                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                                {
+                                    //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
+                                    var m = dc.DiagramManager.GetTime(() => { dc.DiagramManager.AfterArrange(item); });
+                                    dc.AddToMessage("重新布局", m);
+
+                                }));
+
+                            }
+
+                        }
+
+                        //dc.Bind();
                     };
                 }
             }));
@@ -118,6 +144,18 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(SelectedItemsProperty, value); }
         }
         #endregion
+        #region Message Property
+
+        public static readonly DependencyProperty MessageProperty = DependencyProperty.Register(
+            "Message", typeof(string), typeof(DiagramControl), new PropertyMetadata(""));
+
+        public string Message
+        {
+            get { return (string)GetValue(MessageProperty); }
+            set { SetValue(MessageProperty, value); }
+        }
+        #endregion
+
         #region ZoomBoxControlProperty 缩放控件，以后需要修改
 
         public static readonly DependencyProperty ZoomBoxControlProperty = DependencyProperty.Register(
@@ -221,7 +259,13 @@ namespace QPP.Wpf.UI.TreeEditor
 
                 if (DesignerItems.Any())
                 {
-                    DiagramManager.Draw();
+
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        AddToMessage("载入数据源", DiagramManager.GetTime(DiagramManager.Draw));
+                    }));
+
+                    //DiagramManager.Draw();
                 }
             }
         }
@@ -286,5 +330,12 @@ namespace QPP.Wpf.UI.TreeEditor
             get { return new RelayCommand(Bind); }
         }
         #endregion
+
+        void AddToMessage(string title, string msg)
+        {
+
+            if (Message.Length > 5000) Message = "";
+            Message = "[" + DateTime.Now + "]" + title + ":" + msg + "\r\n" + Message;
+        }
     }
 }

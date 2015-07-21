@@ -11,6 +11,9 @@
                             <ToolBar DockPanel.Dock="Top">
                                 <Button Content="Refresh" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RefreshCommand}"></Button>
                             </ToolBar>
+                            <Grid DockPanel.Dock="Bottom" Height="150">
+                                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Message}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                            </Grid>
                             <ScrollViewer HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto" Name="DesignerScrollViewer">
                                 <treeEditor:DesignerCanvas
