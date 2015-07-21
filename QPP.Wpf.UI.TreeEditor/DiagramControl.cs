@@ -83,42 +83,48 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 if (e.NewValue is INotifyCollectionChanged)
                 {
-                    ((INotifyCollectionChanged)e.NewValue).CollectionChanged += (x, y) =>
-                    {
-                        var newItems = y.NewItems;
-                        if (newItems == null || newItems.Count == 0) return;
-                        foreach (var newItem in newItems)
-                        {
-                            var item = new DesignerItem(newItem, dc);
-                            dc.DesignerItems.Add(item);
-                            var parentid = dc.DiagramManager.GetPId(item);
-                            if (parentid.IsNotEmpty())
-                            {
-                                var msg = dc.DiagramManager.GetTime(() =>
-                                  {
-                                      var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
-                                      dc.DiagramManager.DrawChild(parent, item);
-                                      dc.DiagramManager.SetSelectItem(item);
-
-                                  });
-                                dc.AddToMessage("增加节点", msg);
-
-                                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                                {
-                                    //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
-                                    var m = dc.DiagramManager.GetTime(() => { dc.DiagramManager.AfterArrange(item); });
-                                    dc.AddToMessage("重新布局", m);
-
-                                }));
-
-                            }
-
-                        }
-
-                        //dc.Bind();
-                    };
+                    CollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
                 }
             }));
+
+        static void CollectionChanged(DiagramControl dc, INotifyCollectionChanged items)
+        {
+            items.CollectionChanged += (sender, arg) =>
+            {
+                if (arg.Action == NotifyCollectionChangedAction.Add)
+                {
+                    AddAction(dc, arg.NewItems);
+                }
+            };
+        }
+
+        static void AddAction(DiagramControl dc, IList newItems)
+        {
+            if (newItems == null || newItems.Count == 0) return;
+            foreach (var newItem in newItems)
+            {
+                var item = new DesignerItem(newItem, dc);
+                dc.DesignerItems.Add(item);
+                var parentid = dc.DiagramManager.GetPId(item);
+                if (parentid.IsNotEmpty())
+                {
+                    var msg = dc.DiagramManager.GetTime(() =>
+                    {
+                        var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
+                        dc.DiagramManager.DrawChild(parent, item);
+                        dc.DiagramManager.SetSelectItem(item);
+                    });
+                    dc.AddToMessage("增加节点", msg);
+
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
+                        var m = dc.DiagramManager.GetTime(() => { dc.DiagramManager.AfterArrange(item); });
+                        dc.AddToMessage("重新布局", m);
+                    }));
+                }
+            }
+        }
         public IList ItemsSource
         {
             get { return (IList)GetValue(ItemsSourceProperty); }

@@ -157,7 +157,6 @@ namespace QPP.Wpf.UI.TreeEditor
             if (diagramControl == null) return;
             if (_shadows != null)
                 diagramControl.DiagramManager.FinishChangeParent(NewParent, designerItem);
-            //ShowId(diagramControl);
             _shadows = null;
             NewParent = null;
             DiagramControl.DiagramManager.RestoreDragItemChildFlag();

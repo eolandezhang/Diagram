@@ -248,13 +248,10 @@ namespace QPP.Wpf.UI.TreeEditor
         public DesignerItem(string id, DiagramControl diagramControl)
         {
             ItemId = id;
-            Loaded += DesignerItem_Loaded;
             DiagramControl = diagramControl;
             Focusable = false;
-            MouseDoubleClick += (sender, e) =>
-             {
-                 diagramControl.DiagramManager.Edit(this);
-             };
+            MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
+            Loaded += DesignerItem_Loaded;
         }
         public DesignerItem(DiagramControl diagramControl)
             : this(Guid.NewGuid().ToString(), diagramControl) { }
@@ -271,6 +268,7 @@ namespace QPP.Wpf.UI.TreeEditor
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
             MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
+            Loaded += DesignerItem_Loaded;
         }
         public DesignerItem(object itemData, DiagramControl diagramControl)
         {
@@ -283,8 +281,8 @@ namespace QPP.Wpf.UI.TreeEditor
             SetBinding(ItemParentIdProperty, new Binding(diagramControl.ParentIdField));
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
-            Loaded += DesignerItem_Loaded;
             MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
+            Loaded += DesignerItem_Loaded;
         }
         static DesignerItem()
         {
