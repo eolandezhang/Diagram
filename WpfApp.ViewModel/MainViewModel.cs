@@ -9,22 +9,22 @@ namespace WpfApp.ViewModel
     {
         public string Title { get { return Get<string>("Title"); } set { Set("Title", value); } }
         //public ObservableCollection<TreeItemNode> TreeNodeCollection { get; set; }
-        public ObservableCollection<ItemData> ItemDatas { get; set; }
-        public ObservableCollection<ItemData> SelectedItems { get; set; }
+        public ObservableCollection<ItemData> ItemsSource { get; set; }
+        public ObservableCollection<object> SelectedItems { get; set; }
         public MainViewModel()
         {
-            SelectedItems=new ObservableCollection<ItemData>();
+            SelectedItems = new ObservableCollection<object>();
             Title = "Tree Editor";
             LoadData();
         }
 
         private void LoadData()
         {
-            ItemDatas = new ObservableCollection<ItemData>();
+            ItemsSource = new ObservableCollection<ItemData>();
             var list = ItemDataRepository.Default.DataCollection;
             foreach (var itemData in list)
             {
-                ItemDatas.Add(itemData);
+                ItemsSource.Add(itemData);
             }
             //TreeNodeCollection = DataToTreeNodeAdapter.Default.CreateNodes(ItemDataRepository.Default.DataCollection);
         }
