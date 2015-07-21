@@ -166,7 +166,7 @@
     <Compile Include="Windows\MetroWin.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\QPP.Client\QPP.Client.csproj">
+    <ProjectReference Include="..\QPP.Client\QPP.Client.csproj">
       <Project>{05630167-39d7-4d71-90d6-99334f57dac7}</Project>
       <Name>QPP.Client</Name>
     </ProjectReference>
