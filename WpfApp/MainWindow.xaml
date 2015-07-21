@@ -19,22 +19,17 @@
             </Menu.Items>
 
         </Menu>
-        <!--<treeEditor:DiagramControl
-            x:Name="Diagram" 
-            DiagramHeader="树状图"
-            ItemSource="{Binding ItemDatas}"
-            IdField="ItemId"
-            ParentIdField="ItemParentId"
-            TextField="Text"
-            SelectedItems="{Binding SelectedItems}">-->
         <treeEditor:DiagramControl
             x:Name="Diagram" 
             DiagramHeader="树状图"
-            
+            ItemsSource="{Binding ItemsSource}"
             IdField="ItemId"
             ParentIdField="ItemParentId"
             TextField="Text"
-            >
+            SelectedItems="{Binding SelectedItems}">
+            <!--<treeEditor:DiagramControl
+            x:Name="Diagram" 
+            DiagramHeader="树状图">-->
             <treeEditor:DiagramControl.DesignerItemTemplate>
                 <DataTemplate>
                     <Border x:Name="Bdr"  BorderThickness="2" BorderBrush="SkyBlue">
@@ -54,12 +49,17 @@
                     <MenuItem Header="Delete"></MenuItem>
                 </ContextMenu>
             </treeEditor:DesignerItem.ItemContextMenu>
-            <treeEditor:DiagramControl.Items>
+            <!--当DiagramControl.ItemsSource为null时，才能用DiagramControl.Items初始化，否则会抛异常-->
+            <!--<treeEditor:DiagramControl.Items>
                 <treeEditor:DiagramItem Text="Root">
                     <treeEditor:DiagramItem Text="Item 1"/>
                     <treeEditor:DiagramItem Text="Item 2"/>
+                    <treeEditor:DiagramItem Text="Item 3">
+                        <treeEditor:DiagramItem Text="Item 4"/>
+                        <treeEditor:DiagramItem Text="Item 5"/>
+                    </treeEditor:DiagramItem>
                 </treeEditor:DiagramItem>
-            </treeEditor:DiagramControl.Items>
+            </treeEditor:DiagramControl.Items>-->
         </treeEditor:DiagramControl>
     </DockPanel>
 </Window>
