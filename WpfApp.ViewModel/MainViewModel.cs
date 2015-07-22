@@ -71,6 +71,16 @@ namespace WpfApp.ViewModel
             }
         }
         #endregion
+        public bool EnableCommand()
+        {
+            var selectedItem = GetSelectedItem();
+            if (selectedItem != null)
+            {
+                //return !SelectedItem.DiagramControl.IsOnEditing;
+                return true;
+            }
+            return false;
+        }
         #region AddSiblingCommand
 
         public ICommand AddSiblingCommand
@@ -110,7 +120,7 @@ namespace WpfApp.ViewModel
             }
         }
         #endregion
-
+       
         #endregion
     }
 }

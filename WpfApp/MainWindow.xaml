@@ -13,11 +13,7 @@
         <KeyBinding Key="Tab" Command="{Binding AddAfterCommand}"/>
         <KeyBinding Key="Insert" Command="{Binding AddAfterCommand}"/>
         <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
-        <!--<KeyBinding Key="Up" Command="{Binding UpCommand}"/>
-        <KeyBinding Key="Down" Command="{Binding DownCommand}"/>
-        <KeyBinding Key="Left" Command="{Binding LeftCommand}"/>
-        <KeyBinding Key="Right" Command="{Binding RightCommand}"/>
-        <KeyBinding Key="C" Modifiers="Control" Command="{Binding CopyCommand}"/>
+        <!--<KeyBinding Key="C" Modifiers="Control" Command="{Binding CopyCommand}"/>
         <KeyBinding Key="P" Modifiers="Control" Command="{Binding PasteCommand}"/>-->
     </Window.InputBindings>
     <DockPanel>

@@ -1,5 +1,4 @@
-﻿using QPP.Command;
-using QPP.Wpf.Command;
+﻿using QPP.Wpf.Command;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +8,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Threading;
 using QPP.ComponentModel;
+using ICommand = QPP.Command.ICommand;
 
 /*
  * 树状图控件
@@ -98,10 +100,10 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 if (e.NewValue is INotifyCollectionChanged)
                 {
-                    CollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
+                    ItemsSourceCollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
                 }
             }));
-        static void CollectionChanged(DiagramControl dc, INotifyCollectionChanged items)
+        static void ItemsSourceCollectionChanged(DiagramControl dc, INotifyCollectionChanged items)
         {
             items.CollectionChanged += (sender, arg) =>
             {
@@ -186,6 +188,13 @@ namespace QPP.Wpf.UI.TreeEditor
             var id = oType.GetProperty(idField);
             return id.GetValue(item, null).ToString();
         }
+        string GetText(object item)
+        {
+            var oType = item.GetType();
+            var textField = TextField;
+            var id = oType.GetProperty(textField);
+            return id.GetValue(item, null).ToString();
+        }
 
         List<object> GetChildren(object item)
         {
@@ -229,7 +238,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {
                         //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
-                        var m = dc.DiagramManager.GetTime(() => { dc.DiagramManager.AddNewArrange(item); }); 
+                        var m = dc.DiagramManager.GetTime(() => { dc.DiagramManager.AddNewArrange(item); });
                         dc.DiagramManager.Scroll(item);
                         dc.AddToMessage("新增后重新布局", m);
                     }));
@@ -255,7 +264,35 @@ namespace QPP.Wpf.UI.TreeEditor
         #region SelectedItems 选中项,用于向界面返回选中项
         public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
             "SelectedItems", typeof(IList), typeof(DiagramControl),
-            new FrameworkPropertyMetadata(null));
+            new FrameworkPropertyMetadata(null, (d, e) =>
+            {
+                var dc = d as DiagramControl;
+                if (dc == null) return;
+                SelectedItemsCollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
+            }));
+
+        private static void SelectedItemsCollectionChanged(DiagramControl dc, INotifyCollectionChanged items)
+        {
+            items.CollectionChanged += (sender, arg) =>
+            {
+                switch (arg.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            var newItems = arg.NewItems;
+                            foreach (var newItem in newItems)
+                            {
+                                var id = dc.GetId(newItem);
+                                var text = dc.GetText(newItem);
+                                dc.AddToMessage("选中", "id:" + id + "," + "text:" + text);
+                            }
+                        }
+                        break;
+                }
+            };
+        }
+
+
 
         public IList SelectedItems
         {
@@ -336,8 +373,64 @@ namespace QPP.Wpf.UI.TreeEditor
 
             /*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
             Loaded += (d, e) => { Bind(); };
+            PreviewKeyDown += DiagramControl_PreviewKeyDown;
+            
         }
 
+        #endregion
+
+        #region 按键
+        void DiagramControl_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Up:
+                    {
+                        DiagramManager.SelectUpDown(true);
+                    }
+                    break;
+                case Key.Down:
+                    {
+                        DiagramManager.SelectUpDown(false);
+                    }
+                    break;
+                case Key.Left:
+                    {
+                        DiagramManager.SelectRightLeft(false);
+                    }
+                    break;
+                case Key.Right:
+                    {
+                        DiagramManager.SelectRightLeft(true);
+                    }
+                    break;
+                case Key.F2:
+                    {
+                        DiagramManager.Edit();
+                    }
+                    break;
+                case Key.Divide:
+                    {
+                        DiagramManager.CollapseAll();
+                    }
+                    break;
+                case Key.Multiply:
+                    {
+                        DiagramManager.ExpandAll();
+                    }
+                    break;
+                case Key.Add:
+                    {
+                        DiagramManager.ExpandSelectedItem();
+                    }
+                    break;
+                case Key.Subtract:
+                    {
+                        DiagramManager.CollapseSelectedItem();
+                    }
+                    break;
+            }
+        }
         #endregion
 
         #region 用数据源创建节点
@@ -439,11 +532,75 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
         #endregion
 
+        public static readonly DependencyProperty CanExpandAndCollapseSelectedItemProperty = DependencyProperty.Register(
+            "CanExpandAndCollapseSelectedItem", typeof(bool), typeof(DiagramControl), new PropertyMetadata(default(bool)));
+
+        public bool CanExpandAndCollapseSelectedItem
+        {
+            get { return (bool)GetValue(CanExpandAndCollapseSelectedItemProperty); }
+            set { SetValue(CanExpandAndCollapseSelectedItemProperty, value); }
+        }
+
         #region Command
+
 
         public ICommand RefreshCommand
         {
             get { return new RelayCommand(Bind); }
+        }
+        public ICommand CollapseAllCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                    {
+                        DiagramManager.CollapseAll();
+                    });
+            }
+        }
+        public ICommand ExpandAllCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    DiagramManager.ExpandAll();
+                });
+            }
+        }
+        public ICommand ExpandSelectedItemCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    DiagramManager.ExpandSelectedItem();
+                }, CanExpandAndCollapseSelectedItemCommand);
+            }
+        }
+        public bool CanExpandAndCollapseSelectedItemCommand()
+        {
+            if (DesignerCanvas == null) return false;
+            if (DesignerCanvas.SelectionService == null) return false;
+            var s = DesignerCanvas.SelectionService.CurrentSelection;
+            if (s != null && s.Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public ICommand CollapseSelectedItemCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    DiagramManager.CollapseSelectedItem();
+                }, CanExpandAndCollapseSelectedItemCommand);
+            }
         }
         #endregion
 

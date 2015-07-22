@@ -134,6 +134,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 _diagramControl.SelectedItems.Clear();
                 _diagramControl.SelectedItems.Add(designerItem.DataContext);
             }
+            _diagramControl.Focus();
+            _diagramControl.CanExpandAndCollapseSelectedItem = true;
         }
 
         #endregion
@@ -167,6 +169,7 @@ namespace QPP.Wpf.UI.TreeEditor
             roots.ForEach(root => { DrawDesignerItems(root); });
             Arrange();/*将DesignerItems放到画布上，并且创建连线*/
             SetSelectItem(_diagramControl.DesignerItems.FirstOrDefault(x => String.IsNullOrEmpty(x.ItemParentId)));
+
         }
 
         public string GetTime(Action action)
@@ -549,6 +552,31 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             }
             Arrange();
+        }
+
+        public void ExpandSelectedItem()
+        {
+            var selectedItems = GetSelectedItems();
+            if (selectedItems == null ) return;
+            foreach (var selectedItem in selectedItems)
+            {
+                if (selectedItem.CanCollapsed == true)
+                {
+                    selectedItem.IsExpanded = true;
+                }
+            }
+        }
+        public void CollapseSelectedItem()
+        {
+            var selectedItems = GetSelectedItems();
+            if (selectedItems == null) return;
+            foreach (var selectedItem in selectedItems)
+            {
+                if (selectedItem.CanCollapsed == true)
+                {
+                    selectedItem.IsExpanded = false;
+                }
+            }
         }
         #endregion
 
@@ -944,7 +972,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 MinHeight = 24,
                 DataContext = item.DataContext
             };
-            textBox.SetBinding(TextBox.TextProperty, new Binding("Text") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            textBox.SetBinding(TextBox.TextProperty, new Binding(_diagramControl.TextField) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
             Canvas.SetLeft(textBox, Canvas.GetLeft(item));
             Canvas.SetTop(textBox, Canvas.GetTop(item));
             _diagramControl.DesignerCanvas.Children.Add(textBox);
@@ -961,8 +989,17 @@ namespace QPP.Wpf.UI.TreeEditor
                 Arrange();
                 _diagramControl.IsOnEditing = false;
                 GlobalInputBindingManager.Default.Recover();
+                _diagramControl.Focus();
             };
             t.TextChanged += (sender, e) => { t.Width = GetWidth(item); };
+        }
+
+        public void Edit()
+        {
+            var selectedItems = GetSelectedItems();
+            if (selectedItems == null || selectedItems.Count != 1) return;
+            var selectedItem = selectedItems.FirstOrDefault();
+            Edit(selectedItem);
         }
         void EditorKeyBindings(TextBox t)
         {
@@ -990,6 +1027,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         _diagramControl.DesignerCanvas.Children.Remove(t);
                         Arrange();
                         _diagramControl.IsOnEditing = false;
+                        _diagramControl.Focus();
                     }
                 })
             };
@@ -1070,8 +1108,12 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Select Operations
-        public void SelectUpDown(DesignerItem selectedItem, bool selectUp)
+        public void SelectUpDown(bool selectUp)
         {
+            var selectedItems = GetSelectedItems();
+            if (selectedItems == null || selectedItems.Count != 1) return;
+            var selectedItem = selectedItems.FirstOrDefault();
+
             if (selectedItem == null) return;
             var siblingDesignerItems = _diagramControl.DesignerItems.Where(x => x.ItemParentId == selectedItem.ItemParentId).ToList();
             DesignerItem selectedDesignerItem = null;
@@ -1134,8 +1176,12 @@ namespace QPP.Wpf.UI.TreeEditor
             if (selectedDesignerItem != null) SetSelectItem(selectedDesignerItem);
             Scroll(selectedDesignerItem);
         }
-        public void SelectRightLeft(DesignerItem selectedItem, bool selectRight)
+        public void SelectRightLeft(bool selectRight)
         {
+            var selectedItems = GetSelectedItems();
+            if (selectedItems == null || selectedItems.Count != 1) return;
+            var selectedItem = selectedItems.FirstOrDefault();
+
             DesignerItem selectedDesignerItem = null;
             if (selectedItem != null)
             {

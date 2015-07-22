@@ -21,7 +21,7 @@
                 <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/ZoomBoxControl.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/DiagramControl.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/DiagramDataEditorControl.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/FlatButton.xaml"/>
+                <!--<ResourceDictionary Source="pack://application:,,,/QPP.Wpf.UI.TreeEditor;component/Resources/FlatButton.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
             <models:DataContextSpy x:Key="dataContext" DataContext="{Binding}" />
         </ResourceDictionary>

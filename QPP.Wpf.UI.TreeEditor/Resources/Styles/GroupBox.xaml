@@ -22,7 +22,7 @@
                     BorderThickness="1" 
                     CornerRadius="2,2,0,0" >
               <ContentPresenter Margin="4"
-                                HorizontalAlignment="Center"
+                                HorizontalAlignment="Left"
                                 ContentSource="Header" 
                                 RecognizesAccessKey="True" />
             </Border>

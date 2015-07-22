@@ -316,6 +316,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         if (DiagramControl.SelectedItems != null && !DiagramControl.SelectedItems.Contains(DataContext))
                         {
                             DiagramControl.SelectedItems.Add(DataContext);
+                            DiagramControl.CanExpandAndCollapseSelectedItem = true;
                         }
                     }
                 }
@@ -326,10 +327,12 @@ namespace QPP.Wpf.UI.TreeEditor
                     {
                         DiagramControl.SelectedItems.Clear();
                         DiagramControl.SelectedItems.Add(DataContext);
+                        DiagramControl.CanExpandAndCollapseSelectedItem = true;
                     }
 
                 }
-                Focus();
+                //Focus();
+                DiagramControl.Focus();
             }
             e.Handled = false;
 

@@ -210,22 +210,16 @@
                                  Template="{StaticResource ConnectorDecoratorTemplate}"/>
                             </Grid>
                         </Border>
-                        <Control Grid.Row="1" x:Name="PART_IsExpanderVisible">
-                            <Control.Template>
-                                <ControlTemplate  TargetType="{x:Type Control}">
-                                    <!--<Border Background="Red" BorderThickness="0">-->
-                                        <treeEditor:RelativePositionPanel Margin="-3,0,0,0">
-                                            <ToggleButton 
+                        <treeEditor:RelativePositionPanel  Grid.Row="1"  x:Name="PART_IsExpanderVisible"  Margin="-3,0,0,0">
+                            <ToggleButton 
                                             x:Name="PART_ToggleButton" 
                                             treeEditor:RelativePositionPanel.RelativePosition="0.1,1"
                                             Style="{StaticResource ButtonTemplate}" 
-                                            IsChecked="{Binding IsExpanded}">
-                                            </ToggleButton>
-                                        </treeEditor:RelativePositionPanel>
-                                    <!--</Border>-->
-                                </ControlTemplate>
-                            </Control.Template>
-                        </Control>
+                                            IsChecked="{Binding IsExpanded}"
+                                             Focusable="False"
+                                                >
+                            </ToggleButton>
+                        </treeEditor:RelativePositionPanel>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <!--<MultiDataTrigger>

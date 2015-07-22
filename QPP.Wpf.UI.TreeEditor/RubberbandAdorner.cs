@@ -102,6 +102,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         if (di.ParentID == null)
                         {
                             designerCanvas.SelectionService.AddToSelection(di);
+                            DiagramControl.CanExpandAndCollapseSelectedItem = true;
                         }
                     }
                 }

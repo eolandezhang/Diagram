@@ -35,8 +35,6 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             this.ClearSelection();
             this.AddToSelection(item);
-
-
         }
 
         internal void AddToSelection(ISelectable item)
@@ -47,19 +45,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 CurrentSelection.Add(item);
                 x.IsSelected = true;
 
-                #region 通知控件
-                //if (CurrentSelection.Count == 1)
-                //{
-                //    _diagramControl.SelectedItem = x;
-                //    _diagramControl.SelectedItems.Clear();
-                //}
-                //else if (CurrentSelection.Count > 1)
-                //{
-                //    _diagramControl.SelectedItem = null;
-                //    _diagramControl.SelectedItems.Add(x);
-                //}
-                #endregion
-
+               
                 //_diagramControl.SelectedItems.Add(x);
 
                 //_diagramControl.SelectedItems.Clear();
@@ -122,11 +108,6 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             CurrentSelection.ForEach(item => item.IsSelected = false);
             CurrentSelection.Clear();
-
-            #region 通知控件
-            //_diagramControl.SelectedItem = null;
-            //_diagramControl.SelectedItems.Clear();
-            #endregion
         }
 
         internal void SelectAll()
