@@ -47,7 +47,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #endregion
 
-        #region Dependency Property 用于数据绑定
+        #region Dependency Property
         #region IdField Property
         public static readonly DependencyProperty IdFieldProperty = DependencyProperty.Register(
             "IdField", typeof(string), typeof(DiagramControl), new PropertyMetadata(default(string)));
@@ -75,17 +75,7 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(TextFieldProperty, value); }
         }
         #endregion
-        #region DeletedItems 存储被删除的数据
 
-        public static readonly DependencyProperty DeletedItemsProperty = DependencyProperty.Register(
-            "DeletedItems", typeof(IList), typeof(DiagramControl), new PropertyMetadata(null));
-
-        public IList DeletedItems
-        {
-            get { return (IList)GetValue(DeletedItemsProperty); }
-            set { SetValue(DeletedItemsProperty, value); }
-        }
-        #endregion
         #region ItemSource Property 数据源
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
             "ItemsSource", typeof(IList), typeof(DiagramControl),
@@ -300,6 +290,17 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(SelectedItemsProperty, value); }
         }
         #endregion
+        #region DeletedItems 存储被删除的数据
+
+        public static readonly DependencyProperty DeletedItemsProperty = DependencyProperty.Register(
+            "DeletedItems", typeof(IList), typeof(DiagramControl), new PropertyMetadata(null));
+
+        public IList DeletedItems
+        {
+            get { return (IList)GetValue(DeletedItemsProperty); }
+            set { SetValue(DeletedItemsProperty, value); }
+        }
+        #endregion
         #region Message Property
 
         public static readonly DependencyProperty MessageProperty = DependencyProperty.Register(
@@ -360,7 +361,16 @@ namespace QPP.Wpf.UI.TreeEditor
             element.SetValue(DesignerItemTemplateProperty, value);
         }
         #endregion
+        #region CanExpandAndCollapseSelected ItemProperty 展开折叠选中项菜单是否可用
+        public static readonly DependencyProperty CanExpandAndCollapseSelectedItemProperty = DependencyProperty.Register(
+            "CanExpandAndCollapseSelectedItem", typeof(bool), typeof(DiagramControl), new PropertyMetadata(default(bool)));
 
+        public bool CanExpandAndCollapseSelectedItem
+        {
+            get { return (bool)GetValue(CanExpandAndCollapseSelectedItemProperty); }
+            set { SetValue(CanExpandAndCollapseSelectedItemProperty, value); }
+        }
+        #endregion
         #endregion
 
         #region Constructors
@@ -374,7 +384,7 @@ namespace QPP.Wpf.UI.TreeEditor
             /*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
             Loaded += (d, e) => { Bind(); };
             PreviewKeyDown += DiagramControl_PreviewKeyDown;
-            
+
         }
 
         #endregion
@@ -532,18 +542,17 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
         #endregion
 
-        public static readonly DependencyProperty CanExpandAndCollapseSelectedItemProperty = DependencyProperty.Register(
-            "CanExpandAndCollapseSelectedItem", typeof(bool), typeof(DiagramControl), new PropertyMetadata(default(bool)));
 
-        public bool CanExpandAndCollapseSelectedItem
-        {
-            get { return (bool)GetValue(CanExpandAndCollapseSelectedItemProperty); }
-            set { SetValue(CanExpandAndCollapseSelectedItemProperty, value); }
-        }
 
         #region Command
 
-
+        public ICommand EditSelectedItemCommand
+        {
+            get { return new RelayCommand(() =>
+            {
+                DiagramManager.Edit();
+            });}
+        }
         public ICommand RefreshCommand
         {
             get { return new RelayCommand(Bind); }
@@ -604,11 +613,13 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         #endregion
 
+        #region 消息
         void AddToMessage(string title, string msg)
         {
 
             if (Message.Length > 5000) Message = "";
             Message = "[" + DateTime.Now + "]" + title + ":" + msg + "\r\n" + Message;
         }
+        #endregion
     }
 }

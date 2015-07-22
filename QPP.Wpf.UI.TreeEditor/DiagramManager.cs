@@ -950,17 +950,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #endregion
 
-        #region Add,Edit,Delete,Cut,Copy,Paste
-        /*public void AddDesignerItem(ItemDataBase item)
-        {
-            var parentDesignerItem = _diagramControl.DesignerItems.FirstOrDefault(x => x.ItemId == item.ItemParentId);
-            var designerItem = new DesignerItem(item.ItemId, item.ItemParentId, item, _diagramControl);
-            _diagramControl.DesignerItems.Add(designerItem);
-            DrawChild(parentDesignerItem, designerItem);
-            SetSelectItem(designerItem);
-            ArrangeWithRootItems();
-            Scroll(designerItem);
-        }*/
+        #region Edit,Delete,Cut,Copy,Paste
         #region Edit
         public void Edit(DesignerItem item)
         {
@@ -993,7 +983,6 @@ namespace QPP.Wpf.UI.TreeEditor
             };
             t.TextChanged += (sender, e) => { t.Width = GetWidth(item); };
         }
-
         public void Edit()
         {
             var selectedItems = GetSelectedItems();
