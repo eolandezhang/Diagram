@@ -7,7 +7,7 @@ using System;
  */
 namespace WpfApp.ViewModel.App_Data
 {
-    public class ItemData : ObservableObject
+    public class ItemData : DataModel
     {
         public string ItemId
         {

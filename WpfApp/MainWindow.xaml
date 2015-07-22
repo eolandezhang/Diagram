@@ -12,8 +12,8 @@
         <KeyBinding Key="Enter" Command="{Binding AddSiblingCommand}"/>
         <KeyBinding Key="Tab" Command="{Binding AddAfterCommand}"/>
         <KeyBinding Key="Insert" Command="{Binding AddAfterCommand}"/>
-        <!--<KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
-        <KeyBinding Key="Up" Command="{Binding UpCommand}"/>
+        <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
+        <!--<KeyBinding Key="Up" Command="{Binding UpCommand}"/>
         <KeyBinding Key="Down" Command="{Binding DownCommand}"/>
         <KeyBinding Key="Left" Command="{Binding LeftCommand}"/>
         <KeyBinding Key="Right" Command="{Binding RightCommand}"/>
@@ -25,8 +25,8 @@
             <ToolBar>
                 <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(相邻)" Command="{Binding Path=AddSiblingCommand}" ToolTip="Enter"/>
                 <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(之后)" Command="{Binding Path=AddAfterCommand}" ToolTip="Tab or Insert"/>
-                <!--<Button Margin="4,0,4,0" Padding="5,4,5,4" Content="移除" Command="{Binding Path=DeleteCommand}" ToolTip="Delete"/>
-                <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="折叠" Command="{Binding Path=CollapseCommand}"/>
+                <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="移除" Command="{Binding Path=DeleteCommand}" ToolTip="Delete"/>
+                <!--<Button Margin="4,0,4,0" Padding="5,4,5,4" Content="折叠" Command="{Binding Path=CollapseCommand}"/>
                 <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="展开" Command="{Binding Path=ExpandCommand}"/>
                 <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="复制" Command="{Binding Path=CopyCommand}"/>
                 <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="粘贴" Command="{Binding Path=PasteCommand}"/>-->
@@ -39,7 +39,9 @@
             IdField="ItemId"
             ParentIdField="ItemParentId"
             TextField="Text"
-            SelectedItems="{Binding SelectedItems}">
+            SelectedItems="{Binding SelectedItems}"
+            DeletedItems="{Binding DeletedItems}"
+            >
             <!--<treeEditor:DiagramControl
             x:Name="Diagram" 
             DiagramHeader="树状图">-->

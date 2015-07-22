@@ -5,9 +5,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
+using QPP.ComponentModel;
 
 /*
  * 树状图控件
@@ -39,6 +42,7 @@ namespace QPP.Wpf.UI.TreeEditor
         public DesignerCanvas DesignerCanvas { get; set; }
         public bool IsOnEditing;/*双击出现编辑框，标识编辑状态，此时回车按键按下之后，会阻止新增相邻节点命令*/
         public DiagramManager DiagramManager { get; set; }
+
         #endregion
 
         #region Dependency Property 用于数据绑定
@@ -69,6 +73,17 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(TextFieldProperty, value); }
         }
         #endregion
+        #region DeletedItems 存储被删除的数据
+
+        public static readonly DependencyProperty DeletedItemsProperty = DependencyProperty.Register(
+            "DeletedItems", typeof(IList), typeof(DiagramControl), new PropertyMetadata(null));
+
+        public IList DeletedItems
+        {
+            get { return (IList)GetValue(DeletedItemsProperty); }
+            set { SetValue(DeletedItemsProperty, value); }
+        }
+        #endregion
         #region ItemSource Property 数据源
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
             "ItemsSource", typeof(IList), typeof(DiagramControl),
@@ -86,23 +101,118 @@ namespace QPP.Wpf.UI.TreeEditor
                     CollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
                 }
             }));
-
         static void CollectionChanged(DiagramControl dc, INotifyCollectionChanged items)
         {
             items.CollectionChanged += (sender, arg) =>
             {
-                if (arg.Action == NotifyCollectionChangedAction.Add)
+                switch (arg.Action)
                 {
-                    AddAction(dc, arg.NewItems);
+                    case NotifyCollectionChangedAction.Add:
+                        AddAction(dc, arg.NewItems);
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        DeleteAction(dc, arg.OldItems);
+                        break;
+
                 }
+
             };
         }
+
+        public void EnsureDeletedItems()
+        {
+            if (DeletedItems == null)
+            {
+                DeletedItems = new ObservableCollection<object>();
+            }
+        }
+        private static void DeleteAction(DiagramControl dc, IList oldItems)
+        {
+            if (oldItems == null || oldItems.Count == 0) return;
+            dc.EnsureDeletedItems();
+            foreach (var oldItem in oldItems)
+            {
+                var model = oldItem as DataModel;
+                if (model == null) continue;
+
+                //删除所有子节点
+                var children = dc.GetChildren(oldItem);
+                children.ForEach(x =>
+                {
+                    var a = x as DataModel;
+                    if (a != null)
+                    {
+                        a.MarkDeleted();
+                        dc.DeletedItems.Add(a);
+                        dc.DiagramManager.DeleteItem(dc.GetId(a));
+                    }
+                });
+
+                //删除本身
+                model.MarkDeleted();
+                dc.DeletedItems.Add(oldItem);
+                dc.DiagramManager.DeleteItem(dc.GetId(oldItem));
+
+                //更新展开按钮显示状态
+                var pid = dc.GetPId(oldItem);
+                if (pid.IsNotEmpty())
+                {
+                    var parentDesignerItem = dc.DiagramManager.GetDesignerItemById(pid);
+                    dc.DiagramManager.GetDirectSubItemsAndUpdateExpander(parentDesignerItem);
+
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                    {
+                        //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
+                        var m = dc.DiagramManager.GetTime(() => { dc.DiagramManager.DeleteArrange(parentDesignerItem); });
+                        dc.AddToMessage("删除后重新布局", m);
+                        dc.DiagramManager.SetSelectItem(parentDesignerItem);
+                        dc.DiagramManager.Scroll(parentDesignerItem);
+                    }));
+                }
+
+            }
+        }
+        string GetPId(object item)
+        {
+            var oType = item.GetType();
+            var parentIdField = ParentIdField;
+            var pid = oType.GetProperty(parentIdField);
+            return pid.GetValue(item, null).ToString();
+        }
+        string GetId(object item)
+        {
+            var oType = item.GetType();
+            var idField = IdField;
+            var id = oType.GetProperty(idField);
+            return id.GetValue(item, null).ToString();
+        }
+
+        List<object> GetChildren(object item)
+        {
+            List<object> children = new List<object>();
+            foreach (var c in ItemsSource)
+            {
+                string pid = GetPId(c);
+                string id = GetId(item);
+                if (id == pid)
+                {
+                    children.Add(c);
+                    children.AddRange(GetChildren(c));
+                }
+            }
+            return children;
+        }
+
 
         static void AddAction(DiagramControl dc, IList newItems)
         {
             if (newItems == null || newItems.Count == 0) return;
             foreach (var newItem in newItems)
             {
+                var model = newItem as DataModel;
+                if (model == null) continue;
+                model.MarkCreated();
+
                 var item = new DesignerItem(newItem, dc);
                 dc.DesignerItems.Add(item);
                 var parentid = dc.DiagramManager.GetPId(item);
@@ -116,15 +226,18 @@ namespace QPP.Wpf.UI.TreeEditor
                     });
                     dc.AddToMessage("增加节点", msg);
 
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {
                         //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
-                        var m = dc.DiagramManager.GetTime(() => { dc.DiagramManager.AfterArrange(item); });
-                        dc.AddToMessage("重新布局", m);
+                        var m = dc.DiagramManager.GetTime(() => { dc.DiagramManager.AddNewArrange(item); }); 
+                        dc.DiagramManager.Scroll(item);
+                        dc.AddToMessage("新增后重新布局", m);
                     }));
+
                 }
             }
         }
+
         public IList ItemsSource
         {
             get { return (IList)GetValue(ItemsSourceProperty); }
@@ -220,9 +333,9 @@ namespace QPP.Wpf.UI.TreeEditor
             Items = new ObservableCollection<DiagramItem>();
             DiagramManager = new DiagramManager(this);
             DesignerItems = new ObservableCollection<DesignerItem>();
+
             /*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
             Loaded += (d, e) => { Bind(); };
-
         }
 
         #endregion
@@ -265,13 +378,10 @@ namespace QPP.Wpf.UI.TreeEditor
 
                 if (DesignerItems.Any())
                 {
-
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {
                         AddToMessage("载入数据源", DiagramManager.GetTime(DiagramManager.Draw));
                     }));
-
-                    //DiagramManager.Draw();
                 }
             }
         }
@@ -281,7 +391,7 @@ namespace QPP.Wpf.UI.TreeEditor
             foreach (var diagramItem in Items)
             {
 #if DEBUG
-                diagramItem.Text += "_" + diagramItem.Id;
+                //diagramItem.Text += "_" + diagramItem.Id;
 #endif
                 SetItemsParent(diagramItem);
             }
@@ -291,7 +401,7 @@ namespace QPP.Wpf.UI.TreeEditor
             foreach (var item in diagramItem.Items)
             {
 #if DEBUG
-                item.Text += "_" + item.Id;
+                //item.Text += "_" + item.Id;
 #endif
                 item.PId = diagramItem.Id;
                 SetItemsParent(item);

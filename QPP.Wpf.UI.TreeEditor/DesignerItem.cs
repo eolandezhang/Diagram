@@ -305,7 +305,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     if (IsSelected)
                     {
                         designer.SelectionService.RemoveFromSelection(this);
-                        if (DiagramControl.SelectedItems.Contains(DataContext))
+                        if (DiagramControl.SelectedItems != null && DiagramControl.SelectedItems.Contains(DataContext))
                         {
                             DiagramControl.SelectedItems.Remove(DataContext);
                         }
@@ -313,12 +313,9 @@ namespace QPP.Wpf.UI.TreeEditor
                     else
                     {
                         designer.SelectionService.AddToSelection(this);
-                        if (DiagramControl.SelectedItems != null)
+                        if (DiagramControl.SelectedItems != null && !DiagramControl.SelectedItems.Contains(DataContext))
                         {
-                            if (!DiagramControl.SelectedItems.Contains(DataContext))
-                            {
-                                DiagramControl.SelectedItems.Add(DataContext);
-                            }
+                            DiagramControl.SelectedItems.Add(DataContext);
                         }
                     }
                 }

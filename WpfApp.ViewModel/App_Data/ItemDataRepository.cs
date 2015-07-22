@@ -36,6 +36,7 @@ namespace WpfApp.ViewModel.App_Data
                 new ItemData("3","1", "3", "3"),
                 new ItemData("4","2", "4", "4"),
                 new ItemData("5","3", "5\r\nasdf", "5"),
+                /*new ItemData(Guid.NewGuid().ToString(),"2", "4", "4"),
                 new ItemData(Guid.NewGuid().ToString(),"2", "4", "4"),
                 new ItemData(Guid.NewGuid().ToString(),"2", "4", "4"),
                 new ItemData(Guid.NewGuid().ToString(),"2", "4", "4"),
@@ -128,8 +129,7 @@ namespace WpfApp.ViewModel.App_Data
                 new ItemData(Guid.NewGuid().ToString(),"2", "4", "4"),
                 new ItemData(Guid.NewGuid().ToString(),"2", "4", "4"),
                 new ItemData(Guid.NewGuid().ToString(),"2", "4", "4"),
-                new ItemData(Guid.NewGuid().ToString(),"2", "4", "4"),
-                new ItemData(Guid.NewGuid().ToString(),"2", "4", "4"),
+                new ItemData(Guid.NewGuid().ToString(),"2", "4", "4"),*/
                 
             };
         }

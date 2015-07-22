@@ -11,15 +11,13 @@ namespace WpfApp.ViewModel
     public class MainViewModel : ObservableObject
     {
         public string Title { get { return Get<string>("Title"); } set { Set("Title", value); } }
-        public ObservableCollection<ItemData> ItemsSource
-        {
-            get;
-            private set;
-        }
-        public ObservableCollection<object> SelectedItems { get; set; }
+        public ObservableCollection<ItemData> ItemsSource { get; set; }
+        public ObservableCollection<ItemData> SelectedItems { get; set; }
+        public ObservableCollection<ItemData> DeletedItems { get; set; }
         public MainViewModel()
         {
-            SelectedItems = new ObservableCollection<object>();
+            SelectedItems = new ObservableCollection<ItemData>();
+            DeletedItems = new ObservableCollection<ItemData>();
             Title = "Tree Editor";
             LoadData();
 
@@ -57,7 +55,6 @@ namespace WpfApp.ViewModel
                 return selectedItem;
             }
             return null;
-
         }
         #region AddAfterCommand
         public ICommand AddAfterCommand
@@ -86,9 +83,30 @@ namespace WpfApp.ViewModel
             var selectedItem = GetSelectedItem();
             if (selectedItem != null)
             {
-                if (selectedItem.ItemParentId.IsNullOrEmpty()) return;
+                if (selectedItem.ItemParentId.IsNullOrEmpty())
+                {
+                    AddAfterAction();
+                    return;
+                }
                 var newItem = ItemDataRepository.Default.AddNew(selectedItem.ItemParentId);
                 ItemsSource.Add(newItem);
+            }
+        }
+        #endregion
+        #region DeleteCommand
+
+        public ICommand DeleteCommand
+        {
+            get { return new RelayCommand(DeleteAction); }
+        }
+
+        private void DeleteAction()
+        {
+            var selectedItem = GetSelectedItem();
+            if (selectedItem != null)
+            {
+                if (selectedItem.ItemParentId.IsNullOrEmpty()) return;
+                ItemsSource.Remove(selectedItem);
             }
         }
         #endregion
