@@ -1,0 +1,16 @@
+﻿<Window x:Class="Examples.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Canvas x:Name="Canvas" Background="LightYellow" Width="1000" Height="800">
+            <!--<Grid x:Name="Grid" Canvas.Top="100" Canvas.Left="100" Cursor="SizeAll" >-->
+
+            <Border x:Name="Border" Width="200" Height="30" Background="WhiteSmoke" BorderBrush="DeepSkyBlue" BorderThickness="2" IsHitTestVisible="True"  Cursor="SizeAll"  Canvas.Top="100" Canvas.Left="100" >
+                <Label Content="Item To Move" IsHitTestVisible="False"/>
+            </Border>
+            <!--</Grid>-->
+            <Border x:Name="Shadow" Width="200" Height="30" BorderBrush="Red" BorderThickness="2" IsHitTestVisible="False" Visibility="Collapsed" ></Border>
+        </Canvas>
+    </Grid>
+</Window>
