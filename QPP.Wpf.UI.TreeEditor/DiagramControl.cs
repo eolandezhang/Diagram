@@ -256,9 +256,9 @@ namespace QPP.Wpf.UI.TreeEditor
             "SelectedItems", typeof(IList), typeof(DiagramControl),
             new FrameworkPropertyMetadata(null, (d, e) =>
             {
-                var dc = d as DiagramControl;
-                if (dc == null) return;
-                SelectedItemsCollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
+                //var dc = d as DiagramControl;
+                //if (dc == null) return;
+                //SelectedItemsCollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
             }));
 
         private static void SelectedItemsCollectionChanged(DiagramControl dc, INotifyCollectionChanged items)
@@ -548,10 +548,13 @@ namespace QPP.Wpf.UI.TreeEditor
 
         public ICommand EditSelectedItemCommand
         {
-            get { return new RelayCommand(() =>
+            get
             {
-                DiagramManager.Edit();
-            });}
+                return new RelayCommand(() =>
+                    {
+                        DiagramManager.Edit();
+                    });
+            }
         }
         public ICommand RefreshCommand
         {
