@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Xml;
 
 namespace QPP.Wpf.UI.TreeEditor
@@ -15,13 +16,14 @@ namespace QPP.Wpf.UI.TreeEditor
     {
         public double X { get; set; }
         public double Y { get; set; }
-        //public Border ShadowView { get; set; }
         public DesignerItem ShadowItem { get; set; }
         public DesignerItem DesignerItem { get; set; }
         public List<DesignerItem> SelectedItemsAllSubItems { get; set; }
     }
     public partial class DesignerCanvas : Canvas
     {
+        #region Fields & Properties
+
         private Point? rubberbandSelectionStartPoint = null;
         private DiagramControl _diagramControl;
         public Shadow Shadow { get; set; }
@@ -47,9 +49,12 @@ namespace QPP.Wpf.UI.TreeEditor
                 return selectionService;
             }
         }
-
-        //private Point point;
         private DesignerItem NewParent;
+        private bool isGray = false;
+
+        #endregion
+
+        #region Override
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
@@ -70,8 +75,6 @@ namespace QPP.Wpf.UI.TreeEditor
                 isGray = false;
             }
         }
-
-        private bool isGray = false;
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -94,73 +97,87 @@ namespace QPP.Wpf.UI.TreeEditor
                         adornerLayer.Add(adorner);
                     }
                 }
-
             }
             e.Handled = true;
-
-            var canvasPosition = e.GetPosition(this);
+            Move(e);
+        }
+        void Move(MouseEventArgs e)//移动影子
+        {
             if (Shadow == null) return;
             if (Shadow.ShadowItem == null) return;
-
             if (Math.Abs(Shadow.X - GetLeft(Shadow.DesignerItem)) < 2 && Math.Abs(Shadow.Y - GetTop(Shadow.DesignerItem)) < 2) return;
-
             Shadow.ShadowItem.Visibility = Visibility.Visible;
-
+            var canvasPosition = e.GetPosition(this);
             var y = canvasPosition.Y - Shadow.Y;
             var x = canvasPosition.X - Shadow.X;
             SetTop(Shadow.ShadowItem, y);
             SetLeft(Shadow.ShadowItem, x);
             var manager = _diagramControl.DiagramManager;
-
             NewParent = manager.ChangeParent(new Point(x, y), Shadow.DesignerItem, Shadow.SelectedItemsAllSubItems);
             if (!isGray)
             {
                 Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = true; });
                 isGray = true;
             }
-
             DiagramControl.DiagramManager.CreateHelperConnection(NewParent, Shadow.ShadowItem);
             DiagramControl.DiagramManager.MoveUpAndDown(NewParent, Shadow.ShadowItem);
-
-            //var VerticalChange = y - GetTop(Shadow.DesignerItem);
-            //var HorizontalChange = x - GetLeft(Shadow.DesignerItem);
-
-            //if (parent!=null)
-            //VerticalScroll(parent, new Point(x, y));
-            //HorizontalScroll(parent, new Point(x, y));
-
+            AutoScroll(e);
         }
-        private double _verticalOffset = 0;
-        private double _horizontalOffset = 0;
-        void VerticalScroll(DesignerItem designerItem, Point position)
+        IScrollInfo _scrollInfo;
+        void AutoScroll(MouseEventArgs e)//自动滚动
         {
-            var yPos = position.Y;
-            var sv = (ScrollViewer)DiagramControl.Template.FindName("DesignerScrollViewer", DiagramControl);
-            if (sv.VerticalOffset + sv.ViewportHeight - 100 < yPos)
+            var scrollViewer = DiagramControl.Template.FindName("DesignerScrollViewer", DiagramControl) as ScrollViewer;
+            if (scrollViewer == null) return;
+            var parent = e.OriginalSource as DependencyObject;
+            while (parent != null)
             {
-                sv.ScrollToVerticalOffset(position.Y - GetTop(designerItem));
+                _scrollInfo = parent as IScrollInfo;
+                if (_scrollInfo != null && _scrollInfo.ScrollOwner == scrollViewer)
+                {
+                    break;
+                }
+                _scrollInfo = null;
+                parent = VisualTreeHelper.GetParent(parent);
             }
-            else if (yPos < sv.VerticalOffset + 100)
+
+            UIElement scrollable = _scrollInfo as UIElement;
+            if (scrollable != null)
             {
-                sv.ScrollToVerticalOffset(position.Y - GetTop(designerItem));
+                var mousePos = e.GetPosition(scrollable);
+
+                #region Vertical
+
+                var v = 100;
+                if (mousePos.Y < v)
+                {
+                    var delta = (mousePos.Y - v) / 1; //translate back to original unit
+                    _scrollInfo.SetVerticalOffset(_scrollInfo.VerticalOffset + delta);
+                    _diagramControl.AddToMessage("滚动", "上移");
+                }
+                else if (mousePos.Y > (scrollable.RenderSize.Height - v))
+                {
+                    var delta = (mousePos.Y + v - scrollable.RenderSize.Height) / 1; //translate back to original unit
+                    _scrollInfo.SetVerticalOffset(_scrollInfo.VerticalOffset + delta);
+                    _diagramControl.AddToMessage("滚动", "下移");
+                }
+                #endregion
+
+                #region Horizontal
+                var h = 300;
+                if (mousePos.X < h)
+                {
+                    var delta = (mousePos.X - h) / 1; //translate back to original unit
+                    _scrollInfo.SetHorizontalOffset(_scrollInfo.HorizontalOffset + delta);
+                }
+                else if (mousePos.X > (scrollable.RenderSize.Width - h))
+                {
+                    var delta = (mousePos.X + h - scrollable.RenderSize.Width) / 1; //translate back to original unit
+                    _scrollInfo.SetHorizontalOffset(_scrollInfo.HorizontalOffset + delta);
+                }
+                #endregion
             }
+
         }
-        void HorizontalScroll(DesignerItem designerItem, Point position)
-        {
-
-            var xPos = position.X;
-            var sv = (ScrollViewer)DiagramControl.Template.FindName("DesignerScrollViewer", DiagramControl);
-            if (sv.HorizontalOffset + sv.ViewportWidth - designerItem.ActualWidth < xPos)
-            {
-                // sv.ScrollToHorizontalOffset(sv.HorizontalOffset + horizontalChange);
-            }
-            // else if (xPos < sv.HorizontalOffset + designerItem.ActualWidth && horizontalChange < 0)
-            {
-                // sv.ScrollToHorizontalOffset(sv.HorizontalOffset + horizontalChange);
-            }
-
-        }
-
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             if (Shadow == null) return;
@@ -177,14 +194,13 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x, y));
             }
-           _diagramControl.DiagramManager.RemoveHelperConnection();
+            _diagramControl.DiagramManager.RemoveHelperConnection();
             Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
             Children.Remove(Shadow.ShadowItem);
             Shadow = null;
             NewParent = null;
             isGray = false;
         }
-
         protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
@@ -230,7 +246,6 @@ namespace QPP.Wpf.UI.TreeEditor
                 e.Handled = true;
             }
         }
-
         protected override Size MeasureOverride(Size constraint)
         {
             Size size = new Size();
@@ -253,8 +268,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             }
             // add margin 
-            size.Width += 1000;
-            size.Height += 1000;
+            size.Width += 500;
+            size.Height += 500;
 
             //foreach (DesignerItem item in SelectionService.CurrentSelection.OfType<DesignerItem>())
             //{
@@ -268,7 +283,6 @@ namespace QPP.Wpf.UI.TreeEditor
 
             return size;
         }
-
         private void SetConnectorDecoratorTemplate(DesignerItem item)
         {
             if (item.ApplyTemplate() && item.Content is UIElement)
@@ -280,6 +294,7 @@ namespace QPP.Wpf.UI.TreeEditor
             }
         }
 
+        #endregion
 
     }
 }
