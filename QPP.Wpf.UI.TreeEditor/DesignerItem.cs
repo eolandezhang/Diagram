@@ -383,6 +383,7 @@ namespace QPP.Wpf.UI.TreeEditor
             #endregion
             DiagramControl.AddToMessage("Create Shadow", "");
         }
+
         #endregion
 
 

@@ -150,25 +150,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         #endregion
 
-        void GenerateDesignerItemContent/*创建元素内容，固定结构*/(DesignerItem item, SolidColorBrush fontColorBrush)
-        {
-            if (item == null) return;
-            var textblock = new TextBlock()
-            {
-                IsHitTestVisible = false,
-                VerticalAlignment = VerticalAlignment.Center,
-                Padding = new Thickness(5, 2, 5, 2),
-                FontFamily = new FontFamily("Arial"),
-                FontSize = FONT_SIZE,
-                Foreground = fontColorBrush,
-                DataContext = item.DataContext
-            };
-            textblock.SetBinding(TextBlock.TextProperty, new Binding("Text"));
-            item.Content = textblock;
-        }
-
         #region Draw
-
         /*利用数据源在画布上添加节点及连线*/
         public void Draw()
         {
@@ -185,7 +167,6 @@ namespace QPP.Wpf.UI.TreeEditor
             }));
 
         }
-
         public string GetTime(Action action)
         {
             Stopwatch t = new Stopwatch();
@@ -200,7 +181,6 @@ namespace QPP.Wpf.UI.TreeEditor
             return seconds + "秒" + ",共" + _diagramControl.DesignerItems.Count + "个";
 
         }
-
         private List<DesignerItem> DrawDesignerItems(DesignerItem parentItem)
         {
             var designerItems = new List<DesignerItem>();
@@ -251,7 +231,22 @@ namespace QPP.Wpf.UI.TreeEditor
             Canvas.SetTop(item, topOffset);
             Canvas.SetLeft(item, leftOffset);
         }
-
+        void GenerateDesignerItemContent/*创建元素内容，固定结构*/(DesignerItem item, SolidColorBrush fontColorBrush)
+        {
+            if (item == null) return;
+            var textblock = new TextBlock()
+            {
+                IsHitTestVisible = false,
+                VerticalAlignment = VerticalAlignment.Center,
+                Padding = new Thickness(5, 2, 5, 2),
+                FontFamily = new FontFamily("Arial"),
+                FontSize = FONT_SIZE,
+                Foreground = fontColorBrush,
+                DataContext = item.DataContext
+            };
+            textblock.SetBinding(TextBlock.TextProperty, new Binding("Text"));
+            item.Content = textblock;
+        }
         #endregion
 
         #region Arrange

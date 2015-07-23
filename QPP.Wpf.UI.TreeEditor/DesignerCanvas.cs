@@ -206,6 +206,7 @@ namespace QPP.Wpf.UI.TreeEditor
             NewParent = null;
             isGray = false;
             IsMouseDown = false;
+            _diagramControl.AddToMessage("移除影子", "");
         }
         
         protected override void OnDrop(DragEventArgs e)
