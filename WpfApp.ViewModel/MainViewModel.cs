@@ -2,6 +2,7 @@
 using QPP.Command;
 using QPP.ComponentModel;
 using QPP.Wpf.Command;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using WpfApp.ViewModel.App_Data;
@@ -112,15 +113,16 @@ namespace WpfApp.ViewModel
 
         private void DeleteAction()
         {
-            var selectedItem = GetSelectedItem();
-            if (selectedItem != null)
+            //var selectedItem = GetSelectedItem();
+            if (SelectedItems == null) return;
+            var list = SelectedItems.ToList();
+            foreach (var selectedItem in list.Where(selectedItem => !selectedItem.ItemParentId.IsNullOrEmpty()))
             {
-                if (selectedItem.ItemParentId.IsNullOrEmpty()) return;
                 ItemsSource.Remove(selectedItem);
             }
         }
         #endregion
-       
+
         #endregion
     }
 }
