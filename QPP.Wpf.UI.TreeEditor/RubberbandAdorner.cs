@@ -56,16 +56,16 @@ namespace QPP.Wpf.UI.TreeEditor
             e.Handled = true;
 
 
-            //if (DiagramControl != null)
-            //{
-            //    DiagramControl.SelectedItems.Clear();
-            //    var selectedItems = designerCanvas.SelectionService.CurrentSelection;
-            //    foreach (var selectedItem in selectedItems.ConvertAll(x => x as DesignerItem))
-            //    {
-                    
-            //        DiagramControl.SelectedItems.Add(selectedItem.DataContext);
-            //    }
-            //}
+            if (DiagramControl != null)
+            {
+                DiagramControl.SelectedItems.Clear();
+                var selectedItems = designerCanvas.SelectionService.CurrentSelection;
+                foreach (var selectedItem in selectedItems.ConvertAll(x => x as DesignerItem))
+                {
+
+                    DiagramControl.SelectedItems.Add(selectedItem.DataContext);
+                }
+            }
         }
 
         protected override void OnRender(DrawingContext dc)

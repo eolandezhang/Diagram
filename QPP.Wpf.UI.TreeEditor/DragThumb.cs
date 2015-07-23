@@ -142,8 +142,8 @@ namespace QPP.Wpf.UI.TreeEditor
             if (diagramControl == null) return;
             foreach (var item in diagramControl.DesignerItems)
             {
-                item.Oldx = Canvas.GetLeft(item);
-                item.Oldy = Canvas.GetTop(item);
+                item.OriginalLeft = Canvas.GetLeft(item);
+                item.OriginalTop = Canvas.GetTop(item);
             }
         }
 

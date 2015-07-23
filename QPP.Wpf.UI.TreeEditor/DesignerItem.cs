@@ -16,8 +16,8 @@ namespace QPP.Wpf.UI.TreeEditor
     {
         #region Fields
         #region 位置
-        public double Oldx;/*记录拖拽前的位置*/
-        public double Oldy;
+        public double OriginalLeft;/*记录拖拽前的位置*/
+        public double OriginalTop;
         #endregion
         public DesignerItem ShadowOrignal;/*当此节点为shadow时，记录shadow的原节点*/
         public DiagramControl DiagramControl;
@@ -362,6 +362,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         void CreateShadow(DesignerCanvas designer, MouseButtonEventArgs e)//移动影子
         {
+            designer.IsMouseDown = true;
             designer.Shadow = new Shadow();
             var shadowItem = DiagramControl.DiagramManager.CreateItemShadow(this);
             designer.Shadow.ShadowItem = shadowItem;
@@ -380,6 +381,7 @@ namespace QPP.Wpf.UI.TreeEditor
             Canvas.SetTop(designer.Shadow.ShadowItem, top);
             Canvas.SetLeft(designer.Shadow.ShadowItem, left);
             #endregion
+            DiagramControl.AddToMessage("Create Shadow", "");
         }
         #endregion
 

@@ -51,7 +51,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         private DesignerItem NewParent;
         private bool isGray = false;
-
+        public bool IsMouseDown = false;
         #endregion
 
         #region Override
@@ -73,6 +73,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 Focus();
                 e.Handled = true;
                 isGray = false;
+                IsMouseDown = true;
             }
         }
         protected override void OnMouseMove(MouseEventArgs e)
@@ -99,7 +100,10 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             }
             e.Handled = true;
-            Move(e);
+            if (IsMouseDown)
+            {
+                Move(e); AutoScroll(e);
+            } 
         }
         void Move(MouseEventArgs e)//移动影子
         {
@@ -121,7 +125,7 @@ namespace QPP.Wpf.UI.TreeEditor
             }
             DiagramControl.DiagramManager.CreateHelperConnection(NewParent, Shadow.ShadowItem);
             DiagramControl.DiagramManager.MoveUpAndDown(NewParent, Shadow.ShadowItem);
-            AutoScroll(e);
+            
         }
         IScrollInfo _scrollInfo;
         void AutoScroll(MouseEventArgs e)//自动滚动
@@ -178,29 +182,32 @@ namespace QPP.Wpf.UI.TreeEditor
             }
 
         }
-        protected override void OnMouseUp(MouseButtonEventArgs e)
+        protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
         {
-            if (Shadow == null) return;
-            if (Shadow.ShadowItem == null) return;
-            var canvasPosition = e.GetPosition(this);
-            var y = canvasPosition.Y - Shadow.Y;
-            var x = canvasPosition.X - Shadow.X;
-            //var orgParent = _diagramControl.DesignerItems.FirstOrDefault(p => p.ItemId == Shadow.DesignerItem.ItemParentId);
-
-            var ox = Math.Abs(x - GetLeft(Shadow.DesignerItem));
-            var oy = Math.Abs(y - GetTop(Shadow.DesignerItem));
-
-            if (ox > 2 || oy > 2)
+            if (Shadow != null && Shadow.ShadowItem != null)
             {
-                _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x, y), Shadow.SelectedItemsAllSubItems);
+                var canvasPosition = e.GetPosition(this);
+                var y = canvasPosition.Y - Shadow.Y;
+                var x = canvasPosition.X - Shadow.X;
+                //var orgParent = _diagramControl.DesignerItems.FirstOrDefault(p => p.ItemId == Shadow.DesignerItem.ItemParentId);
+
+                var ox = Math.Abs(x - GetLeft(Shadow.DesignerItem));
+                var oy = Math.Abs(y - GetTop(Shadow.DesignerItem));
+
+                if (ox > 2 || oy > 2)
+                {
+                    _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x, y), Shadow.SelectedItemsAllSubItems);
+                }
+
+                Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
+                Children.Remove(Shadow.ShadowItem);
             }
-            _diagramControl.DiagramManager.RemoveHelperConnection();
-            Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
-            Children.Remove(Shadow.ShadowItem);
             Shadow = null;
             NewParent = null;
             isGray = false;
+            IsMouseDown = false;
         }
+        
         protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);

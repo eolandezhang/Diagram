@@ -127,12 +127,8 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 var deleteItem = dc.DiagramManager.GetDesignerItemById(dc.GetId(oldItem));
 
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                {
-                    //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
-                    dc.DiagramManager.DeleteArrange(deleteItem);
-                }));
-
+               
+                dc.DiagramManager.DeleteArrange(deleteItem);
                 var model = oldItem as DataModel;
                 if (model == null) continue;
 
