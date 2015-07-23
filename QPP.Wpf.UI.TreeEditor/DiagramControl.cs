@@ -44,7 +44,7 @@ namespace QPP.Wpf.UI.TreeEditor
         public DesignerCanvas DesignerCanvas { get; set; }
         public bool IsOnEditing;/*双击出现编辑框，标识编辑状态，此时回车按键按下之后，会阻止新增相邻节点命令*/
         public DiagramManager DiagramManager { get; set; }
-
+        public List<DesignerItem> DeletedDesignerItems = new List<DesignerItem>();
         #endregion
 
         #region Dependency Property
@@ -122,8 +122,17 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             if (oldItems == null || oldItems.Count == 0) return;
             dc.EnsureDeletedItems();
+
             foreach (var oldItem in oldItems)
             {
+                var deleteItem = dc.DiagramManager.GetDesignerItemById(dc.GetId(oldItem));
+
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                {
+                    //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
+                    dc.DiagramManager.DeleteArrange(deleteItem);
+                }));
+
                 var model = oldItem as DataModel;
                 if (model == null) continue;
 
@@ -145,20 +154,17 @@ namespace QPP.Wpf.UI.TreeEditor
                 dc.DeletedItems.Add(oldItem);
                 dc.DiagramManager.DeleteItem(dc.GetId(oldItem));
 
-                //更新展开按钮显示状态
                 var pid = dc.GetPId(oldItem);
                 if (pid.IsNotEmpty())
                 {
                     var parentDesignerItem = dc.DiagramManager.GetDesignerItemById(pid);
-                    dc.DiagramManager.GetDirectSubItemsAndUpdateExpander(parentDesignerItem);
-
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                    {
-                        //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
-                        dc.DiagramManager.DeleteArrange(parentDesignerItem);
-                        dc.DiagramManager.SetSelectItem(parentDesignerItem);
-                        dc.DiagramManager.Scroll(parentDesignerItem);
-                    }));
+                    var subitems = dc.DiagramManager.GetDirectSubItemsAndUpdateExpander(parentDesignerItem);//更新展开按钮显示状态
+                    #region 选中上方相邻节点
+                    var topItems = subitems.Where(x => Canvas.GetTop(x) < Canvas.GetTop(deleteItem));
+                    var item = topItems.Any() ? topItems.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b) : parentDesignerItem;
+                    dc.DiagramManager.SetSelectItem(item);
+                    #endregion
+                    dc.DiagramManager.Scroll(item);
                 }
 
             }

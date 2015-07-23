@@ -46,7 +46,6 @@ namespace QPP.Wpf.UI.TreeEditor
             var id = oType.GetProperty(idField);
             return id.GetValue(item.DataContext, null).ToString();
         }
-
         public void SetPId(DesignerItem designerItem)
         {
             var oType = designerItem.DataContext.GetType();
@@ -90,6 +89,10 @@ namespace QPP.Wpf.UI.TreeEditor
             }
             return connections;
         }
+        public List<DesignerItem> GetDirectSubItems(DesignerItem item)
+        {
+            return _diagramControl.DesignerItems.Where(x => x.ItemParentId == item.ItemId).OrderBy(x => x.Top).ToList();
+        }
         public List<DesignerItem> GetDirectSubItemsAndUpdateExpander/*取得直接子节点*/(DesignerItem item)
         {
             var list =
@@ -115,7 +118,6 @@ namespace QPP.Wpf.UI.TreeEditor
             }
             return result;
         }
-
         public DesignerItem GetDesignerItemById(string id)
         {
             return _diagramControl.DesignerItems.FirstOrDefault(x => GetId(x) == id);
@@ -275,14 +277,10 @@ namespace QPP.Wpf.UI.TreeEditor
         public void AddNewArrange(DesignerItem newItem)
         {
             var root = GetRoot(newItem);
-
             var m = GetTime(() =>
             {
-
                 var p = _diagramControl.DesignerItems.FirstOrDefault(x => x.ItemId == newItem.ItemParentId);
                 if (p == null) return;
-                //p.UpdateLayout();
-
                 newItem.SetTemplate();
                 SetWidth(newItem);
                 newItem.UpdateLayout();
@@ -320,7 +318,6 @@ namespace QPP.Wpf.UI.TreeEditor
                     newItem.Left = left;
                     Canvas.SetTop(newItem, top);
                     Canvas.SetLeft(newItem, left);
-
                     var items =
                         _diagramControl.DesignerItems.Where(
                             x => Canvas.GetTop(x) > Canvas.GetTop(p) && !x.Equals(newItem));
@@ -345,7 +342,13 @@ namespace QPP.Wpf.UI.TreeEditor
                 var p = _diagramControl.DesignerItems.FirstOrDefault(x => x.ItemId == delItem.ItemParentId);
                 if (p == null) return;
                 Arrange(p);
-                var list = GetAllSubItems(p);
+                var list = GetAllSubItems(delItem);
+                double h = 0;
+                foreach (var designerItem in list)
+                {
+                    h += designerItem.ActualHeight;
+                }
+
                 var allSub = list.Where(x => !x.Equals(delItem)).ToList();
                 if (allSub.Any())
                 {
@@ -356,9 +359,34 @@ namespace QPP.Wpf.UI.TreeEditor
                             x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(delItem));
                     foreach (var designerItem in items)
                     {
-                        Canvas.SetTop(designerItem, Canvas.GetTop(lastChild) + lastChild.ActualHeight);
+                        Canvas.SetTop(designerItem, Canvas.GetTop(lastChild) - lastChild.ActualHeight - h);
                     }
                 }
+
+                //var p = _diagramControl.DesignerItems.FirstOrDefault(x => x.ItemId == delItem.ItemParentId);
+                //if (p != null)
+                //{
+                //    var root = GetRoot(p);
+                //    var subitems = GetAllSubItems(_diagramControl.DeletedDesignerItems, delItem);
+                //    double h = 0d;
+                //    foreach (var designerItem in subitems)
+                //    {
+                //        h += designerItem.ActualHeight;
+                //    }
+
+                //    var items =
+                //        _diagramControl.DesignerItems.Where(
+                //            x => Canvas.GetTop(x) > delItem.Oldy && !x.Equals(delItem)).ToList();
+                //    foreach (var designerItem in items)
+                //    {
+                //        var r = GetRoot(designerItem);
+                //        if (r == root)
+                //        {
+                //            Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) - delItem.ActualHeight - h);
+                //        }
+                //    }
+
+                //}
             });
 
             _diagramControl.AddToMessage("删除后重新布局", m);
@@ -1182,6 +1210,7 @@ namespace QPP.Wpf.UI.TreeEditor
             var connectors = GetItemConnectors(item);
             connectors.ForEach(x => { x.Connections.Clear(); });
             _diagramControl.DesignerCanvas.Children.Remove(item);
+            _diagramControl.DeletedDesignerItems.Add(item);
             _diagramControl.DesignerItems.Remove(item);
         }
         #endregion
