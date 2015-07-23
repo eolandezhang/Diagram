@@ -254,13 +254,33 @@ namespace QPP.Wpf.UI.TreeEditor
             MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
             Loaded += DesignerItem_Loaded;
         }
+        void DesignerItem_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Template != null)
+            {
+                ContentPresenter contentPresenter =
+                    Template.FindName("PART_ContentPresenter", this) as ContentPresenter;
+                if (contentPresenter != null)
+                {
+                    UIElement contentVisual = VisualTreeHelper.GetChild(contentPresenter, 0) as UIElement;
+                    if (contentVisual != null)
+                    {
+                        DragThumb thumb = this.Template.FindName("PART_DragThumb", this) as DragThumb;
+                        if (thumb != null)
+                        {
+                            ControlTemplate template = GetDragThumbTemplate(contentVisual);
+                            if (template != null) thumb.Template = template;
+                        }
+                    }
+                }
+            }
+        }
         public DesignerItem(DiagramControl diagramControl)
             : this(Guid.NewGuid().ToString(), diagramControl) { }
-
         public DesignerItem(DiagramItem diagramItem, DiagramControl diagramControl)
         {
-            Top = 5d;
-            Left = 5d;
+            Top = 0d;
+            Left = 0d;
             DiagramControl = diagramControl;
             DataContext = diagramItem;
             SetBinding(TextProperty, new Binding("Text"));
@@ -273,8 +293,8 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         public DesignerItem(object itemData, DiagramControl diagramControl)
         {
-            Top = 5d;
-            Left = 5d;
+            Top = 0d;
+            Left = 0d;
             DiagramControl = diagramControl;
             DataContext = itemData;
             SetBinding(TextProperty, new Binding(diagramControl.TextField));
@@ -334,104 +354,35 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 //Focus();
                 DiagramControl.Focus();
+                CreateShadow(designer, e);
             }
             e.Handled = false;
 
 
-            #region 移动影子
-
-            var canvas = Parent as DesignerCanvas;
-            if (canvas == null) return;
-
-            canvas.Shadow = new Shadow();
-
-            #region DesignerItem Shadow
-
+        }
+        void CreateShadow(DesignerCanvas designer, MouseButtonEventArgs e)//移动影子
+        {
+            designer.Shadow = new Shadow();
             var shadowItem = DiagramControl.DiagramManager.CreateItemShadow(this);
-
-
-
-            #endregion
-
-            #region Border
-
-            //var bd = Template.FindName("Border", this) as Border;
-            //if (bd == null) return;
-            //canvas.Shadow.ShadowView = new Border()
-            //{
-            //    Width = bd.ActualWidth,
-            //    Height = bd.ActualHeight,
-            //    BorderBrush = Brushes.DeepSkyBlue,
-            //    BorderThickness = new Thickness(2),
-            //    Background = Brushes.LightSkyBlue
-            //};
-
-            //Canvas.SetZIndex(canvas.Shadow.ShadowView, 10000);
-            //var textblock = new TextBlock()
-            //{
-            //    Text = this.Text,
-            //    FontFamily = new FontFamily("Arial"),
-            //    Padding = new Thickness(8, 4, 8, 4),
-            //    VerticalAlignment = VerticalAlignment.Center,
-            //    Foreground = Brushes.Black
-            //};
-            //canvas.Shadow.ShadowView.Child = textblock;
-
-            //canvas.Children.Add(canvas.Shadow.ShadowView);
-
-            #endregion
-            canvas.Shadow.ShadowItem = shadowItem;
-            canvas.Children.Add(canvas.Shadow.ShadowItem);
-            Canvas.SetZIndex(canvas.Shadow.ShadowItem, 10000);
-
-            var canvasPosition = e.GetPosition(canvas);
+            designer.Shadow.ShadowItem = shadowItem;
+            designer.Children.Add(designer.Shadow.ShadowItem);
+            designer.Shadow.DesignerItem = this;
+            designer.Shadow.ShadowItem.Visibility = Visibility.Collapsed;
+            designer.Shadow.SelectedItemsAllSubItems = DiagramControl.DiagramManager.GetSelectedItemsAllSubItems();
+            #region 位置
+            var canvasPosition = e.GetPosition(designer);
             var itemPosition = e.GetPosition(this);
             var top = canvasPosition.Y - itemPosition.Y;
             var left = canvasPosition.X - itemPosition.X;
-            
-            Canvas.SetTop(canvas.Shadow.ShadowItem, top);
-            Canvas.SetLeft(canvas.Shadow.ShadowItem, left);
-            canvas.Shadow.X = itemPosition.X;
-            canvas.Shadow.Y = itemPosition.Y;
-            
-            canvas.Shadow.DesignerItem = this;
-            canvas.Shadow.ShadowItem.Visibility = Visibility.Collapsed;
-
-            canvas.Shadow.SelectedItemsAllSubItems = DiagramControl.DiagramManager.GetSelectedItemsAllSubItems();
-
-
+            designer.Shadow.X = itemPosition.X;
+            designer.Shadow.Y = itemPosition.Y;
+            Canvas.SetZIndex(designer.Shadow.ShadowItem, 10000);
+            Canvas.SetTop(designer.Shadow.ShadowItem, top);
+            Canvas.SetLeft(designer.Shadow.ShadowItem, left);
             #endregion
         }
-
-
-
-
-
         #endregion
 
-
-
-        void DesignerItem_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (Template != null)
-            {
-                ContentPresenter contentPresenter =
-                    Template.FindName("PART_ContentPresenter", this) as ContentPresenter;
-                if (contentPresenter != null)
-                {
-                    UIElement contentVisual = VisualTreeHelper.GetChild(contentPresenter, 0) as UIElement;
-                    if (contentVisual != null)
-                    {
-                        DragThumb thumb = this.Template.FindName("PART_DragThumb", this) as DragThumb;
-                        if (thumb != null)
-                        {
-                            ControlTemplate template = GetDragThumbTemplate(contentVisual);
-                            if (template != null) thumb.Template = template;
-                        }
-                    }
-                }
-            }
-        }
 
         public void SetTemplate()
         {

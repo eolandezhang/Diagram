@@ -168,7 +168,8 @@ namespace QPP.Wpf.UI.TreeEditor
             var oType = item.GetType();
             var parentIdField = ParentIdField;
             var pid = oType.GetProperty(parentIdField);
-            return pid.GetValue(item, null).ToString();
+            var pidValue = pid.GetValue(item, null);
+            return pidValue == null ? "" : pidValue.ToString();
         }
         string GetId(object item)
         {

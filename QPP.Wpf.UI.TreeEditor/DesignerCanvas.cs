@@ -192,7 +192,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
             if (ox > 2 || oy > 2)
             {
-                _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x, y));
+                _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x, y), Shadow.SelectedItemsAllSubItems);
             }
             _diagramControl.DiagramManager.RemoveHelperConnection();
             Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });

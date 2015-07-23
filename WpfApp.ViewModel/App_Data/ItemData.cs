@@ -29,7 +29,21 @@ namespace WpfApp.ViewModel.App_Data
             get { return Get<string>("Desc"); }
             set { Set("Desc", value); }
         }
+        #region Left Top
+        // 不是从原数据表中读取，是需要关联到其它保存节点样式的表中读取的
+        public double Left
+        {
+            get { return Get<double>("Left"); }
+            set { Set("Left", value); }
+        }
 
+        public double Top
+        {
+            get { return Get<double>("Top"); }
+            set { Set("Top", value); }
+        }
+
+        #endregion
         public ItemData(string id)
         {
             ItemId = id;
