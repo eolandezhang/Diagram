@@ -155,8 +155,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {
                         //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
-                        var m = dc.DiagramManager.GetTime(() => { dc.DiagramManager.DeleteArrange(parentDesignerItem); });
-                        dc.AddToMessage("删除后重新布局", m);
+                        dc.DiagramManager.DeleteArrange(parentDesignerItem);
                         dc.DiagramManager.SetSelectItem(parentDesignerItem);
                         dc.DiagramManager.Scroll(parentDesignerItem);
                     }));
@@ -228,9 +227,8 @@ namespace QPP.Wpf.UI.TreeEditor
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {
                         //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
-                        var m = dc.DiagramManager.GetTime(() => { dc.DiagramManager.AddNewArrange(item); });
+                        dc.DiagramManager.AddNewArrange(item);
                         dc.DiagramManager.Scroll(item);
-                        dc.AddToMessage("新增后重新布局", m);
                     }));
 
                 }
@@ -483,7 +481,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 {
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {
-                        AddToMessage("载入数据源", DiagramManager.GetTime(DiagramManager.Draw));
+                        DiagramManager.Draw();
+
                     }));
                 }
             }
@@ -614,10 +613,15 @@ namespace QPP.Wpf.UI.TreeEditor
                 }, CanExpandAndCollapseSelectedItemCommand);
             }
         }
+
+        public ICommand ClearMessage
+        {
+            get { return new RelayCommand(() => { Message = ""; }); }
+        }
         #endregion
 
         #region 消息
-        void AddToMessage(string title, string msg)
+        public void AddToMessage(string title, string msg)
         {
 
             if (Message.Length > 5000) Message = "";

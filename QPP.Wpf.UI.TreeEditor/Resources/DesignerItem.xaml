@@ -237,15 +237,15 @@
                             <Setter TargetName="Border" Property="Background" Value="GhostWhite"></Setter>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsShadow}" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="LightGray"></Setter>
-                            <Setter TargetName="Border" Property="Background" Value="GhostWhite"></Setter>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="DeepSkyBlue"></Setter>
+                            <Setter TargetName="Border" Property="Background" Value="LightSkyBlue"></Setter>
                         </DataTrigger>
                         <!--<DataTrigger Value="True" Binding="{Binding RelativeSource={RelativeSource Self},Path=IsGroup}">
                             <Setter TargetName="PART_DragThumb" Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>-->
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsDragItemChild}" Value="True">
                             <Setter TargetName="Border" Property="BorderBrush" Value="LightGray"></Setter>
-                            <Setter TargetName="Border" Property="Background" Value="GhostWhite"></Setter>
+                            <Setter TargetName="Border" Property="Background" Value="LightGray"></Setter>
                             <Setter TargetName="PART_ContentPresenter" Property="TextBlock.Foreground" Value="Gray"></Setter>
                         </DataTrigger>
                         <MultiDataTrigger>

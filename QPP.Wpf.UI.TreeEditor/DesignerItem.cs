@@ -339,43 +339,66 @@ namespace QPP.Wpf.UI.TreeEditor
 
 
             #region 移动影子
-           
+
             var canvas = Parent as DesignerCanvas;
             if (canvas == null) return;
+
             canvas.Shadow = new Shadow();
 
-            var bd = Template.FindName("Border", this) as Border;
-            if (bd == null) return;
-            canvas.Shadow.ShadowView = new Border()
-            {
-                Width = bd.ActualWidth,
-                Height = bd.ActualHeight,
-                BorderBrush = Brushes.DeepSkyBlue,
-                BorderThickness = new Thickness(2),
-                Background = Brushes.LightSkyBlue
-            };
+            #region DesignerItem Shadow
 
-            var textblock = new TextBlock()
-            {
-                Text = this.Text,
-                FontFamily = new FontFamily("Arial"),
-                Padding = new Thickness(8, 4, 8, 4),
-                VerticalAlignment = VerticalAlignment.Center,
-                Foreground = Brushes.Black
-            };
-            canvas.Shadow.ShadowView.Child = textblock;
+            var shadowItem = DiagramControl.DiagramManager.CreateItemShadow(this);
 
-            canvas.Children.Add(canvas.Shadow.ShadowView);
+
+
+            #endregion
+
+            #region Border
+
+            //var bd = Template.FindName("Border", this) as Border;
+            //if (bd == null) return;
+            //canvas.Shadow.ShadowView = new Border()
+            //{
+            //    Width = bd.ActualWidth,
+            //    Height = bd.ActualHeight,
+            //    BorderBrush = Brushes.DeepSkyBlue,
+            //    BorderThickness = new Thickness(2),
+            //    Background = Brushes.LightSkyBlue
+            //};
+
+            //Canvas.SetZIndex(canvas.Shadow.ShadowView, 10000);
+            //var textblock = new TextBlock()
+            //{
+            //    Text = this.Text,
+            //    FontFamily = new FontFamily("Arial"),
+            //    Padding = new Thickness(8, 4, 8, 4),
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //    Foreground = Brushes.Black
+            //};
+            //canvas.Shadow.ShadowView.Child = textblock;
+
+            //canvas.Children.Add(canvas.Shadow.ShadowView);
+
+            #endregion
+            canvas.Shadow.ShadowItem = shadowItem;
+            canvas.Children.Add(canvas.Shadow.ShadowItem);
+            Canvas.SetZIndex(canvas.Shadow.ShadowItem, 10000);
 
             var canvasPosition = e.GetPosition(canvas);
             var itemPosition = e.GetPosition(this);
             var top = canvasPosition.Y - itemPosition.Y;
             var left = canvasPosition.X - itemPosition.X;
-            Canvas.SetTop(canvas.Shadow.ShadowView, top);
-            Canvas.SetLeft(canvas.Shadow.ShadowView, left);
+            
+            Canvas.SetTop(canvas.Shadow.ShadowItem, top);
+            Canvas.SetLeft(canvas.Shadow.ShadowItem, left);
             canvas.Shadow.X = itemPosition.X;
             canvas.Shadow.Y = itemPosition.Y;
+            
             canvas.Shadow.DesignerItem = this;
+            canvas.Shadow.ShadowItem.Visibility = Visibility.Collapsed;
+
+            canvas.Shadow.SelectedItemsAllSubItems = DiagramControl.DiagramManager.GetSelectedItemsAllSubItems();
+
 
             #endregion
         }

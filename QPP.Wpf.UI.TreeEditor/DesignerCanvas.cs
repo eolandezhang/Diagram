@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -13,8 +15,10 @@ namespace QPP.Wpf.UI.TreeEditor
     {
         public double X { get; set; }
         public double Y { get; set; }
-        public Border ShadowView { get; set; }
+        //public Border ShadowView { get; set; }
+        public DesignerItem ShadowItem { get; set; }
         public DesignerItem DesignerItem { get; set; }
+        public List<DesignerItem> SelectedItemsAllSubItems { get; set; }
     }
     public partial class DesignerCanvas : Canvas
     {
@@ -46,6 +50,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         //private Point point;
         private DesignerItem NewParent;
+
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
@@ -62,9 +67,11 @@ namespace QPP.Wpf.UI.TreeEditor
                 DiagramControl.CanExpandAndCollapseSelectedItem = false;
                 Focus();
                 e.Handled = true;
+                isGray = false;
             }
         }
 
+        private bool isGray = false;
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -93,14 +100,27 @@ namespace QPP.Wpf.UI.TreeEditor
 
             var canvasPosition = e.GetPosition(this);
             if (Shadow == null) return;
-            if (Shadow.ShadowView == null) return;
+            if (Shadow.ShadowItem == null) return;
+
+            if (Math.Abs(Shadow.X - GetLeft(Shadow.DesignerItem)) < 2 && Math.Abs(Shadow.Y - GetTop(Shadow.DesignerItem)) < 2) return;
+
+            Shadow.ShadowItem.Visibility = Visibility.Visible;
+
             var y = canvasPosition.Y - Shadow.Y;
             var x = canvasPosition.X - Shadow.X;
-            SetTop(Shadow.ShadowView, y);
-            SetLeft(Shadow.ShadowView, x);
+            SetTop(Shadow.ShadowItem, y);
+            SetLeft(Shadow.ShadowItem, x);
             var manager = _diagramControl.DiagramManager;
 
-            NewParent = manager.ChangeParent(new Point(x, y), Shadow.DesignerItem);
+            NewParent = manager.ChangeParent(new Point(x, y), Shadow.DesignerItem, Shadow.SelectedItemsAllSubItems);
+            if (!isGray)
+            {
+                Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = true; });
+                isGray = true;
+            }
+
+            DiagramControl.DiagramManager.CreateHelperConnection(NewParent, Shadow.ShadowItem);
+            DiagramControl.DiagramManager.MoveUpAndDown(NewParent, Shadow.ShadowItem);
 
             //var VerticalChange = y - GetTop(Shadow.DesignerItem);
             //var HorizontalChange = x - GetLeft(Shadow.DesignerItem);
@@ -144,15 +164,25 @@ namespace QPP.Wpf.UI.TreeEditor
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             if (Shadow == null) return;
-            if (Shadow.ShadowView == null) return;
-            if (NewParent != null)
+            if (Shadow.ShadowItem == null) return;
+            var canvasPosition = e.GetPosition(this);
+            var y = canvasPosition.Y - Shadow.Y;
+            var x = canvasPosition.X - Shadow.X;
+            //var orgParent = _diagramControl.DesignerItems.FirstOrDefault(p => p.ItemId == Shadow.DesignerItem.ItemParentId);
+
+            var ox = Math.Abs(x - GetLeft(Shadow.DesignerItem));
+            var oy = Math.Abs(y - GetTop(Shadow.DesignerItem));
+
+            if (ox > 2 || oy > 2)
             {
-                _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent);
+                _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x, y));
             }
-            Children.Remove(Shadow.ShadowView);
+           _diagramControl.DiagramManager.RemoveHelperConnection();
+            Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
+            Children.Remove(Shadow.ShadowItem);
             Shadow = null;
             NewParent = null;
-
+            isGray = false;
         }
 
         protected override void OnDrop(DragEventArgs e)
