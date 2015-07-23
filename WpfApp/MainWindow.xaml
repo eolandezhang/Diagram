@@ -48,16 +48,16 @@
                     </Border>
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsDragItemChild}" Value="True">
-                            <Setter TargetName="Bdr" Property="BorderBrush" Value="Transparent"></Setter>
+                            <Setter TargetName="Bdr" Property="BorderBrush" Value="Transparent"/>
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
             </treeEditor:DiagramControl.DesignerItemTemplate>
             <treeEditor:DesignerItem.ItemContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Add Sibling"></MenuItem>
-                    <MenuItem Header="Add After" ></MenuItem>
-                    <MenuItem Header="Delete"></MenuItem>
+                    <MenuItem  Header="增加(相邻)" Command="{Binding Path=AddSiblingCommand}"/>
+                    <MenuItem  Header="增加(之后)" Command="{Binding Path=AddAfterCommand}"/>
+                    <MenuItem  Header="移除" Command="{Binding Path=DeleteCommand}"/>
                 </ContextMenu>
             </treeEditor:DesignerItem.ItemContextMenu>
             <!--当DiagramControl.ItemsSource为null时，才能用DiagramControl.Items初始化，否则会抛异常-->
