@@ -1,8 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                    xmlns:s="clr-namespace:DiagramDesigner"
-                    xmlns:c="clr-namespace:DiagramDesigner.Controls"
                     xmlns:treeEditor="clr-namespace:QPP.Wpf.UI.TreeEditor">
 
     <!--<ContextMenu x:Key="DesignerItemContextMenu">
@@ -196,8 +194,8 @@
                                  Visibility="Collapsed"
                                  Template="{StaticResource ResizeDecoratorTemplate}"/>
                                 <!-- PART_DragThumb -->
-                                <treeEditor:DragThumb Grid.Row="0" x:Name="PART_DragThumb" 
-                                     Cursor="SizeAll"/>
+                                <!--<treeEditor:DragThumb Grid.Row="0" x:Name="PART_DragThumb" 
+                                     Cursor="SizeAll"/>-->
                                 <!-- PART_ContentPresenter -->
                                 <ContentPresenter x:Name="PART_ContentPresenter"
                                           HorizontalAlignment="Stretch"
@@ -210,6 +208,7 @@
                                  Template="{StaticResource ConnectorDecoratorTemplate}"/>
                             </Grid>
                         </Border>
+                        
                         <treeEditor:RelativePositionPanel  Grid.Row="1"  x:Name="PART_IsExpanderVisible"  Margin="-3,0,0,0">
                             <ToggleButton 
                                             x:Name="PART_ToggleButton" 
@@ -241,9 +240,9 @@
                             <Setter TargetName="Border" Property="BorderBrush" Value="LightGray"></Setter>
                             <Setter TargetName="Border" Property="Background" Value="GhostWhite"></Setter>
                         </DataTrigger>
-                        <DataTrigger Value="True" Binding="{Binding RelativeSource={RelativeSource Self},Path=IsGroup}">
+                        <!--<DataTrigger Value="True" Binding="{Binding RelativeSource={RelativeSource Self},Path=IsGroup}">
                             <Setter TargetName="PART_DragThumb" Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
+                        </DataTrigger>-->
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsDragItemChild}" Value="True">
                             <Setter TargetName="Border" Property="BorderBrush" Value="LightGray"></Setter>
                             <Setter TargetName="Border" Property="Background" Value="GhostWhite"></Setter>

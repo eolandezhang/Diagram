@@ -9,10 +9,18 @@ using System.Xml;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
+    public class Shadow
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public Border ShadowView { get; set; }
+        public DesignerItem DesignerItem { get; set; }
+    }
     public partial class DesignerCanvas : Canvas
     {
         private Point? rubberbandSelectionStartPoint = null;
         private DiagramControl _diagramControl;
+        public Shadow Shadow { get; set; }
         private DiagramControl DiagramControl
         {
             get
@@ -36,6 +44,8 @@ namespace QPP.Wpf.UI.TreeEditor
             }
         }
 
+        //private Point point;
+        private DesignerItem NewParent;
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
@@ -80,6 +90,69 @@ namespace QPP.Wpf.UI.TreeEditor
 
             }
             e.Handled = true;
+
+            var canvasPosition = e.GetPosition(this);
+            if (Shadow == null) return;
+            if (Shadow.ShadowView == null) return;
+            var y = canvasPosition.Y - Shadow.Y;
+            var x = canvasPosition.X - Shadow.X;
+            SetTop(Shadow.ShadowView, y);
+            SetLeft(Shadow.ShadowView, x);
+            var manager = _diagramControl.DiagramManager;
+
+            NewParent = manager.ChangeParent(new Point(x, y), Shadow.DesignerItem);
+
+            //var VerticalChange = y - GetTop(Shadow.DesignerItem);
+            //var HorizontalChange = x - GetLeft(Shadow.DesignerItem);
+
+            //if (parent!=null)
+            //VerticalScroll(parent, new Point(x, y));
+            //HorizontalScroll(parent, new Point(x, y));
+
+        }
+        private double _verticalOffset = 0;
+        private double _horizontalOffset = 0;
+        void VerticalScroll(DesignerItem designerItem, Point position)
+        {
+            var yPos = position.Y;
+            var sv = (ScrollViewer)DiagramControl.Template.FindName("DesignerScrollViewer", DiagramControl);
+            if (sv.VerticalOffset + sv.ViewportHeight - 100 < yPos)
+            {
+                sv.ScrollToVerticalOffset(position.Y - GetTop(designerItem));
+            }
+            else if (yPos < sv.VerticalOffset + 100)
+            {
+                sv.ScrollToVerticalOffset(position.Y - GetTop(designerItem));
+            }
+        }
+        void HorizontalScroll(DesignerItem designerItem, Point position)
+        {
+
+            var xPos = position.X;
+            var sv = (ScrollViewer)DiagramControl.Template.FindName("DesignerScrollViewer", DiagramControl);
+            if (sv.HorizontalOffset + sv.ViewportWidth - designerItem.ActualWidth < xPos)
+            {
+                // sv.ScrollToHorizontalOffset(sv.HorizontalOffset + horizontalChange);
+            }
+            // else if (xPos < sv.HorizontalOffset + designerItem.ActualWidth && horizontalChange < 0)
+            {
+                // sv.ScrollToHorizontalOffset(sv.HorizontalOffset + horizontalChange);
+            }
+
+        }
+
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            if (Shadow == null) return;
+            if (Shadow.ShadowView == null) return;
+            if (NewParent != null)
+            {
+                _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent);
+            }
+            Children.Remove(Shadow.ShadowView);
+            Shadow = null;
+            NewParent = null;
+
         }
 
         protected override void OnDrop(DragEventArgs e)

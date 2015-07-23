@@ -557,7 +557,7 @@ namespace QPP.Wpf.UI.TreeEditor
         public void ExpandSelectedItem()
         {
             var selectedItems = GetSelectedItems();
-            if (selectedItems == null ) return;
+            if (selectedItems == null) return;
             foreach (var selectedItem in selectedItems)
             {
                 if (selectedItem.CanCollapsed == true)
@@ -626,6 +626,14 @@ namespace QPP.Wpf.UI.TreeEditor
             if (newParent != null) newParent.IsNewParent = true;
             return newParent;
         }
+        public DesignerItem ChangeParent(Point position, DesignerItem designerItem)
+        {
+            var newParent = GetNewParent(position, designerItem);
+            _diagramControl.DesignerItems.ToList().ForEach(x => { x.IsNewParent = false; });
+            if (newParent != null) newParent.IsNewParent = true;
+            return newParent;
+        }
+
         public List<DesignerItem> CreateShadows/*拖拽时产生影子*/(DesignerItem dragItem/*拖动的节点*/, DesignerItem newParent)
         {
             var selectedItems = GetSelectedItems();
@@ -702,6 +710,14 @@ namespace QPP.Wpf.UI.TreeEditor
             Arrange();/*重新布局*/
             //ShowId(newParent, item);
         }
+
+        public void AfterChangeParent(DesignerItem designerItem, DesignerItem newParent)
+        {
+            _diagramControl.DesignerItems.ToList().ForEach(x => { x.IsNewParent = false; x.Top = Canvas.GetTop(x); });
+            ConnectToNewParent(newParent);/*根据取得的newParent,改变特定item的连线*/
+            Arrange();/*重新布局*/
+        }
+
         void ShowId/*测试父id是否正确设置*/(DesignerItem newParent, DesignerItem item)
         {
             if (newParent != null)
@@ -728,7 +744,7 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Item finder
-        DesignerItem GetNewParent/*取得元素上方最接近的元素*/(DesignerItem selectedItem)
+        public DesignerItem GetNewParent/*取得元素上方最接近的元素*/(DesignerItem selectedItem)
         {
             var selectedItems = GetSelectedItems();
             //取得所有子节点，让parent不能为子节点
@@ -747,6 +763,32 @@ namespace QPP.Wpf.UI.TreeEditor
                               && Canvas.GetLeft(selectedItem) >= parentLeft
                               && Canvas.GetLeft(selectedItem) <= parentRight
                               && !Equals(designerItem, selectedItem) /*让parent不能为自己*/
+                              && !subitems.Contains(designerItem) /*让parent不能为子节点*/
+                              && designerItem.IsShadow == false
+                        select designerItem).ToList();
+            if (!list.Any()) return null;
+            var parent = list.Aggregate((a, b) => a.Top > b.Top ? a : b);
+            return parent;
+        }
+        public DesignerItem GetNewParent/*取得元素上方最接近的元素*/(Point position, DesignerItem itemToMove)
+        {
+            var selectedItems = GetSelectedItems();
+            //取得所有子节点，让parent不能为子节点
+            var subitems = new List<DesignerItem>();
+            foreach (var designerItem in selectedItems)
+            {
+                subitems.AddRange(GetAllSubItems(designerItem));
+            }
+            subitems.AddRange(selectedItems);
+            var pre = _diagramControl.DesignerItems.Where(x => x.Visibility.Equals(Visibility.Visible));
+            var list = (from designerItem in pre
+                        let parentTop = Canvas.GetTop(designerItem) + designerItem.ActualHeight - 13
+                        let parentLeft = Canvas.GetLeft(designerItem) + designerItem.ActualWidth * 0.1
+                        let parentRight = parentLeft + designerItem.ActualWidth
+                        where position.Y >= parentTop /*top位置小于自己的top位置*/
+                              && position.X >= parentLeft
+                              && position.X <= parentRight
+                              && !Equals(designerItem, itemToMove) /*让parent不能为自己*/
                               && !subitems.Contains(designerItem) /*让parent不能为子节点*/
                               && designerItem.IsShadow == false
                         select designerItem).ToList();

@@ -74,9 +74,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 designer.InvalidateMeasure();
                 e.Handled = true;
+
                 ChangeParent(designerItem);
-
-
                 VerticalScroll(designerItem, e.VerticalChange);
                 HorizontalScroll(designerItem, e.HorizontalChange);
             }

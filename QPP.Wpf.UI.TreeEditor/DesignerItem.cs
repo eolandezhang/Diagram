@@ -21,6 +21,7 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
         public DesignerItem ShadowOrignal;/*当此节点为shadow时，记录shadow的原节点*/
         public DiagramControl DiagramControl;
+
         #endregion
 
         #region Property
@@ -337,9 +338,55 @@ namespace QPP.Wpf.UI.TreeEditor
             e.Handled = false;
 
 
+            #region 移动影子
+           
+            var canvas = Parent as DesignerCanvas;
+            if (canvas == null) return;
+            canvas.Shadow = new Shadow();
 
+            var bd = Template.FindName("Border", this) as Border;
+            if (bd == null) return;
+            canvas.Shadow.ShadowView = new Border()
+            {
+                Width = bd.ActualWidth,
+                Height = bd.ActualHeight,
+                BorderBrush = Brushes.DeepSkyBlue,
+                BorderThickness = new Thickness(2),
+                Background = Brushes.LightSkyBlue
+            };
+
+            var textblock = new TextBlock()
+            {
+                Text = this.Text,
+                FontFamily = new FontFamily("Arial"),
+                Padding = new Thickness(8, 4, 8, 4),
+                VerticalAlignment = VerticalAlignment.Center,
+                Foreground = Brushes.Black
+            };
+            canvas.Shadow.ShadowView.Child = textblock;
+
+            canvas.Children.Add(canvas.Shadow.ShadowView);
+
+            var canvasPosition = e.GetPosition(canvas);
+            var itemPosition = e.GetPosition(this);
+            var top = canvasPosition.Y - itemPosition.Y;
+            var left = canvasPosition.X - itemPosition.X;
+            Canvas.SetTop(canvas.Shadow.ShadowView, top);
+            Canvas.SetLeft(canvas.Shadow.ShadowView, left);
+            canvas.Shadow.X = itemPosition.X;
+            canvas.Shadow.Y = itemPosition.Y;
+            canvas.Shadow.DesignerItem = this;
+
+            #endregion
         }
+
+
+
+
+
         #endregion
+
+
 
         void DesignerItem_Loaded(object sender, RoutedEventArgs e)
         {
