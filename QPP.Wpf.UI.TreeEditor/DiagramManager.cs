@@ -53,6 +53,21 @@ namespace QPP.Wpf.UI.TreeEditor
             var pid = oType.GetProperty(parentIdField);
             pid.SetValue(designerItem.DataContext, designerItem.ItemParentId, null);
         }
+        public double GetLeft(DesignerItem item)
+        {
+            var oType = item.DataContext.GetType();
+            var leftField = _diagramControl.LeftField;
+            var left = oType.GetProperty(leftField);
+            return (double)left.GetValue(item.DataContext, null);
+        }
+        public double GetTop(DesignerItem item)
+        {
+            var oType = item.DataContext.GetType();
+            var topField = _diagramControl.TopField;
+            var top = oType.GetProperty(topField);
+            return (double)top.GetValue(item.DataContext, null);
+        }
+
         Connector GetItemConnector/*根据名称，取得元素连接点*/(DesignerItem item, string name)
         {
             item.UpdateLayout();
@@ -176,10 +191,10 @@ namespace QPP.Wpf.UI.TreeEditor
             TimeSpan timespan = t.Elapsed; //  获取当前实例测量得出的总时间
             //double hours = timespan.TotalHours; // 总小时
             //double minutes = timespan.TotalMinutes;  // 总分钟
-            double seconds = timespan.TotalSeconds;  //  总秒数
-            //double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数
-            return seconds + "秒" + ",共" + _diagramControl.DesignerItems.Count + "个";
-
+            //double seconds = timespan.TotalSeconds;  //  总秒数
+            double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数
+            //return seconds + "秒" + ",共" + _diagramControl.DesignerItems.Count + "个";
+            return milliseconds + "毫秒" + ",共" + _diagramControl.DesignerItems.Count + "个";
         }
         private List<DesignerItem> DrawDesignerItems(DesignerItem parentItem)
         {
@@ -196,7 +211,7 @@ namespace QPP.Wpf.UI.TreeEditor
             }
             return designerItems;
         }
-        private void DrawRoot/*创建根节点*/(DesignerItem item, double topOffset, double leftOffset)
+        public void DrawRoot/*创建根节点*/(DesignerItem item, double topOffset, double leftOffset)
         {
             DrawDesignerItem(item, topOffset, leftOffset);
             item.CanCollapsed = false;
@@ -228,8 +243,17 @@ namespace QPP.Wpf.UI.TreeEditor
             GenerateDesignerItemContent(item, DEFAULT_FONT_COLOR_BRUSH);
             _diagramControl.DesignerCanvas.Children.Add(item);
             _diagramControl.UpdateLayout();
-            Canvas.SetTop(item, topOffset);
-            Canvas.SetLeft(item, leftOffset);
+            var left = leftOffset;
+            var top = topOffset;
+            SetWidth(item);
+            item.UpdateLayout();
+            if (topOffset != 0d || leftOffset != 0d)
+            {
+                left = left - item.ActualWidth / 2;
+                top = top - item.ActualHeight / 2;
+            }
+            Canvas.SetTop(item, top);
+            Canvas.SetLeft(item, left);
         }
         void GenerateDesignerItemContent/*创建元素内容，固定结构*/(DesignerItem item, SolidColorBrush fontColorBrush)
         {
@@ -282,54 +306,57 @@ namespace QPP.Wpf.UI.TreeEditor
             var root = GetRoot(newItem);
             var m = GetTime(() =>
             {
-                var p = _diagramControl.DesignerItems.FirstOrDefault(x => x.ItemId == newItem.ItemParentId);
-                if (p == null) return;
                 newItem.SetTemplate();
                 SetWidth(newItem);
                 newItem.UpdateLayout();
-                var list = GetAllSubItems(p);
-                UpdateExpander(list, p);
-                var allSub = list.Where(x => !x.Equals(newItem)).ToList();
-                if (allSub.Any())
+
+                var p = _diagramControl.DesignerItems.FirstOrDefault(x => x.ItemId == newItem.ItemParentId);
+                if (p != null)
                 {
-                    var lastChild = allSub.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
-                    var top = Canvas.GetTop(lastChild) + lastChild.ActualHeight;
-                    var left = Canvas.GetLeft(p) + GetOffset(p);
-                    newItem.Top = top;
-                    newItem.Left = left;
-                    newItem.OriginalTop = top;
-                    newItem.OriginalLeft = left;
-                    Canvas.SetTop(newItem, top);
-                    Canvas.SetLeft(newItem, left);
-                    var items =
-                        _diagramControl.DesignerItems.Where(
-                            x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(newItem));
-                    foreach (var designerItem in items)
+                    var list = GetAllSubItems(p);
+                    UpdateExpander(list, p);
+                    var allSub = list.Where(x => !x.Equals(newItem)).ToList();
+                    if (allSub.Any())
                     {
-                        var r = GetRoot(designerItem);
-                        if (r == root)
+                        var lastChild = allSub.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
+                        var top = Canvas.GetTop(lastChild) + lastChild.ActualHeight;
+                        var left = Canvas.GetLeft(p) + GetOffset(p);
+                        newItem.Top = top;
+                        newItem.Left = left;
+                        newItem.OriginalTop = top;
+                        newItem.OriginalLeft = left;
+                        Canvas.SetTop(newItem, top);
+                        Canvas.SetLeft(newItem, left);
+                        var items =
+                            _diagramControl.DesignerItems.Where(
+                                x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(newItem));
+                        foreach (var designerItem in items)
                         {
-                            Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
+                            var r = GetRoot(designerItem);
+                            if (r == root)
+                            {
+                                Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    var top = Canvas.GetTop(p) + p.ActualHeight;
-                    var left = Canvas.GetLeft(p) + p.ActualWidth * 0.1d + LEFT_OFFSET;
-                    newItem.Top = top;
-                    newItem.Left = left;
-                    Canvas.SetTop(newItem, top);
-                    Canvas.SetLeft(newItem, left);
-                    var items =
-                        _diagramControl.DesignerItems.Where(
-                            x => Canvas.GetTop(x) > Canvas.GetTop(p) && !x.Equals(newItem));
-                    foreach (var designerItem in items)
+                    else
                     {
-                        var r = GetRoot(designerItem);
-                        if (r == root)
+                        var top = Canvas.GetTop(p) + p.ActualHeight;
+                        var left = Canvas.GetLeft(p) + p.ActualWidth * 0.1d + LEFT_OFFSET;
+                        newItem.Top = top;
+                        newItem.Left = left;
+                        Canvas.SetTop(newItem, top);
+                        Canvas.SetLeft(newItem, left);
+                        var items =
+                            _diagramControl.DesignerItems.Where(
+                                x => Canvas.GetTop(x) > Canvas.GetTop(p) && !x.Equals(newItem));
+                        foreach (var designerItem in items)
                         {
-                            Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
+                            var r = GetRoot(designerItem);
+                            if (r == root)
+                            {
+                                Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
+                            }
                         }
                     }
                 }
@@ -689,7 +716,6 @@ namespace QPP.Wpf.UI.TreeEditor
             if (newParent != null) newParent.IsNewParent = true;
             return newParent;
         }
-
         public List<DesignerItem> GetSelectedItemsAllSubItems()
         {
             var selectedItems = GetSelectedItems();
@@ -702,9 +728,6 @@ namespace QPP.Wpf.UI.TreeEditor
             selectedItemsAllSubItems.AddRange(selectedItems);
             return selectedItemsAllSubItems;
         }
-
-
-
         public List<DesignerItem> CreateShadows/*拖拽时产生影子*/(DesignerItem dragItem/*拖动的节点*/, DesignerItem newParent)
         {
             var selectedItems = GetSelectedItems();
@@ -725,7 +748,6 @@ namespace QPP.Wpf.UI.TreeEditor
             SetConnectionColor(connection, Brushes.Red);
             BringToFront(connection);
         }
-
         public void MoveUpAndDown(DesignerItem parent, DesignerItem selectedItem)
         {
             if (parent == null) return;
@@ -736,8 +758,8 @@ namespace QPP.Wpf.UI.TreeEditor
             var downItems = designerItemsOnCanvas.Where(x =>
                 x.OriginalTop > itemTop
                 && x.ItemId != selectedItem.ItemId
+                && x.ItemParentId.IsNotEmpty()
                ).ToList();/*比元素大的，全部向下移*/
-
             foreach (var designerItem in downItems)
             {
                 Canvas.SetTop(designerItem, designerItem.OriginalTop + selectedItem.ActualHeight);
@@ -749,16 +771,6 @@ namespace QPP.Wpf.UI.TreeEditor
                 ).ToList();/*比父节点大的，比元素小的，恢复位置*/
             foreach (var designerItem in upItems)
             {
-                //Canvas.SetTop(designerItem, designerItem.Data.YIndex);
-                //var item = designerItem.IsShadow ? designerItem.ShadowOrignal : designerItem;
-                //var x1 = GetAllSubItems(item);
-                //if (x1 == null || !x1.Any()) continue;
-                //var list = designerItemsOnCanvas.Where(x =>
-                //    x.Oldy <= x1.Aggregate((a, b) => a.Oldy > b.Oldy ? a : b).Oldy
-                //    && x.ID != selectedItem.ID
-                //    ).ToList();
-                //list.ForEach(x => { Canvas.SetTop(x, x.Data.YIndex); });
-
                 Canvas.SetTop(designerItem, designerItem.OriginalTop);
                 var item = designerItem.IsShadow ? designerItem.ShadowOrignal : designerItem;
                 var x1 = GetAllSubItems(item);
@@ -780,7 +792,6 @@ namespace QPP.Wpf.UI.TreeEditor
             RemoveShadows();/*移除所有shadow*/
             Arrange();/*重新布局*/
         }
-
         public void AfterChangeParent(DesignerItem designerItem, DesignerItem newParent, Point newPosition, List<DesignerItem> selectedItemsAllSubItems)
         {
             RemoveHelperConnection();
@@ -918,6 +929,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         void ConnectToNewParent/*根据取得的newParent,改变特定item的连线*/(DesignerItem newParent)
         {
+            if (_diagramControl.SingleRoot && newParent == null) return;
             var items = GetSelectedItems();
             var itemsToChangeParent = items.Where(a => items.All(y => y.ItemId != a.ItemParentId));/*在选中的集合a中，只改变“父节点不在集合a中的”节点*/
             foreach (var designerItem in itemsToChangeParent)
@@ -1239,83 +1251,108 @@ namespace QPP.Wpf.UI.TreeEditor
             var selectedItems = GetSelectedItems();
             if (selectedItems == null || selectedItems.Count != 1) return;
             var selectedItem = selectedItems.FirstOrDefault();
-
             if (selectedItem == null) return;
-            var siblingDesignerItems = _diagramControl.DesignerItems.Where(x => x.ItemParentId == selectedItem.ItemParentId).ToList();
+            //var siblingDesignerItems = _diagramControl.DesignerItems.Where(x => x.ItemParentId == selectedItem.ItemParentId).ToList();//第一种方案使用
             DesignerItem selectedDesignerItem = null;
-
             if (selectUp)
             {
-                var items = _diagramControl.DesignerItems.Where(x => Canvas.GetTop(x) < Canvas.GetTop(selectedItem) && GetRoot(x) == GetRoot(selectedItem));
-                if (items.Any())
-                {
-                    var item = items.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
-                    selectedDesignerItem = item;
-                }
-
-                //var top = siblingDesignerItems
-                //    .Where(x => x.Top < selectedItem.Top).ToList();
-                //if (top.Any())
-                //{
-                //    selectedDesignerItem =
-                //        top.Aggregate((a, b) => a.Top > b.Top ? a : b);
-                //}
-                //else
-                //{
-                //    var parent =
-                //        _diagramControl.DesignerItems.Where(x => x.ItemId == selectedItem.ItemParentId).ToList();
-                //    if (parent.Count() == 1)
-                //        selectedDesignerItem = parent.FirstOrDefault();
-                //}
+                selectedDesignerItem = UpSiblingDesignerItem(selectedItem);
             }
             else //move down
             {
-                var items = _diagramControl.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(selectedItem) && GetRoot(x) == GetRoot(selectedItem));
-                if (items.Any())
-                {
-                    var item = items.Aggregate((a, b) => Canvas.GetTop(a) < Canvas.GetTop(b) ? a : b);
-                    selectedDesignerItem = item;
-                }
-
-                //var down = siblingDesignerItems
-                //    .Where(x => x.Top > selectedItem.Top).ToList();
-                //if (down.Any()) //1.优先找相邻节点，处于下方的节点
-                //{
-                //    selectedDesignerItem = down.Aggregate((a, b) => a.Top < b.Top ? a : b);
-                //}
-                //else //没有处于下方的相邻节点，2.有父亲节点，则找其父亲的，处于下方的相邻节点，3.如果没有父亲节点，就找子节点
-                //{
-                //    var parents =
-                //        _diagramControl.DesignerItems.Where(x => x.ItemId == selectedItem.ItemParentId).ToList();
-                //    if (parents.Count() == 1 && parents.FirstOrDefault() != null) //有父节点，父节点邻居，处于下方的节点
-                //    {
-                //        var parent = parents.FirstOrDefault();
-                //        if (parent != null)
-                //        {
-                //            var parentSibling =
-                //                _diagramControl.DesignerItems.Where(
-                //                    x => x.ItemParentId == parent.ItemParentId
-                //                         && x.Top > parent.Top).ToList();
-                //            if (parentSibling.Any())
-                //            {
-                //                selectedDesignerItem =
-                //                    parentSibling.Aggregate((a, b) => a.Top > b.Top ? a : b);
-                //            }
-                //        }
-                //    }
-                //    if (selectedDesignerItem == null)//没有父节点，找子节点
-                //    {
-                //        var child = _diagramControl.DesignerItems.Where(x => x.ItemParentId == selectedItem.ItemId).ToList();
-                //        if (child.Any())
-                //        {
-                //            selectedDesignerItem = child.Aggregate((a, b) => a.Top < b.Top ? a : b);
-                //        }
-                //    }
-                //}
+                selectedDesignerItem = DownSiblingDesignerItem(selectedItem);
             }
             if (selectedDesignerItem != null) SetSelectItem(selectedDesignerItem);
             Scroll(selectedDesignerItem);
         }
+        #region Up
+        //第一种方案
+        DesignerItem UpDesignerItem(DesignerItem selectedItem, List<DesignerItem> siblingDesignerItems)
+        {
+            DesignerItem selectedDesignerItem = null;
+            var top = siblingDesignerItems
+                .Where(x => x.Top < selectedItem.Top).ToList();
+            if (top.Any())
+            {
+                selectedDesignerItem =
+                    top.Aggregate((a, b) => a.Top > b.Top ? a : b);
+            }
+            else
+            {
+                var parent =
+                    _diagramControl.DesignerItems.Where(x => x.ItemId == selectedItem.ItemParentId).ToList();
+                if (parent.Count() == 1)
+                    selectedDesignerItem = parent.FirstOrDefault();
+            }
+            return selectedDesignerItem;
+        }
+        //第二种方案，直接取上方相邻节点
+        DesignerItem UpSiblingDesignerItem(DesignerItem selectedItem)
+        {
+            var items = _diagramControl.DesignerItems.Where(x => Canvas.GetTop(x) < Canvas.GetTop(selectedItem) && GetRoot(x) == GetRoot(selectedItem));
+            if (items.Any())
+            {
+                var item = items.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
+                return item;
+            }
+            return null;
+        }
+        #endregion
+        #region Down
+        //第一种方案
+        DesignerItem DownDesignerItem(DesignerItem selectedItem, List<DesignerItem> siblingDesignerItems)
+        {
+            DesignerItem selectedDesignerItem = null;
+            var down = siblingDesignerItems
+                .Where(x => x.Top > selectedItem.Top).ToList();
+            if (down.Any()) //1.优先找相邻节点，处于下方的节点
+            {
+                selectedDesignerItem = down.Aggregate((a, b) => a.Top < b.Top ? a : b);
+            }
+            else //没有处于下方的相邻节点，2.有父亲节点，则找其父亲的，处于下方的相邻节点，3.如果没有父亲节点，就找子节点
+            {
+                var parents =
+                    _diagramControl.DesignerItems.Where(x => x.ItemId == selectedItem.ItemParentId).ToList();
+                if (parents.Count() == 1 && parents.FirstOrDefault() != null) //有父节点，父节点邻居，处于下方的节点
+                {
+                    var parent = parents.FirstOrDefault();
+                    if (parent != null)
+                    {
+                        var parentSibling =
+                            _diagramControl.DesignerItems.Where(
+                                x => x.ItemParentId == parent.ItemParentId
+                                     && x.Top > parent.Top).ToList();
+                        if (parentSibling.Any())
+                        {
+                            selectedDesignerItem =
+                                parentSibling.Aggregate((a, b) => a.Top > b.Top ? a : b);
+                        }
+                    }
+                }
+                if (selectedDesignerItem == null)//没有父节点，找子节点
+                {
+                    var child = _diagramControl.DesignerItems.Where(x => x.ItemParentId == selectedItem.ItemId).ToList();
+                    if (child.Any())
+                    {
+                        selectedDesignerItem = child.Aggregate((a, b) => a.Top < b.Top ? a : b);
+                    }
+                }
+            }
+            return selectedDesignerItem;
+        }
+        //第二种方案，直接取下方相邻节点
+        DesignerItem DownSiblingDesignerItem(DesignerItem selectedItem)
+        {
+            var items = _diagramControl.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(selectedItem) && GetRoot(x) == GetRoot(selectedItem));
+            if (items.Any())
+            {
+                var item = items.Aggregate((a, b) => Canvas.GetTop(a) < Canvas.GetTop(b) ? a : b);
+                return item;
+            }
+            return null;
+        }
+        #endregion
+
         public void SelectRightLeft(bool selectRight)
         {
             var selectedItems = GetSelectedItems();

@@ -54,6 +54,8 @@ namespace QPP.Wpf.UI.TreeEditor
         public bool IsMouseDown = false;
         #endregion
 
+
+
         #region Override
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
@@ -74,6 +76,10 @@ namespace QPP.Wpf.UI.TreeEditor
                 e.Handled = true;
                 isGray = false;
                 IsMouseDown = true;
+            }
+            if (e.ClickCount == 2)
+            {
+                DiagramControl.CanvasDoubleClickCommand.Execute(e.GetPosition(this));
             }
         }
         protected override void OnMouseMove(MouseEventArgs e)
@@ -103,7 +109,7 @@ namespace QPP.Wpf.UI.TreeEditor
             if (IsMouseDown)
             {
                 Move(e); AutoScroll(e);
-            } 
+            }
         }
         void Move(MouseEventArgs e)//移动影子
         {
@@ -125,7 +131,7 @@ namespace QPP.Wpf.UI.TreeEditor
             }
             DiagramControl.DiagramManager.CreateHelperConnection(NewParent, Shadow.ShadowItem);
             DiagramControl.DiagramManager.MoveUpAndDown(NewParent, Shadow.ShadowItem);
-            
+
         }
         IScrollInfo _scrollInfo;
         void AutoScroll(MouseEventArgs e)//自动滚动
@@ -156,13 +162,13 @@ namespace QPP.Wpf.UI.TreeEditor
                 {
                     var delta = (mousePos.Y - v) / 1; //translate back to original unit
                     _scrollInfo.SetVerticalOffset(_scrollInfo.VerticalOffset + delta);
-                    _diagramControl.AddToMessage("滚动", "上移");
+                    //_diagramControl.AddToMessage("滚动", "上移");
                 }
                 else if (mousePos.Y > (scrollable.RenderSize.Height - v))
                 {
                     var delta = (mousePos.Y + v - scrollable.RenderSize.Height) / 1; //translate back to original unit
                     _scrollInfo.SetVerticalOffset(_scrollInfo.VerticalOffset + delta);
-                    _diagramControl.AddToMessage("滚动", "下移");
+                    //_diagramControl.AddToMessage("滚动", "下移");
                 }
                 #endregion
 
@@ -206,9 +212,8 @@ namespace QPP.Wpf.UI.TreeEditor
             NewParent = null;
             isGray = false;
             IsMouseDown = false;
-            _diagramControl.AddToMessage("移除影子", "");
+            //_diagramControl.AddToMessage("移除影子", "");
         }
-        
         protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);

@@ -57,8 +57,30 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         #endregion
 
-        public double Top { get; set; }
-        public double Left { get; set; }
+
+        #region Left , Top Property
+
+        public static readonly DependencyProperty LeftProperty = DependencyProperty.Register(
+            "Left", typeof(double), typeof(DesignerItem), new PropertyMetadata(0d));
+
+        public double Left
+        {
+            get { return (double)GetValue(LeftProperty); }
+            set { SetValue(LeftProperty, value); }
+        }
+
+        public static readonly DependencyProperty TopProperty = DependencyProperty.Register(
+            "Top", typeof(double), typeof(DesignerItem), new PropertyMetadata(0d));
+
+        public double Top
+        {
+            get { return (double)GetValue(TopProperty); }
+            set { SetValue(TopProperty, value); }
+        }
+        #endregion
+
+        //public double Top { get; set; }
+        //public double Left { get; set; }
 
         #region IsSelected Property 被选中的
         public bool IsSelected
@@ -293,13 +315,13 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         public DesignerItem(object itemData, DiagramControl diagramControl)
         {
-            Top = 0d;
-            Left = 0d;
             DiagramControl = diagramControl;
             DataContext = itemData;
             SetBinding(TextProperty, new Binding(diagramControl.TextField));
             SetBinding(ItemIdProperty, new Binding(diagramControl.IdField));
             SetBinding(ItemParentIdProperty, new Binding(diagramControl.ParentIdField));
+            SetBinding(LeftProperty, new Binding(diagramControl.LeftField));
+            SetBinding(TopProperty, new Binding(diagramControl.TopField));
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
             MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
@@ -381,7 +403,7 @@ namespace QPP.Wpf.UI.TreeEditor
             Canvas.SetTop(designer.Shadow.ShadowItem, top);
             Canvas.SetLeft(designer.Shadow.ShadowItem, left);
             #endregion
-            DiagramControl.AddToMessage("Create Shadow", "");
+            //DiagramControl.AddToMessage("Create Shadow", "");
         }
 
         #endregion

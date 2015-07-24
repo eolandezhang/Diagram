@@ -75,7 +75,22 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(TextFieldProperty, value); }
         }
         #endregion
-
+        #region Left Field,Top Field Property
+        public static readonly DependencyProperty LeftFieldProperty = DependencyProperty.Register(
+            "LeftField", typeof(string), typeof(DiagramControl), new PropertyMetadata("Left"));
+        public string LeftField
+        {
+            get { return (string)GetValue(LeftFieldProperty); }
+            set { SetValue(LeftFieldProperty, value); }
+        }
+        public static readonly DependencyProperty TopFieldProperty = DependencyProperty.Register(
+            "TopField", typeof(string), typeof(DiagramControl), new PropertyMetadata("Top"));
+        public string TopField
+        {
+            get { return (string)GetValue(TopFieldProperty); }
+            set { SetValue(TopFieldProperty, value); }
+        }
+        #endregion
         #region ItemSource Property 数据源
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
             "ItemsSource", typeof(IList), typeof(DiagramControl),
@@ -127,7 +142,7 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 var deleteItem = dc.DiagramManager.GetDesignerItemById(dc.GetId(oldItem));
 
-               
+
                 dc.DiagramManager.DeleteArrange(deleteItem);
                 var model = oldItem as DataModel;
                 if (model == null) continue;
@@ -187,7 +202,20 @@ namespace QPP.Wpf.UI.TreeEditor
             var id = oType.GetProperty(textField);
             return id.GetValue(item, null).ToString();
         }
-
+        double GetLeft(object item)
+        {
+            var oType = item.GetType();
+            var leftField = LeftField;
+            var left = oType.GetProperty(leftField);
+            return (double)left.GetValue(item, null);
+        }
+        double GetTop(object item)
+        {
+            var oType = item.GetType();
+            var topField = TopField;
+            var top = oType.GetProperty(topField);
+            return (double)top.GetValue(item, null);
+        }
         List<object> GetChildren(object item)
         {
             List<object> children = new List<object>();
@@ -215,26 +243,34 @@ namespace QPP.Wpf.UI.TreeEditor
                 model.MarkCreated();
 
                 var item = new DesignerItem(newItem, dc);
+                var left = dc.GetLeft(newItem);
+                var top = dc.GetTop(newItem);
+
                 dc.DesignerItems.Add(item);
                 var parentid = dc.DiagramManager.GetPId(item);
                 if (parentid.IsNotEmpty())
                 {
-                    var msg = dc.DiagramManager.GetTime(() =>
+                    dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
                     {
                         var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
                         dc.DiagramManager.DrawChild(parent, item);
                         dc.DiagramManager.SetSelectItem(item);
-                    });
-                    dc.AddToMessage("增加节点", msg);
-
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                    {
-                        //var m = dc.DiagramManager.GetTime(dc.DiagramManager.Arrange);
-                        dc.DiagramManager.AddNewArrange(item);
-                        dc.DiagramManager.Scroll(item);
                     }));
-
                 }
+                else
+                {
+                    dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
+                       {
+                           dc.DiagramManager.DrawRoot(item, top, left);
+                           dc.DiagramManager.SetSelectItem(item);
+
+                       }));
+                }
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                {
+                    dc.DiagramManager.AddNewArrange(item);
+                    dc.DiagramManager.Scroll(item);
+                }));
             }
         }
 
@@ -314,6 +350,18 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         #endregion
 
+        #region Canvas Double Click Command Property
+
+        public static readonly DependencyProperty CanvasDoubleClickCommandProperty = DependencyProperty.Register(
+            "CanvasDoubleClickCommand", typeof(ICommand), typeof(DiagramControl), new PropertyMetadata(null));
+
+        public ICommand CanvasDoubleClickCommand
+        {
+            get { return (ICommand)GetValue(CanvasDoubleClickCommandProperty); }
+            set { SetValue(CanvasDoubleClickCommandProperty, value); }
+        }
+        #endregion
+
         #region ZoomBoxControlProperty 缩放控件，以后需要修改
 
         public static readonly DependencyProperty ZoomBoxControlProperty = DependencyProperty.Register(
@@ -370,6 +418,17 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             get { return (bool)GetValue(CanExpandAndCollapseSelectedItemProperty); }
             set { SetValue(CanExpandAndCollapseSelectedItemProperty, value); }
+        }
+        #endregion
+        #region SingleRoot Property
+
+        public static readonly DependencyProperty SingleRootProperty = DependencyProperty.Register(
+            "SingleRoot", typeof(bool), typeof(DiagramControl), new PropertyMetadata(true));
+
+        public bool SingleRoot
+        {
+            get { return (bool)GetValue(SingleRootProperty); }
+            set { SetValue(SingleRootProperty, value); }
         }
         #endregion
         #endregion
