@@ -59,5 +59,20 @@ namespace WpfApp.ViewModel.App_Data
             Text = text;
             Desc = desc;
         }
+        public ItemData(
+            string id,
+            string parentId,
+            string text,
+            string desc,
+            double left,
+            double top)
+        {
+            ItemId = id;
+            ItemParentId = parentId;
+            Text = text;
+            Desc = desc;
+            Left = left;
+            Top = top;
+        }
     }
 }

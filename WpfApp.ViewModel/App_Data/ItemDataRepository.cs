@@ -30,7 +30,7 @@ namespace WpfApp.ViewModel.App_Data
         {
             DataCollection = new ObservableCollection<ItemData>()
             {
-                new ItemData("0","","0","Root　Item1"),
+                /*new ItemData("0","","0","Root　Item1"),
                 new ItemData("1","0", "1", "1"),
                 new ItemData("2","0", "2", "2"),
                 new ItemData("3","1", "3", "3"),
@@ -137,13 +137,19 @@ namespace WpfApp.ViewModel.App_Data
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 99", ""),
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 100", ""),
  
-                
+                */
             };
         }
 
-        public ItemData AddNew(string Pid)
+        public ItemData AddNew(string pid)
         {
-            return new ItemData(Guid.NewGuid().ToString(), Pid, "Item", "");
+            if (pid == null) throw new ArgumentNullException("pid");
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item", "");
+        }
+
+        public ItemData AddNew(string pid, double left, double top)
+        {
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item", "", left, top);
         }
     }
 }

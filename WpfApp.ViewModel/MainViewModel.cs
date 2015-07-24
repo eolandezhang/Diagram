@@ -5,6 +5,8 @@ using QPP.Wpf.Command;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Markup;
 using WpfApp.ViewModel.App_Data;
 
 namespace WpfApp.ViewModel
@@ -12,11 +14,13 @@ namespace WpfApp.ViewModel
     public class MainViewModel : ObservableObject
     {
         public string Title { get { return Get<string>("Title"); } set { Set("Title", value); } }
+        public bool SingleRoot { get { return Get<bool>("SingleRoot"); } set { Set("SingleRoot", value); } }
         public ObservableCollection<ItemData> ItemsSource { get; set; }
         public ObservableCollection<ItemData> SelectedItems { get; set; }
         public ObservableCollection<ItemData> DeletedItems { get; set; }
         public MainViewModel()
         {
+            SingleRoot = true;
             SelectedItems = new ObservableCollection<ItemData>();
             DeletedItems = new ObservableCollection<ItemData>();
             Title = "Tree Editor";
@@ -42,11 +46,37 @@ namespace WpfApp.ViewModel
 
         private void LoadData()
         {
-
             ItemsSource = ItemDataRepository.Default.DataCollection;
         }
 
         #region Commands
+        #region AddRootCommand
+
+        public ICommand AddRootCommand
+        {
+            get { return new RelayCommand(AddRootAction, CanAddRoot); }
+        }
+
+        private bool CanAddRoot()
+        {
+            if (ItemsSource == null || !ItemsSource.Any()) { return true; }
+            else if (SingleRoot)
+            {
+                return false;
+            }
+            return false;
+        }
+
+        private void AddRootAction()
+        {
+            if (ItemsSource == null || !ItemsSource.Any())
+            {
+                if (ItemsSource == null) ItemsSource = new ObservableCollection<ItemData>();
+                var newItem = ItemDataRepository.Default.AddNew("");
+                ItemsSource.Add(newItem);
+            }
+        }
+        #endregion
         ItemData GetSelectedItem()
         {
             if (SelectedItems.Count == 1)
@@ -116,13 +146,34 @@ namespace WpfApp.ViewModel
             //var selectedItem = GetSelectedItem();
             if (SelectedItems == null) return;
             var list = SelectedItems.ToList();
-            foreach (var selectedItem in list.Where(selectedItem => !selectedItem.ItemParentId.IsNullOrEmpty()))
+            //foreach (var selectedItem in list.Where(selectedItem => !selectedItem.ItemParentId.IsNullOrEmpty()))
+            foreach (var selectedItem in list)
             {
                 ItemsSource.Remove(selectedItem);
             }
         }
         #endregion
 
+        #region CanvasDoubleClickCommand
+
+        public ICommand CanvasDoubleClickCommand
+        {
+            get
+            {
+                return new RelayCommand<Point>((p) =>
+                    {
+                        if (ItemsSource != null && ItemsSource.Any())
+                        {
+                            if (!SingleRoot)
+                            {
+                                var newItem = ItemDataRepository.Default.AddNew("", p.X, p.Y);
+                                ItemsSource.Add(newItem);
+                            }
+                        }
+                    });
+            }
+        }
+        #endregion
         #endregion
     }
 }
