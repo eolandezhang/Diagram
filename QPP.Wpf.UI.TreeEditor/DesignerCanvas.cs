@@ -157,7 +157,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
                 #region Vertical
 
-                var v = 100;
+                var v = 40;
                 if (mousePos.Y < v)
                 {
                     var delta = (mousePos.Y - v) / 1; //translate back to original unit

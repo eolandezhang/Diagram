@@ -12,7 +12,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using QPP.ComponentModel;
-using ICommand = QPP.Command.ICommand;
 
 /*
  * 树状图控件
@@ -154,7 +153,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 var deleteItem = dc.DiagramManager.GetDesignerItemById(dc.GetId(oldItem));
                 if (deleteItem == null) continue;
-                //dc.DiagramManager.DeleteArrange(deleteItem);
+                dc.DiagramManager.DeleteArrange(deleteItem);
                 var model = oldItem as DataModel;
                 if (model == null) continue;
 
@@ -189,7 +188,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     dc.DiagramManager.Scroll(item);
                 }
             }
-            dc.DiagramManager.Arrange();
+            //dc.DiagramManager.Arrange();
         }
         string GetPId(object item)
         {
@@ -280,8 +279,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                 {
-                    dc.DiagramManager.ExpandAll();
-                    //dc.DiagramManager.AddNewArrange(item);
+                    //dc.DiagramManager.ExpandAll();
+                    dc.DiagramManager.AddNewArrange(item);
                     dc.DiagramManager.Scroll(item);
                 }));
             }

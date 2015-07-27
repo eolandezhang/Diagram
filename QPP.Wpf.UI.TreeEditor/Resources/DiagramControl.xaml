@@ -14,7 +14,24 @@
                                          Content="刷新" 
                                          Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RefreshCommand}" 
                                          Focusable="False"/>
-                                <Menu  Margin="4,0,4,0" Padding="5,4,5,4" 
+                                <Button Content="标题(_T)"  Margin="4,0,4,0" Padding="5,4,5,4" 
+                                        Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=EditSelectedItemCommand}"  
+                                                  />
+                                <Button Content="折叠(_C)" Margin="4,0,4,0" Padding="5,4,5,4" 
+                                                  Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CollapseSelectedItemCommand}" 
+                                                  IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CanExpandAndCollapseSelectedItem}" 
+                                                  />
+                                <Button Content="展开(_E)"  Margin="4,0,4,0" Padding="5,4,5,4" 
+                                                  Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ExpandSelectedItemCommand}"  
+                                                  IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CanExpandAndCollapseSelectedItem}"
+                                                  />
+                                <Button Content="全部折叠(_P)" Margin="4,0,4,0" Padding="5,4,5,4" 
+                                                  Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CollapseAllCommand}" 
+                                                  />
+                                <Button Content="全部展开(_X)" Margin="4,0,4,0" Padding="5,4,5,4" 
+                                                  Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ExpandAllCommand}" 
+                                                  />
+                                <!--<Menu  Margin="4,0,4,0" Padding="5,4,5,4" 
                                     Focusable="False" Background="Transparent">
                                     <MenuItem Header="编辑(_E)"  Focusable="False">
                                         <MenuItem Header="标题(_T)" InputGestureText="F2"
@@ -39,7 +56,7 @@
                                                   Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ExpandAllCommand}" 
                                                   />
                                     </MenuItem>
-                                </Menu>
+                                </Menu>-->
                             </ToolBar>
                             <Grid DockPanel.Dock="Bottom" Height="150"  Focusable="False">
                                 <DockPanel>
