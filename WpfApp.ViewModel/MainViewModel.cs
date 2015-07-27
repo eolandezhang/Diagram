@@ -2,11 +2,9 @@
 using QPP.Command;
 using QPP.ComponentModel;
 using QPP.Wpf.Command;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Markup;
 using WpfApp.ViewModel.App_Data;
 
 namespace WpfApp.ViewModel
@@ -20,7 +18,7 @@ namespace WpfApp.ViewModel
         public ObservableCollection<ItemData> DeletedItems { get; set; }
         public MainViewModel()
         {
-            SingleRoot = true;
+            SingleRoot = false;
             SelectedItems = new ObservableCollection<ItemData>();
             DeletedItems = new ObservableCollection<ItemData>();
             Title = "Tree Editor";
@@ -52,15 +50,12 @@ namespace WpfApp.ViewModel
         #region Commands
         #region AddRootCommand
 
-        public ICommand AddRootCommand
-        {
-            get { return new RelayCommand(AddRootAction, CanAddRoot); }
-        }
+        public ICommand AddRootCommand => new RelayCommand(AddRootAction, CanAddRoot);
 
         private bool CanAddRoot()
         {
             if (ItemsSource == null || !ItemsSource.Any()) { return true; }
-            else if (SingleRoot)
+            if (ItemsSource != null && ItemsSource.Count == 1 && SingleRoot)
             {
                 return false;
             }
@@ -82,16 +77,14 @@ namespace WpfApp.ViewModel
             if (SelectedItems.Count == 1)
             {
                 var item = SelectedItems.FirstOrDefault();
-                var selectedItem = item as ItemData;
+                var selectedItem = item;
                 return selectedItem;
             }
             return null;
         }
         #region AddAfterCommand
-        public ICommand AddAfterCommand
-        {
-            get { return new RelayCommand(AddAfterAction); }
-        }
+        public ICommand AddAfterCommand => new RelayCommand(AddAfterAction);
+
         void AddAfterAction()
         {
             var selectedItem = GetSelectedItem();
@@ -102,22 +95,19 @@ namespace WpfApp.ViewModel
             }
         }
         #endregion
-        public bool EnableCommand()
-        {
-            var selectedItem = GetSelectedItem();
-            if (selectedItem != null)
-            {
-                //return !SelectedItem.DiagramControl.IsOnEditing;
-                return true;
-            }
-            return false;
-        }
+        //public bool EnableCommand()
+        //{
+        //    var selectedItem = GetSelectedItem();
+        //    if (selectedItem != null)
+        //    {
+        //        //return !SelectedItem.DiagramControl.IsOnEditing;
+        //        return true;
+        //    }
+        //    return false;
+        //}
         #region AddSiblingCommand
 
-        public ICommand AddSiblingCommand
-        {
-            get { return new RelayCommand(AddSiblingAction); }
-        }
+        public ICommand AddSiblingCommand => new RelayCommand(AddSiblingAction);
 
         private void AddSiblingAction()
         {
@@ -136,17 +126,12 @@ namespace WpfApp.ViewModel
         #endregion
         #region DeleteCommand
 
-        public ICommand DeleteCommand
-        {
-            get { return new RelayCommand(DeleteAction); }
-        }
+        public ICommand DeleteCommand => new RelayCommand(DeleteAction);
 
         private void DeleteAction()
         {
-            //var selectedItem = GetSelectedItem();
             if (SelectedItems == null) return;
             var list = SelectedItems.ToList();
-            //foreach (var selectedItem in list.Where(selectedItem => !selectedItem.ItemParentId.IsNullOrEmpty()))
             foreach (var selectedItem in list)
             {
                 ItemsSource.Remove(selectedItem);
@@ -172,6 +157,13 @@ namespace WpfApp.ViewModel
                         }
                     });
             }
+        }
+        #endregion
+        #region ShwoMessage
+
+        public ICommand ShowMessageCommand
+        {
+            get { return  new RelayCommand(()=> { MessageBox.Show("Show Message."); });}
         }
         #endregion
         #endregion
