@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:treeEditor="clr-namespace:QPP.Wpf.UI.TreeEditor;assembly=QPP.Wpf.UI.TreeEditor"
         xmlns:vm="clr-namespace:WpfApp.ViewModel;assembly=WpfApp.ViewModel"
-        Title="{Binding Title}" Height="720" Width="1000"
-         WindowState="Maximized">
+        Title="{Binding Title}" Height="600" Width="800"
+         WindowState="Normal">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
