@@ -31,12 +31,13 @@ namespace WpfApp.ViewModel.App_Data
             DataCollection = new ObservableCollection<ItemData>()
             {
                 new ItemData("0","","0","Root　Item1"),
-                new ItemData("1","0", "1", "1"),
-                new ItemData("2","0", "2", "2"),
-                new ItemData("3","1", "3", "3"),
-                new ItemData("4","2", "4", "4"),
-                new ItemData("5","3", "5\r\nasdf", "5"),
- new ItemData(Guid.NewGuid().ToString(),"0", "Item 1", ""),
+                new ItemData("1","0", "0.1", "-"),
+                new ItemData("2","0", "0.2", "-"),
+                new ItemData("3","1", "1.1", "-"),
+                new ItemData("4","2", "2.1", "-"),
+                new ItemData("5","3", "3.1", "-"),
+                new ItemData("5","0", "0.3", "-"),
+ /*new ItemData(Guid.NewGuid().ToString(),"0", "Item 1", ""),
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 2", ""),
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 3", ""),
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 4", ""),
@@ -137,7 +138,7 @@ namespace WpfApp.ViewModel.App_Data
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 99", ""),
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 100", ""),
  
-                /**/
+                */
             };
         }
 
