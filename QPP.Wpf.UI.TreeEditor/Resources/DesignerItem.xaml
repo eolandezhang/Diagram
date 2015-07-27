@@ -146,7 +146,7 @@
 
                     <Grid>
                         <Ellipse x:Name="outerCircle" 
-                                 Width="10" Height="10" Fill="Snow" Stroke="LightGray"/>
+                                 Width="14" Height="14" Fill="Snow" Stroke="LightGray"/>
                         <!--<Border>-->
                         <TextBlock
                                 x:Name="content" 
@@ -154,11 +154,10 @@
                                 VerticalAlignment="Center" 
                                 Text="{TemplateBinding  Content}"
                                 Foreground="Gray"
-                                FontSize="8">
+                                FontSize="10">
                         </TextBlock>
                         <!--</Border>-->
                     </Grid>
-
                     <ControlTemplate.Triggers>
                         <Trigger Property="ToggleButton.IsChecked" Value="true">
                             <Setter Property="ToggleButton.Content" Value="-"></Setter>
@@ -174,7 +173,7 @@
     <!-- DesignerItem Style -->
     <Style TargetType="{x:Type treeEditor:DesignerItem}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type treeEditor:DesignerItem}">
@@ -184,40 +183,41 @@
                         DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
-                            <RowDefinition Height="4"></RowDefinition>
+                            <RowDefinition Height="10"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Border  Grid.Row="0" x:Name="Border" IsHitTestVisible="True"
+                        <ContentControl  Grid.Row="0" x:Name="TextContent">
+                            <Border x:Name="Border" IsHitTestVisible="True"
                                  BorderBrush="Transparent" BorderThickness="2" Background="WhiteSmoke">
-                            <Grid Margin="1">
-                                <!-- PART_ResizeDecorator -->
-                                <Control Grid.Row="0"  x:Name="PART_ResizeDecorator" 
+                                <Grid Margin="1" Name="ContentGrid">
+                                    <!-- PART_ResizeDecorator -->
+                                    <Control Grid.Row="0"  x:Name="PART_ResizeDecorator" 
                                  Visibility="Collapsed"
                                  Template="{StaticResource ResizeDecoratorTemplate}"/>
-                                <!-- PART_DragThumb -->
-                                <!--<treeEditor:DragThumb Grid.Row="0" x:Name="PART_DragThumb" 
+                                    <!-- PART_DragThumb -->
+                                    <!--<treeEditor:DragThumb Grid.Row="0" x:Name="PART_DragThumb" 
                                      Cursor="SizeAll"/>-->
-                                <!-- PART_ContentPresenter -->
-                                <ContentPresenter x:Name="PART_ContentPresenter"
+                                    <!-- PART_ContentPresenter -->
+                                    <ContentPresenter x:Name="PART_ContentPresenter"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Stretch"
                                           Content="{TemplateBinding ContentControl.Content}"
                                           Margin="{TemplateBinding ContentControl.Padding}"/>
-                                <!-- PART_ConnectorDecorator -->
-                                <Control Grid.Row="0"  x:Name="PART_ConnectorDecorator"
+                                    <!-- PART_ConnectorDecorator -->
+                                    <Control Grid.Row="0"  x:Name="PART_ConnectorDecorator"
                                  Visibility="Hidden"
                                  Template="{StaticResource ConnectorDecoratorTemplate}"/>
-                            </Grid>
-                        </Border>
+                                </Grid>
+                            </Border>
+                        </ContentControl>
                         
+
                         <treeEditor:RelativePositionPanel  Grid.Row="1"  x:Name="PART_IsExpanderVisible"  Margin="-3,0,0,0">
-                            <ToggleButton 
-                                            x:Name="PART_ToggleButton" 
-                                            treeEditor:RelativePositionPanel.RelativePosition="0.1,1"
-                                            Style="{StaticResource ButtonTemplate}" 
-                                            IsChecked="{Binding IsExpanded}"
-                                             Focusable="False"
-                                                >
-                            </ToggleButton>
+                            <ToggleButton
+                                x:Name="PART_ToggleButton" 
+                                treeEditor:RelativePositionPanel.RelativePosition="0.1,1"
+                                Style="{StaticResource ButtonTemplate}" 
+                                IsChecked="{Binding IsExpanded}"
+                                Focusable="False"/>
                         </treeEditor:RelativePositionPanel>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -271,6 +271,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+
     </Style>
 
 </ResourceDictionary>

@@ -43,10 +43,10 @@
                             </ToolBar>
                             <Grid DockPanel.Dock="Bottom" Height="150"  Focusable="False">
                                 <DockPanel>
-                                    <ToolBar DockPanel.Dock="Top">
-                                        <Button Content="清空" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ClearMessage}"/>
+                                    <ToolBar DockPanel.Dock="Top" Focusable="False">
+                                        <Button Focusable="False" Content="清空" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ClearMessage}"/>
                                     </ToolBar>
-                                    <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Message}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False"/>
+                                    <TextBox  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Message}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False"/>
                                 </DockPanel>
 
                             </Grid>

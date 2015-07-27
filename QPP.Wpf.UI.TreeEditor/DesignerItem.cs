@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Remoting.Channels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,6 +16,8 @@ namespace QPP.Wpf.UI.TreeEditor
     public class DesignerItem : ContentControl, ISelectable, IGroupable//, ICloneable
     {
         #region Fields
+
+        public bool Suppress = false;
         #region 位置
         public double OriginalLeft;/*记录拖拽前的位置*/
         public double OriginalTop;
@@ -103,6 +106,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 var designerItem = d as DesignerItem;
                 if (designerItem != null)
                 {
+                    if (designerItem.Suppress) return;
                     var canvas = designerItem.Parent as DesignerCanvas;
                     if (canvas != null)
                     {
@@ -157,7 +161,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
 
         #endregion
-        #region ItemContextMenu Property 右键菜单
+        //#region ItemContextMenu Property 右键菜单
         public static readonly DependencyProperty ItemContextMenuProperty =
             DependencyProperty.RegisterAttached("ItemContextMenu", typeof(ContextMenu), typeof(DesignerItem));
 
@@ -170,7 +174,7 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             element.SetValue(ItemContextMenuProperty, value);
         }
-        #endregion
+        //#endregion
         #region IsShadow Property 标识是否是拖拽阴影
 
         public static readonly DependencyProperty IsShadowProperty = DependencyProperty.Register(
@@ -295,10 +299,21 @@ namespace QPP.Wpf.UI.TreeEditor
                         }
                     }
                 }
+
+                var c = Template.FindName("TextContent", this) as ContentControl;
+                if (c != null)
+                {
+                    c.MouseDoubleClick += (a, b) =>
+                    {
+                        DiagramControl.DiagramManager.Edit(this);
+                        b.Handled = true;
+                    };
+                }
             }
         }
         public DesignerItem(DiagramControl diagramControl)
-            : this(Guid.NewGuid().ToString(), diagramControl) { }
+            : this(Guid.NewGuid().ToString(), diagramControl)
+        { }
         public DesignerItem(DiagramItem diagramItem, DiagramControl diagramControl)
         {
             Top = 0d;
@@ -310,7 +325,6 @@ namespace QPP.Wpf.UI.TreeEditor
             SetBinding(ItemParentIdProperty, new Binding("PId"));
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
-            MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
             Loaded += DesignerItem_Loaded;
         }
         public DesignerItem(object itemData, DiagramControl diagramControl)
@@ -324,7 +338,6 @@ namespace QPP.Wpf.UI.TreeEditor
             SetBinding(TopProperty, new Binding(diagramControl.TopField));
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
-            MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
             Loaded += DesignerItem_Loaded;
         }
         static DesignerItem()
@@ -336,6 +349,17 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region override
+
+        protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
+            DiagramControl.Focus();
+            if (e.ClickCount == 1)
+            {
+                CreateShadow(designer, e);
+                //e.Handled = true;
+            }
+        }
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
             //base.OnPreviewMouseDown(e);
@@ -376,7 +400,6 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 //Focus();
                 DiagramControl.Focus();
-                CreateShadow(designer, e);
             }
             e.Handled = false;
 

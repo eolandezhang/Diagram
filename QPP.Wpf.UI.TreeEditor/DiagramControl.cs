@@ -138,12 +138,23 @@ namespace QPP.Wpf.UI.TreeEditor
             if (oldItems == null || oldItems.Count == 0) return;
             dc.EnsureDeletedItems();
 
+            #region 先取得所有选中节点的子节点，再判断被删除的节点是否在内，是则不删除
+
+            var items = dc.DiagramManager.GetSelectedItemsAllSubItems();
+            List<DesignerItem> allSubItems = items.Where(designerItem => !items.Contains(designerItem)).ToList();
+
+            #endregion
+
             foreach (var oldItem in oldItems)
             {
+                var id = dc.GetId(oldItem);
+                if (allSubItems.Any(x => x.ItemId == id))
+                {
+                    continue;
+                }
                 var deleteItem = dc.DiagramManager.GetDesignerItemById(dc.GetId(oldItem));
-
-
-                dc.DiagramManager.DeleteArrange(deleteItem);
+                if (deleteItem == null) continue;
+                //dc.DiagramManager.DeleteArrange(deleteItem);
                 var model = oldItem as DataModel;
                 if (model == null) continue;
 
@@ -164,7 +175,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 model.MarkDeleted();
                 dc.DeletedItems.Add(oldItem);
                 dc.DiagramManager.DeleteItem(dc.GetId(oldItem));
-
+                //更新折叠按钮显示状态，选中节点，滚动到节点
                 var pid = dc.GetPId(oldItem);
                 if (pid.IsNotEmpty())
                 {
@@ -177,8 +188,8 @@ namespace QPP.Wpf.UI.TreeEditor
                     #endregion
                     dc.DiagramManager.Scroll(item);
                 }
-
             }
+            dc.DiagramManager.Arrange();
         }
         string GetPId(object item)
         {
@@ -243,11 +254,12 @@ namespace QPP.Wpf.UI.TreeEditor
                 model.MarkCreated();
 
                 var item = new DesignerItem(newItem, dc);
+                item.Top = double.MaxValue;
                 var left = dc.GetLeft(newItem);
                 var top = dc.GetTop(newItem);
 
                 dc.DesignerItems.Add(item);
-                var parentid = dc.DiagramManager.GetPId(item);
+                var parentid = dc.GetPId(newItem);// dc.DiagramManager.GetPId(item);
                 if (parentid.IsNotEmpty())
                 {
                     dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
@@ -268,7 +280,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                 {
-                    dc.DiagramManager.AddNewArrange(item);
+                    dc.DiagramManager.ExpandAll();
+                    //dc.DiagramManager.AddNewArrange(item);
                     dc.DiagramManager.Scroll(item);
                 }));
             }
@@ -431,6 +444,7 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(SingleRootProperty, value); }
         }
         #endregion
+
         #endregion
 
         #region Constructors
@@ -452,53 +466,24 @@ namespace QPP.Wpf.UI.TreeEditor
         #region 按键
         void DiagramControl_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.Key)
+            if (!IsOnEditing)
             {
-                case Key.Up:
-                    {
-                        DiagramManager.SelectUpDown(true);
-                    }
-                    break;
-                case Key.Down:
-                    {
-                        DiagramManager.SelectUpDown(false);
-                    }
-                    break;
-                case Key.Left:
-                    {
-                        DiagramManager.SelectRightLeft(false);
-                    }
-                    break;
-                case Key.Right:
-                    {
-                        DiagramManager.SelectRightLeft(true);
-                    }
-                    break;
-                case Key.F2:
-                    {
-                        DiagramManager.Edit();
-                    }
-                    break;
-                case Key.Divide:
-                    {
-                        DiagramManager.CollapseAll();
-                    }
-                    break;
-                case Key.Multiply:
-                    {
-                        DiagramManager.ExpandAll();
-                    }
-                    break;
-                case Key.Add:
-                    {
-                        DiagramManager.ExpandSelectedItem();
-                    }
-                    break;
-                case Key.Subtract:
-                    {
-                        DiagramManager.CollapseSelectedItem();
-                    }
-                    break;
+                if ((int)e.Key >= 34 && (int)e.Key <= 69 || (int)e.Key >= 74 && (int)e.Key <= 83)
+                {
+                    DiagramManager.Edit();
+                }
+                switch (e.Key)
+                {
+                    case Key.Up: { DiagramManager.SelectUpDown(true); } break;
+                    case Key.Down: { DiagramManager.SelectUpDown(false); } break;
+                    case Key.Left: { DiagramManager.SelectRightLeft(false); } break;
+                    case Key.Right: { DiagramManager.SelectRightLeft(true); } break;
+                    case Key.F2: { DiagramManager.Edit(); } break;
+                    case Key.Divide: { DiagramManager.CollapseAll(); } break;
+                    case Key.Multiply: { DiagramManager.ExpandAll(); } break;
+                    case Key.Add: { DiagramManager.ExpandSelectedItem(); } break;
+                    case Key.Subtract: { DiagramManager.CollapseSelectedItem(); } break;
+                }
             }
         }
         #endregion

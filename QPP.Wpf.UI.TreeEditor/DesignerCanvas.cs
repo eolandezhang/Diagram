@@ -54,10 +54,10 @@ namespace QPP.Wpf.UI.TreeEditor
         public bool IsMouseDown = false;
         #endregion
 
-
+        
 
         #region Override
-
+        
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);

@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -289,10 +290,6 @@ namespace QPP.Wpf.UI.TreeEditor
                     {
                         parent.IsExpanderVisible = true;
                     }
-                    //else
-                    //{
-                    //    parent.IsExpanderVisible = false;
-                    //}
                 });
             }
             else
@@ -300,111 +297,156 @@ namespace QPP.Wpf.UI.TreeEditor
                 parent.IsExpanderVisible = false;
             }
         }
-        //新增时，下方所有节点下移
-        public void AddNewArrange(DesignerItem newItem)
-        {
-            var root = GetRoot(newItem);
-            var m = GetTime(() =>
-            {
-                newItem.SetTemplate();
-                SetWidth(newItem);
-                newItem.UpdateLayout();
+        ////新增时，下方所有节点下移
+        //public void AddNewArrange(DesignerItem newItem)
+        //{
+        //    var root = GetRoot(newItem);
+        //    var m = GetTime(() =>
+        //    {
+        //        newItem.SetTemplate();
+        //        SetWidth(newItem);
+        //        newItem.UpdateLayout();
 
-                var p = _diagramControl.DesignerItems.FirstOrDefault(x => x.ItemId == newItem.ItemParentId);
-                if (p != null)
-                {
-                    var list = GetAllSubItems(p);
-                    UpdateExpander(list, p);
-                    var allSub = list.Where(x => !x.Equals(newItem)).ToList();
-                    if (allSub.Any())
-                    {
-                        var lastChild = allSub.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
-                        var top = Canvas.GetTop(lastChild) + lastChild.ActualHeight;
-                        var left = Canvas.GetLeft(p) + GetOffset(p);
-                        newItem.Top = top;
-                        newItem.Left = left;
-                        newItem.OriginalTop = top;
-                        newItem.OriginalLeft = left;
-                        Canvas.SetTop(newItem, top);
-                        Canvas.SetLeft(newItem, left);
-                        var items =
-                            _diagramControl.DesignerItems.Where(
-                                x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(newItem));
-                        foreach (var designerItem in items)
-                        {
-                            var r = GetRoot(designerItem);
-                            if (r == root)
-                            {
-                                Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var top = Canvas.GetTop(p) + p.ActualHeight;
-                        var left = Canvas.GetLeft(p) + p.ActualWidth * 0.1d + LEFT_OFFSET;
-                        newItem.Top = top;
-                        newItem.Left = left;
-                        Canvas.SetTop(newItem, top);
-                        Canvas.SetLeft(newItem, left);
-                        var items =
-                            _diagramControl.DesignerItems.Where(
-                                x => Canvas.GetTop(x) > Canvas.GetTop(p) && !x.Equals(newItem));
-                        foreach (var designerItem in items)
-                        {
-                            var r = GetRoot(designerItem);
-                            if (r == root)
-                            {
-                                Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
-                            }
-                        }
-                    }
-                }
-            });
-            SavePosition();
-            _diagramControl.AddToMessage("新增后重新布局", m);
-        }
-        //删除时，下方所有节点上移
-        public void DeleteArrange(DesignerItem delItem)
-        {
-            var m = GetTime(() =>
-            {
-                var list = GetAllSubItems(delItem);
-                list.Add(delItem);
-                double h = 0;
-                foreach (var designerItem in list)
-                {
-                    h += designerItem.ActualHeight;
-                }
+        //        var p = _diagramControl.DesignerItems.FirstOrDefault(x => x.ItemId == newItem.ItemParentId);
+        //        if (p != null)
+        //        {
 
-                var allSub = list.ToList();
-                if (allSub.Any())
-                {
-                    var lastChild = allSub.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
+        //            var newItemParent = GetParent(newItem);
+        //            if (newItemParent.IsExpanded)
+        //            {
+        //                var list = GetAllSubItems(p);
+        //                UpdateExpander(list, p);
+        //                var allSub = list.Where(x => !x.Equals(newItem)).ToList();
+        //                if (allSub.Any())
+        //                {
+        //                    var lastChild = allSub.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
+        //                    var top = Canvas.GetTop(lastChild) + lastChild.ActualHeight;
+        //                    var left = Canvas.GetLeft(p) + GetOffset(p);
+        //                    newItem.Top = top;
+        //                    newItem.Left = left;
+        //                    newItem.OriginalTop = top;
+        //                    newItem.OriginalLeft = left;
+        //                    Canvas.SetTop(newItem, top);
+        //                    Canvas.SetLeft(newItem, left);
+        //                    var items =
+        //                        _diagramControl.DesignerItems.Where(
+        //                            x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(newItem));
+        //                    foreach (var designerItem in items)
+        //                    {
+        //                        var r = GetRoot(designerItem);
+        //                        if (r == root)
+        //                        {
+        //                            Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    var top = Canvas.GetTop(p) + p.ActualHeight;
+        //                    var left = Canvas.GetLeft(p) + p.ActualWidth * 0.1d + LEFT_OFFSET;
+        //                    newItem.Top = top;
+        //                    newItem.Left = left;
+        //                    Canvas.SetTop(newItem, top);
+        //                    Canvas.SetLeft(newItem, left);
+        //                    var items =
+        //                        _diagramControl.DesignerItems.Where(
+        //                            x => Canvas.GetTop(x) > Canvas.GetTop(p) && !x.Equals(newItem));
+        //                    foreach (var designerItem in items)
+        //                    {
+        //                        var r = GetRoot(designerItem);
+        //                        if (r == root)
+        //                        {
+        //                            Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            {
+        //                ExpandAll();
+        //                //Arrange();
+        //            }
+        //        }
+        //    });
+        //    SavePosition();
+        //    _diagramControl.AddToMessage("新增后重新布局", m);
+        //}
+        ////删除时，下方所有节点上移
+        //public void DeleteArrange(DesignerItem delItem)
+        //{
+        //    var m = GetTime(() =>
+        //    {
+        //        var list = GetAllSubItems(delItem);
+        //        list.Add(delItem);
+        //        double h = 0;
+        //        foreach (var designerItem in list)
+        //        {
+        //            h += designerItem.ActualHeight;
+        //        }
 
-                    var items =
-                        _diagramControl.DesignerItems.Where(
-                            x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(delItem));
-                    foreach (var designerItem in items)
-                    {
-                        Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) - h);
-                    }
-                }
-                else
-                {
-                    var items = _diagramControl.DesignerItems
-                    .Where(x => Canvas.GetTop(x) > Canvas.GetTop(delItem) && !x.Equals(delItem));
-                    foreach (var designerItem in items)
-                    {
-                        Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) - delItem.ActualHeight);
-                    }
-                }
+        //        var allSub = list.ToList();
+        //        if (allSub.Any())
+        //        {
+        //            var lastChild = allSub.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
+
+        //            var items =
+        //                _diagramControl.DesignerItems.Where(
+        //                    x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(delItem));
+        //            foreach (var designerItem in items)
+        //            {
+        //                Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) - h);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var items = _diagramControl.DesignerItems
+        //            .Where(x => Canvas.GetTop(x) > Canvas.GetTop(delItem) && !x.Equals(delItem));
+        //            foreach (var designerItem in items)
+        //            {
+        //                Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) - delItem.ActualHeight);
+        //            }
+        //        }
 
 
-            });
-            SavePosition();
-            _diagramControl.AddToMessage("删除后重新布局", m);
-        }
+        //    });
+        //    SavePosition();
+        //    _diagramControl.AddToMessage("删除后重新布局", m);
+        //}
+        ////折叠
+        //public void CollapseArrange(DesignerItem designerItem)
+        //{
+        //    var allSubItems = GetAllExpandedSubItems(designerItem);
+        //    double h = 0d;
+        //    foreach (var allSubItem in allSubItems.Distinct())
+        //    {
+        //        h += allSubItem.ActualHeight;
+        //    }
+        //    var list = _diagramControl.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(designerItem) && !allSubItems.Contains(x) && x != designerItem);
+
+        //    foreach (var item in list)
+        //    {
+        //        Canvas.SetTop(item, Canvas.GetTop(item) - h);
+        //    }
+        //}
+        ////展开
+        //public void ExpandArrange(DesignerItem designerItem)
+        //{
+        //    Arrange(designerItem);
+        //    var allSubItems = GetAllExpandedSubItems(designerItem);
+        //    double h = 0d;
+        //    foreach (var allSubItem in allSubItems.Distinct())
+        //    {
+        //        h += allSubItem.ActualHeight;
+        //    }
+        //    var list = _diagramControl.DesignerItems.Where(x =>
+        //    Canvas.GetTop(x) > Canvas.GetTop(designerItem)
+        //    && !GetAllSubItems(designerItem).Contains(x));
+
+        //    foreach (var item in list)
+        //    {
+        //        Canvas.SetTop(item, Canvas.GetTop(item) + h);
+        //    }
+        //}
         //整体重新布局
         public void Arrange()
         {
@@ -581,57 +623,127 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #region Expand & Collapse
 
+        public DesignerItem GetParent(DesignerItem designerItem)
+        {
+            return _diagramControl.DesignerItems.FirstOrDefault(y => y.ItemId == designerItem.ItemParentId);
+        }
+
+        bool IsParentNotExpanded(DesignerItem designerItem, DesignerItem p)//是否有父节点未展开
+        {
+            var parent = GetParent(designerItem);
+            if (parent != null)
+            {
+                if (parent.Equals(p)) return false;//父节点均展开，则返回false
+                if (!parent.IsExpanded)/*有一个未展开，则返回true,表示不显示*/{ return true; }
+                return IsParentNotExpanded(parent, p);
+            }
+            return true;
+        }
+
+        List<DesignerItem> GetAllExpandedSubItems(DesignerItem designerItem)
+        {
+            List<DesignerItem> list = new List<DesignerItem>();
+            var allSubItems = GetAllSubItems(designerItem);
+            foreach (var allSubItem in allSubItems)
+            {
+                var parent = GetParent(allSubItem);
+                if (parent != null)
+                {
+                    //if (parent.IsExpanded) { list.Add(allSubItem); }
+                    //else
+                    if (!IsParentNotExpanded(allSubItem, designerItem)) { list.Add(allSubItem); }
+                }
+            }
+            return list;
+        }
+
         public void ExpandAll/*展开所有*/()
         {
             var items = _diagramControl.DesignerItems;
             foreach (var item in items)
             {
+                item.Suppress = true;
                 item.IsExpanded = true;
+                item.Suppress = false;
+                var connections = GetItemConnections(item);
+                foreach (var connection in connections)
+                {
+                    connection.Visibility = Visibility.Visible;
+                }
+                item.Visibility = Visibility.Visible;
             }
+
+            Arrange();
         }
         public void CollapseAll/*折叠所有，除了根节点*/()
         {
             var items = _diagramControl.DesignerItems;
-            foreach (var item in items.Where(item => item.CanCollapsed))
+            foreach (var item in items)
             {
-                item.IsExpanded = false;
+                var p = GetParent(item);
+
+                if (p != null && p.CanCollapsed)
+                {
+                    var connections = GetItemConnections(item);
+                    foreach (var connection in connections)
+                    {
+                        connection.Visibility = Visibility.Collapsed;
+                    }
+                    item.Visibility = Visibility.Collapsed;
+                }
+                if (item.CanCollapsed)
+                {
+                    item.Suppress = true;
+                    item.IsExpanded = false;
+                    item.Suppress = false;
+                }
+
             }
+            Arrange();
+        }
+
+        void Hide(DesignerItem item)
+        {
+            var childs = new List<DesignerItem>();
+            childs = GetAllExpandedSubItems(item);
+            if (childs.Count == 0) return;
+
+            //CollapseArrange(item);
+            foreach (var designerItem in childs)
+            {
+                var connections = GetItemConnections(designerItem);
+                foreach (var connection in connections)
+                {
+                    connection.Visibility = Visibility.Collapsed;
+                }
+                designerItem.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public void Expand(DesignerItem item)
+        {
+            var childs = new List<DesignerItem>();
+            childs = GetAllExpandedSubItems(item);
+            foreach (var designerItem in childs)
+            {
+                var connections = GetItemConnections(designerItem).Where(x => x.Source.ParentDesignerItem.IsExpanded);
+                foreach (var connection in connections)
+                {
+                    connection.Visibility = Visibility.Visible;
+                }
+                designerItem.Visibility = Visibility.Visible;
+            }
+            //ExpandArrange(item);
         }
         public void HideOrExpandChildItems/*展开折叠*/(DesignerItem item)
         {
             if (item.IsExpanded == false)/*hide*/
             {
-                var childs = new List<DesignerItem>();
-                childs = GetAllSubItems(item);
-                if (childs.Count == 0) return;
-                foreach (var designerItem in childs)
-                {
-                    var connections = GetItemConnections(designerItem);
-                    foreach (var connection in connections)
-                    {
-                        connection.Visibility = Visibility.Collapsed;
-                    }
-                    designerItem.Visibility = Visibility.Collapsed;
-                }
+                Hide(item);
             }
-            else
+            else if (item.IsExpanded == true)//expand
             {
-                var childs = new List<DesignerItem>();
-                childs = GetAllSubItems(item);
-                var parents = _diagramControl.DesignerItems.Where(x => x.ItemId == item.ItemParentId).ToList();
-                foreach (var p in parents)
-                {
-                    var parent = p;
-                    foreach (var designerItem in childs.Where(x => parent.IsExpanded))
-                    {
-                        var connections = GetItemConnections(designerItem).Where(x => x.Source.ParentDesignerItem.IsExpanded);
-                        foreach (var connection in connections)
-                        {
-                            connection.Visibility = Visibility.Visible;
-                        }
-                        designerItem.Visibility = Visibility.Visible;
-                    }
-                }
+                Expand(item);
             }
             Arrange();
         }
@@ -1102,6 +1214,8 @@ namespace QPP.Wpf.UI.TreeEditor
         #region Edit
         public void Edit(DesignerItem item)
         {
+            var oldValue = item.Text;
+
             _diagramControl.IsOnEditing = true;
             var textBox = new TextBox
             {
@@ -1121,16 +1235,28 @@ namespace QPP.Wpf.UI.TreeEditor
             var t = textBox;
             EditorKeyBindings(t);
             t.MinWidth = MIN_ITEM_WIDTH;
-            t.LostFocus += (sender, e) =>
-            {
-                _diagramControl.DesignerCanvas.Children.Remove(textBox);
-                Arrange();
-                _diagramControl.IsOnEditing = false;
-                GlobalInputBindingManager.Default.Recover();
-                _diagramControl.Focus();
-            };
+            t.LostFocus += T_LostFocus;
             t.TextChanged += (sender, e) => { t.Width = GetWidth(item); };
+            t.KeyDown += (sender, e) =>
+            {
+                if (e.Key == Key.Escape)
+                {
+                    t.Text = oldValue;
+                    T_LostFocus(t, null);
+                }
+            };
         }
+
+        private void T_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            _diagramControl.DesignerCanvas.Children.Remove(textBox);
+            Arrange();
+            _diagramControl.IsOnEditing = false;
+            GlobalInputBindingManager.Default.Recover();
+            _diagramControl.Focus();
+        }
+
         public void Edit()
         {
             var selectedItems = GetSelectedItems();
