@@ -36,7 +36,7 @@ namespace WpfApp.ViewModel.App_Data
                 new ItemData("3","1", "1.1", "-"),
                 new ItemData("4","2", "2.1", "-"),
                 new ItemData("5","3", "3.1", "-"),
-                new ItemData("5","0", "0.3", "-"),
+                new ItemData("6","0", "0.3", "-"),
  /*new ItemData(Guid.NewGuid().ToString(),"0", "Item 1", ""),
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 2", ""),
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 3", ""),
