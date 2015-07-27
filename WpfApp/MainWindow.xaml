@@ -58,6 +58,7 @@
             </treeEditor:DiagramControl.DesignerItemTemplate>
             <treeEditor:DesignerItem.ItemContextMenu>
                 <ContextMenu>
+                    <MenuItem  Header="Message" Command="{Binding Source={StaticResource dataContext},Path=DataContext.ShowMessageCommand}"/>
                     <MenuItem  Header="增加(相邻)" Command="{Binding Path=AddSiblingCommand}"/>
                     <MenuItem  Header="增加(之后)" Command="{Binding Path=AddAfterCommand}"/>
                     <MenuItem  Header="移除" Command="{Binding Path=DeleteCommand}"/>
