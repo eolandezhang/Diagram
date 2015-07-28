@@ -711,11 +711,15 @@ namespace QPP.Wpf.UI.TreeEditor
             var child = _diagramControl.DesignerItems.Where(x => x.ItemParentId == item.ItemId);
             foreach (var c in child)
             {
-                c.Suppress = true;
-                c.IsExpanded = true;
-                c.Suppress = false;
-                Show(c);
-                Expand(c);
+                if (!c.IsExpanded)
+                {
+                    c.Suppress = true;
+                    c.IsExpanded = true;
+                    c.Suppress = false;
+                    Show(c);
+                    Expand(c);
+                }
+                
             }
             
         }
