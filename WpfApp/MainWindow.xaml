@@ -19,6 +19,7 @@
     <DockPanel>
         <ToolBarTray   DockPanel.Dock="Top" HorizontalAlignment="Left">
             <ToolBar>
+                <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="重新载入测试数据" Command="{Binding Path=ReloadCommand}"/>
                 <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(根)" Command="{Binding Path=AddRootCommand}" ToolTip="Enter"/>
                 <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(相邻)" Command="{Binding Path=AddSiblingCommand}" ToolTip="Enter"/>
                 <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(之后)" Command="{Binding Path=AddAfterCommand}" ToolTip="Tab or Insert"/>

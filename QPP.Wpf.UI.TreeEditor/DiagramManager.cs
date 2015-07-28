@@ -138,6 +138,10 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             return _diagramControl.DesignerItems.FirstOrDefault(x => GetId(x) == id);
         }
+        public DesignerItem GetParent(DesignerItem designerItem)
+        {
+            return _diagramControl.DesignerItems.FirstOrDefault(y => y.ItemId == designerItem.ItemParentId);
+        }
         #endregion
 
         #region Set
@@ -172,13 +176,13 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             //_diagramControl.AddToMessage("载入数据源", GetTime(() =>
             //{
-                _diagramControl.DesignerCanvas.Children.Clear();
-                if (_diagramControl.DesignerItems == null) return;
-                if (!_diagramControl.DesignerItems.Any()) return;
-                var roots = _diagramControl.DesignerItems.Where(x => String.IsNullOrEmpty(x.ItemParentId)).ToList();
-                roots.ForEach(root => { DrawDesignerItems(root); });
-                Arrange();/*将DesignerItems放到画布上，并且创建连线*/
-                SetSelectItem(_diagramControl.DesignerItems.FirstOrDefault(x => String.IsNullOrEmpty(x.ItemParentId)));
+            _diagramControl.DesignerCanvas.Children.Clear();
+            if (_diagramControl.DesignerItems == null) return;
+            if (!_diagramControl.DesignerItems.Any()) return;
+            var roots = _diagramControl.DesignerItems.Where(x => String.IsNullOrEmpty(x.ItemParentId)).ToList();
+            roots.ForEach(root => { DrawDesignerItems(root); });
+            Arrange();/*将DesignerItems放到画布上，并且创建连线*/
+            SetSelectItem(_diagramControl.DesignerItems.FirstOrDefault(x => String.IsNullOrEmpty(x.ItemParentId)));
 
             //}));
 
@@ -426,12 +430,16 @@ namespace QPP.Wpf.UI.TreeEditor
         //展开
         public void ExpandArrange(DesignerItem designerItem)
         {
+            //var p = GetParent(designerItem);
+            //if (!p.CanCollapsed) return;
+            var allCollapsedSubItems = GetAllCollapsedSubItems(designerItem);
             var exp = designerItem.IsExpanded;
-            _diagramControl.AddToMessage("展开",designerItem.Text);
-            var allSubItems = GetAllExpandedSubItems(designerItem);
+            _diagramControl.AddToMessage("展开", designerItem.Text + "," + exp + "," + allCollapsedSubItems.Count);
+            if (!allCollapsedSubItems.Any()) return;
             double h = 0d;
-            foreach (var allSubItem in allSubItems)
+            foreach (var allSubItem in allCollapsedSubItems)
             {
+                allSubItem.UpdateLayout();
                 h += allSubItem.ActualHeight;
             }
             var subItems = GetAllSubItems(designerItem);
@@ -446,7 +454,6 @@ namespace QPP.Wpf.UI.TreeEditor
                     Canvas.SetTop(item, Canvas.GetTop(item) + h);
                 }
             }
-
         }
         //整体重新布局
         public void Arrange()
@@ -545,12 +552,19 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             if (designerItem.DataContext != null)
             {
-                string text = GetTextBlock(designerItem).Text;
-                FormattedText formattedText = new FormattedText(text, CultureInfo.CurrentCulture,
+                string text;
+                var tb = GetTextBlock(designerItem);
+                if (tb != null)
+                {
+                    text = GetTextBlock(designerItem).Text;
+                    FormattedText formattedText = new FormattedText(text, CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight, new Typeface("Arial"), FONT_SIZE, Brushes.Black);
-                double width = formattedText.Width + 20;
-                //double height = formattedText.Height;
-                return width < MIN_ITEM_WIDTH ? MIN_ITEM_WIDTH : width;
+                    double width = formattedText.Width + 20;
+
+                    //double height = formattedText.Height;
+                    return width < MIN_ITEM_WIDTH ? MIN_ITEM_WIDTH : width;
+                }
+                return MIN_ITEM_WIDTH;
             }
             else
             {
@@ -569,6 +583,7 @@ namespace QPP.Wpf.UI.TreeEditor
         #region FontColor
         private TextBlock GetTextBlock/*元素文字控件*/(DesignerItem item)
         {
+            if (item.Content == null) return null;
             return item.Content as TextBlock;
         }
         private void SetItemFontColor/*设定元素文字颜色*/(DesignerItem item, SolidColorBrush fontColorBrush)
@@ -631,23 +646,31 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #region Expand & Collapse
 
-        public DesignerItem GetParent(DesignerItem designerItem)
-        {
-            return _diagramControl.DesignerItems.FirstOrDefault(y => y.ItemId == designerItem.ItemParentId);
-        }
 
-        bool IsParentNotExpanded(DesignerItem designerItem, DesignerItem p)//是否有父节点未展开
+
+        bool IsParentCollapsed(DesignerItem designerItem, DesignerItem p)//是否有父节点是折叠的
         {
             var parent = GetParent(designerItem);
             if (parent != null)
             {
                 if (parent.Equals(p)) return false;//父节点均展开，则返回false
                 if (!parent.IsExpanded)/*有一个未展开，则返回true,表示不显示*/{ return true; }
-                return IsParentNotExpanded(parent, p);
+                return IsParentCollapsed(parent, p);
             }
             return true;
         }
-
+        bool IsParentExpandeded(DesignerItem designerItem, DesignerItem p)//所有有父节点是展开的
+        {
+            var parent = GetParent(designerItem);
+            if (parent != null)
+            {
+                if (parent.Equals(p)) return false;//父节点均展开，则返回false
+                if (!parent.IsExpanded)/*有一个未展开，则返回false,表示不显示*/{ return false; }
+                return IsParentExpandeded(parent, p);
+            }
+            return true;
+        }
+        //所有展开的
         List<DesignerItem> GetAllExpandedSubItems(DesignerItem designerItem)
         {
             List<DesignerItem> list = new List<DesignerItem>();
@@ -657,22 +680,44 @@ namespace QPP.Wpf.UI.TreeEditor
                 var parent = GetParent(allSubItem);
                 if (parent != null)
                 {
-                    if (!IsParentNotExpanded(allSubItem, designerItem)) { list.Add(allSubItem); }
+                    if (!IsParentCollapsed(allSubItem, designerItem)) { list.Add(allSubItem); }
+                }
+            }
+            return list;
+        }
+        //所有折叠的
+        private List<DesignerItem> GetAllCollapsedSubItems(DesignerItem designerItem)
+        {
+            List<DesignerItem> list = new List<DesignerItem>();
+            var allSubItems = GetAllSubItems(designerItem);
+            foreach (var allSubItem in allSubItems)
+            {
+                var parent = GetParent(allSubItem);
+                if (parent != null)
+                {
+                    if (!IsParentExpandeded(allSubItem, designerItem))
+                    {
+                        list.Add(allSubItem);
+                    }
                 }
             }
             return list;
         }
         void Expand(DesignerItem item)
         {
-            var child = _diagramControl.DesignerItems.Where(x => x.ItemParentId == item.ItemId);
-            foreach (var c in child)
-            {
-                Expand(c);
-                Show(c);
-            }
             item.Suppress = true;
             item.IsExpanded = true;
             item.Suppress = false;
+            var child = _diagramControl.DesignerItems.Where(x => x.ItemParentId == item.ItemId);
+            foreach (var c in child)
+            {
+                c.Suppress = true;
+                c.IsExpanded = true;
+                c.Suppress = false;
+                Show(c);
+                Expand(c);
+            }
+            
         }
         public void ExpandAll/*展开所有*/()
         {
@@ -688,14 +733,20 @@ namespace QPP.Wpf.UI.TreeEditor
             foreach (var c in child)
             {
                 Collapse(c);
+                if (c.CanCollapsed)
+                {
+                    c.Suppress = true;
+                    c.IsExpanded = false;
+                    c.Suppress = false;
+                }
                 Hide(c);
             }
-            if (item.CanCollapsed)
-            {
-                item.Suppress = true;
-                item.IsExpanded = false;
-                item.Suppress = false;
-            }
+            //if (item.CanCollapsed)
+            //{
+            //    item.Suppress = true;
+            //    item.IsExpanded = false;
+            //    item.Suppress = false;
+            //}
         }
         public void CollapseAll/*折叠所有，除了根节点*/()
         {

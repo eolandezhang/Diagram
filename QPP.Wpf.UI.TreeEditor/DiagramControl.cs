@@ -119,7 +119,12 @@ namespace QPP.Wpf.UI.TreeEditor
                     case NotifyCollectionChangedAction.Remove:
                         DeleteAction(dc, arg.OldItems);
                         break;
-
+                    case NotifyCollectionChangedAction.Reset:
+                        dc.AddToMessage("Reset", "");
+                        dc.DesignerCanvas.Children.Clear();
+                        dc.DesignerItems.Clear();
+                        dc.DeletedDesignerItems.Clear();
+                        break;
                 }
 
             };
@@ -531,6 +536,10 @@ namespace QPP.Wpf.UI.TreeEditor
 
                     }));
                 }
+                else
+                {
+                    DesignerCanvas.Children.Clear();
+                }
             }
         }
         #region SetItemsParent
@@ -590,7 +599,6 @@ namespace QPP.Wpf.UI.TreeEditor
 
 
         #region Command
-
         public ICommand EditSelectedItemCommand
         {
             get
