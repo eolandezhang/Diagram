@@ -54,10 +54,10 @@ namespace QPP.Wpf.UI.TreeEditor
         public bool IsMouseDown = false;
         #endregion
 
-        
+
 
         #region Override
-        
+
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
@@ -190,9 +190,37 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
         {
+            var canvasPosition = e.GetPosition(this);
+            Finish(canvasPosition);
+            //if (Shadow != null && Shadow.ShadowItem != null)
+            //{
+            //    var canvasPosition = e.GetPosition(this);
+            //    var y = canvasPosition.Y - Shadow.Y;
+            //    var x = canvasPosition.X - Shadow.X;
+            //    //var orgParent = _diagramControl.DesignerItems.FirstOrDefault(p => p.ItemId == Shadow.DesignerItem.ItemParentId);
+
+            //    var ox = Math.Abs(x - GetLeft(Shadow.DesignerItem));
+            //    var oy = Math.Abs(y - GetTop(Shadow.DesignerItem));
+
+            //    if (ox > 2 || oy > 2)
+            //    {
+            //        _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x, y), Shadow.SelectedItemsAllSubItems);
+            //    }
+
+            //    Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
+            //    Children.Remove(Shadow.ShadowItem);
+            //}
+            //Shadow = null;
+            //NewParent = null;
+            //isGray = false;
+            //IsMouseDown = false;
+            ////_diagramControl.AddToMessage("移除影子", "");
+        }
+
+        void Finish(Point canvasPosition)
+        {
             if (Shadow != null && Shadow.ShadowItem != null)
             {
-                var canvasPosition = e.GetPosition(this);
                 var y = canvasPosition.Y - Shadow.Y;
                 var x = canvasPosition.X - Shadow.X;
                 //var orgParent = _diagramControl.DesignerItems.FirstOrDefault(p => p.ItemId == Shadow.DesignerItem.ItemParentId);
@@ -212,7 +240,6 @@ namespace QPP.Wpf.UI.TreeEditor
             NewParent = null;
             isGray = false;
             IsMouseDown = false;
-            //_diagramControl.AddToMessage("移除影子", "");
         }
         protected override void OnDrop(DragEventArgs e)
         {
@@ -305,6 +332,12 @@ namespace QPP.Wpf.UI.TreeEditor
                 if (decorator != null && template != null)
                     decorator.Template = template;
             }
+        }
+
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            var canvasPosition = e.GetPosition(this);
+            Finish(canvasPosition);
         }
 
         #endregion
