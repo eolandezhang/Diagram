@@ -3,6 +3,7 @@ using QPP.Command;
 using QPP.ComponentModel;
 using QPP.Wpf.Command;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using WpfApp.ViewModel.App_Data;
@@ -16,6 +17,7 @@ namespace WpfApp.ViewModel
         public ObservableCollection<ItemData> ItemsSource { get; set; }
         public ObservableCollection<ItemData> SelectedItems { get; set; }
         public ObservableCollection<ItemData> DeletedItems { get; set; }
+        public ItemData SelectedItem { get { return Get<ItemData>("SelectedItem"); } set { Set("SelectedItem", value); } }
         public MainViewModel()
         {
             SingleRoot = false;
@@ -24,22 +26,23 @@ namespace WpfApp.ViewModel
             Title = "Tree Editor";
             LoadData();
 
-            //SelectedItems.CollectionChanged += (d, e) =>
-            //{
-            //    if (e.Action == NotifyCollectionChangedAction.Add)
-            //    {
-            //        var item = SelectedItems.FirstOrDefault();
-            //        if (item != null)
-            //        {
-            //            var data = item as ItemData;
-            //            if (data != null)
-            //            {
-            //                MessageBox.Show(data.Text);
-            //            }
-            //        }
+            SelectedItems.CollectionChanged += (d, e) =>
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    var item = SelectedItems.FirstOrDefault();
+                    if (item != null)
+                    {
+                        var data = item as ItemData;
+                        if (data != null)
+                        {
+                            SelectedItem = data;
+                            //MessageBox.Show(data.Text);
+                        }
+                    }
 
-            //    }
-            //};
+                }
+            };
         }
 
         private void LoadData()

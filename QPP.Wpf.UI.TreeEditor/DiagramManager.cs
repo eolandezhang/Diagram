@@ -646,8 +646,6 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #region Expand & Collapse
 
-
-
         bool IsParentCollapsed(DesignerItem designerItem, DesignerItem p)//是否有父节点是折叠的
         {
             var parent = GetParent(designerItem);
@@ -719,9 +717,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     Show(c);
                     Expand(c);
                 }
-                
             }
-            
         }
         public void ExpandAll/*展开所有*/()
         {
@@ -745,12 +741,9 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 Hide(c);
             }
-            //if (item.CanCollapsed)
-            //{
-            //    item.Suppress = true;
-            //    item.IsExpanded = false;
-            //    item.Suppress = false;
-            //}
+            item.Suppress = true;
+            item.IsExpanded = false;
+            item.Suppress = false;
         }
         public void CollapseAll/*折叠所有，除了根节点*/()
         {
@@ -778,8 +771,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         public void Show(DesignerItem item)
         {
-            var childs = new List<DesignerItem>();
-            childs = GetAllExpandedSubItems(item);
+            var childs = GetAllExpandedSubItems(item);
             if (childs.Count == 0) return;
             foreach (var designerItem in childs)
             {
