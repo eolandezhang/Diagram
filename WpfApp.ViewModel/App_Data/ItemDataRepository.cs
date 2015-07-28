@@ -1,16 +1,4 @@
-﻿/* ============================================================================== 
-* 类名称：ItemDataRepository 
-* 类描述： 
-* 创建人：eolandecheung 
-* 创建时间：2015/7/16 16:42:52 
-* 修改人： 
-* 修改时间： 
-* 修改备注： 
-* @version 1.0 
-* ==============================================================================*/
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 
 namespace WpfApp.ViewModel.App_Data
@@ -30,13 +18,14 @@ namespace WpfApp.ViewModel.App_Data
         {
             DataCollection = new ObservableCollection<ItemData>()
             {
-                new ItemData("0","","0","Root　Item1"),
-                new ItemData("1","0", "0.1", "-"),
-                new ItemData("2","0", "0.2", "-"),
-                new ItemData("3","1", "1.1", "-"),
-                new ItemData("4","2", "2.1", "-"),
-                new ItemData("5","3", "3.1", "-"),
-                new ItemData("6","0", "0.3", "-"),
+                new ItemData("0","","0.0","Root　Item1"),
+                new ItemData("1","0", "1.1", "-"),
+                new ItemData("2","0", "1.2", "-"),
+                new ItemData("3","1", "2.1", "-"),
+                new ItemData("4","2", "3.1", "-"),
+                new ItemData("5","3", "2.2", "-"),
+                new ItemData("6","0", "1.3", "-"),
+                new ItemData("7","4", "3.2", "-"),
  /*new ItemData(Guid.NewGuid().ToString(),"0", "Item 1", ""),
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 2", ""),
  new ItemData(Guid.NewGuid().ToString(),"0", "Item 3", ""),

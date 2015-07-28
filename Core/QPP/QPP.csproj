@@ -43,7 +43,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Dll\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -74,7 +74,7 @@
       <HintPath>..\reference\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Spring.Core">
-      <HintPath>..\..\packages\Spring.Core.2.0.1\lib\net40\Spring.Core.dll</HintPath>
+      <HintPath>..\reference\Spring.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />

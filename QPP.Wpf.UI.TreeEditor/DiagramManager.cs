@@ -170,8 +170,8 @@ namespace QPP.Wpf.UI.TreeEditor
         /*利用数据源在画布上添加节点及连线*/
         public void Draw()
         {
-            _diagramControl.AddToMessage("载入数据源", GetTime(() =>
-            {
+            //_diagramControl.AddToMessage("载入数据源", GetTime(() =>
+            //{
                 _diagramControl.DesignerCanvas.Children.Clear();
                 if (_diagramControl.DesignerItems == null) return;
                 if (!_diagramControl.DesignerItems.Any()) return;
@@ -180,7 +180,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 Arrange();/*将DesignerItems放到画布上，并且创建连线*/
                 SetSelectItem(_diagramControl.DesignerItems.FirstOrDefault(x => String.IsNullOrEmpty(x.ItemParentId)));
 
-            }));
+            //}));
 
         }
         public string GetTime(Action action)
@@ -360,7 +360,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             });
             SavePosition();
-            _diagramControl.AddToMessage("新增后重新布局", m);
+            //_diagramControl.AddToMessage("新增后重新布局", m);
         }
         //删除时，下方所有节点上移
         public void DeleteArrange(DesignerItem delItem)
@@ -401,7 +401,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
             });
             SavePosition();
-            _diagramControl.AddToMessage("删除后重新布局", m);
+            //_diagramControl.AddToMessage("删除后重新布局", m);
         }
         //折叠
         public void CollapseArrange(DesignerItem designerItem)
@@ -427,7 +427,7 @@ namespace QPP.Wpf.UI.TreeEditor
         public void ExpandArrange(DesignerItem designerItem)
         {
             var exp = designerItem.IsExpanded;
-            Debug.WriteLine(designerItem.Text);
+            _diagramControl.AddToMessage("展开",designerItem.Text);
             var allSubItems = GetAllExpandedSubItems(designerItem);
             double h = 0d;
             foreach (var allSubItem in allSubItems)
@@ -480,7 +480,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             });
 
-            _diagramControl.AddToMessage("全部重新布局", m);
+            //_diagramControl.AddToMessage("全部重新布局", m);
         }
         void Arrange/*递归方法，给定根节点，重新布局*/(DesignerItem designerItem/*根节点*/)
         {

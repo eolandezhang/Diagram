@@ -261,21 +261,21 @@ namespace QPP.Wpf.UI.TreeEditor
                 var parentid = dc.GetPId(newItem);// dc.DiagramManager.GetPId(item);
                 if (parentid.IsNotEmpty())
                 {
-                    dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
-                    {
-                        var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
-                        dc.DiagramManager.DrawChild(parent, item);
-                        dc.DiagramManager.SetSelectItem(item);
-                    }));
+                    //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
+                    //{
+                    var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
+                    dc.DiagramManager.DrawChild(parent, item);
+                    dc.DiagramManager.SetSelectItem(item);
+                    //}));
                 }
                 else
                 {
-                    dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
-                       {
-                           dc.DiagramManager.DrawRoot(item, top, left);
-                           dc.DiagramManager.SetSelectItem(item);
+                    //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
+                    //   {
+                    dc.DiagramManager.DrawRoot(item, top, left);
+                    dc.DiagramManager.SetSelectItem(item);
 
-                       }));
+                    //  }));
                 }
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                 {
