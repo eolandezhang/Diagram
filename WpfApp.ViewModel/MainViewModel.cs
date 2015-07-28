@@ -60,13 +60,13 @@ namespace WpfApp.ViewModel
                     ItemsSource.Clear();
                     var list = new ObservableCollection<ItemData>()
                         {
-                         new ItemData("0","","01253-PAWNS-GOLD",""),
-                new ItemData("1","0","BGM-109650-108",""),
-                new ItemData("2","1","PL-PLASTIC-PP 3015A",""),
-                new ItemData("3","1","PL-PIGMENT-7408C",""),
-                new ItemData("4","0","PL005BA16001300PE001",""),
-                new ItemData("5","0","BGM-10965C-101",""),
-                new ItemData("6","0","BGM-10965C-102",""),
+                        new ItemData("0","","01253-PAWNS-GOLD",""),
+                        new ItemData("1","0","BGM-109650-108",""),
+                        new ItemData("2","1","PL-PLASTIC-PP 3015A",""),
+                        new ItemData("3","1","PL-PIGMENT-7408C",""),
+                        new ItemData("4","0","PL005BA16001300PE001",""),
+                        new ItemData("5","0","BGM-10965C-101",""),
+                        new ItemData("6","0","BGM-10965C-102",""),
                     //new ItemData("0", "", "0.0", "Root　Item1"),
                     //new ItemData("1", "0", "1.1", "-"),
                     //new ItemData("3", "1", "2.1", "-"),
