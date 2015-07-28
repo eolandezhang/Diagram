@@ -42,7 +42,7 @@ namespace QPP.Wpf.UI.TreeEditor
         public ObservableCollection<DesignerItem> DesignerItems { get; set; }
         public DesignerCanvas DesignerCanvas { get; set; }
         public bool IsOnEditing;/*双击出现编辑框，标识编辑状态，此时回车按键按下之后，会阻止新增相邻节点命令*/
-        public DiagramManager DiagramManager { get; set; }
+        public IDiagramManager DiagramManager { get; set; }
         public List<DesignerItem> DeletedDesignerItems = new List<DesignerItem>();
         #endregion
 
@@ -258,6 +258,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 model.MarkCreated();
 
                 var item = new DesignerItem(newItem, dc);
+                item.SetTemplate();
                 item.Top = double.MaxValue;
                 var left = dc.GetLeft(newItem);
                 var top = dc.GetTop(newItem);
@@ -455,14 +456,12 @@ namespace QPP.Wpf.UI.TreeEditor
 
         public DiagramControl()
         {
+            DiagramManager = new VerticalTreeManager(this);
             Items = new ObservableCollection<DiagramItem>();
-            DiagramManager = new DiagramManager(this);
             DesignerItems = new ObservableCollection<DesignerItem>();
-
             /*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
             Loaded += (d, e) => { Bind(); };
             PreviewKeyDown += DiagramControl_PreviewKeyDown;
-
         }
 
         #endregion

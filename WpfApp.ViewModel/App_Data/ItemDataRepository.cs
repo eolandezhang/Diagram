@@ -25,6 +25,7 @@ namespace WpfApp.ViewModel.App_Data
                 new ItemData("4","0","PL005BA16001300PE001",""),
                 new ItemData("5","0","BGM-10965C-101",""),
                 new ItemData("6","0","BGM-10965C-102",""),
+                new ItemData("7","0","BGM-10965C-102aaaaaaaaaaaaaaaaaaa",""),
                 //new ItemData("0","","0.0","Root　Item1"),
                 //new ItemData("1","0", "1.1", "-"),
                 //new ItemData("2","0", "1.2", "-"),

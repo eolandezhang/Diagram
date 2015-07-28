@@ -192,29 +192,6 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             var canvasPosition = e.GetPosition(this);
             Finish(canvasPosition);
-            //if (Shadow != null && Shadow.ShadowItem != null)
-            //{
-            //    var canvasPosition = e.GetPosition(this);
-            //    var y = canvasPosition.Y - Shadow.Y;
-            //    var x = canvasPosition.X - Shadow.X;
-            //    //var orgParent = _diagramControl.DesignerItems.FirstOrDefault(p => p.ItemId == Shadow.DesignerItem.ItemParentId);
-
-            //    var ox = Math.Abs(x - GetLeft(Shadow.DesignerItem));
-            //    var oy = Math.Abs(y - GetTop(Shadow.DesignerItem));
-
-            //    if (ox > 2 || oy > 2)
-            //    {
-            //        _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x, y), Shadow.SelectedItemsAllSubItems);
-            //    }
-
-            //    Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
-            //    Children.Remove(Shadow.ShadowItem);
-            //}
-            //Shadow = null;
-            //NewParent = null;
-            //isGray = false;
-            //IsMouseDown = false;
-            ////_diagramControl.AddToMessage("移除影子", "");
         }
 
         void Finish(Point canvasPosition)
@@ -241,51 +218,51 @@ namespace QPP.Wpf.UI.TreeEditor
             isGray = false;
             IsMouseDown = false;
         }
-        protected override void OnDrop(DragEventArgs e)
-        {
-            base.OnDrop(e);
-            DragObject dragObject = e.Data.GetData(typeof(DragObject)) as DragObject;
-            if (dragObject != null && !String.IsNullOrEmpty(dragObject.Xaml))
-            {
-                DesignerItem newItem = null;
-                Object content = XamlReader.Load(XmlReader.Create(new StringReader(dragObject.Xaml)));
+        //protected override void OnDrop(DragEventArgs e)
+        //{
+        //    base.OnDrop(e);
+        //    DragObject dragObject = e.Data.GetData(typeof(DragObject)) as DragObject;
+        //    if (dragObject != null && !String.IsNullOrEmpty(dragObject.Xaml))
+        //    {
+        //        DesignerItem newItem = null;
+        //        Object content = XamlReader.Load(XmlReader.Create(new StringReader(dragObject.Xaml)));
 
-                if (content != null)
-                {
-                    DiagramControl diagramControl = TemplatedParent as DiagramControl;
-                    newItem = new DesignerItem(diagramControl);
-                    newItem.Content = content;
+        //        if (content != null)
+        //        {
+        //            DiagramControl diagramControl = TemplatedParent as DiagramControl;
+        //            newItem = new DesignerItem(diagramControl);
+        //            newItem.Content = content;
 
-                    Point position = e.GetPosition(this);
+        //            Point position = e.GetPosition(this);
 
-                    if (dragObject.DesiredSize.HasValue)
-                    {
-                        Size desiredSize = dragObject.DesiredSize.Value;
-                        newItem.Width = desiredSize.Width;
-                        newItem.Height = desiredSize.Height;
+        //            if (dragObject.DesiredSize.HasValue)
+        //            {
+        //                Size desiredSize = dragObject.DesiredSize.Value;
+        //                newItem.Width = desiredSize.Width;
+        //                newItem.Height = desiredSize.Height;
 
-                        DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2));
-                        DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2));
-                    }
-                    else
-                    {
-                        DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X));
-                        DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y));
-                    }
+        //                DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2));
+        //                DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2));
+        //            }
+        //            else
+        //            {
+        //                DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X));
+        //                DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y));
+        //            }
 
-                    Canvas.SetZIndex(newItem, this.Children.Count);
-                    this.Children.Add(newItem);
-                    SetConnectorDecoratorTemplate(newItem);
+        //            Canvas.SetZIndex(newItem, this.Children.Count);
+        //            this.Children.Add(newItem);
+        //            SetConnectorDecoratorTemplate(newItem);
 
-                    //update selection
-                    this.SelectionService.SelectItem(newItem);
-                    newItem.Focus();
+        //            //update selection
+        //            this.SelectionService.SelectItem(newItem);
+        //            newItem.Focus();
 
-                }
+        //        }
 
-                e.Handled = true;
-            }
-        }
+        //        e.Handled = true;
+        //    }
+        //}
         protected override Size MeasureOverride(Size constraint)
         {
             Size size = new Size();
@@ -308,8 +285,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             }
             // add margin 
-            size.Width += 500;
-            size.Height += 500;
+            size.Width += 100;
+            size.Height += 100;
 
             //foreach (DesignerItem item in SelectionService.CurrentSelection.OfType<DesignerItem>())
             //{

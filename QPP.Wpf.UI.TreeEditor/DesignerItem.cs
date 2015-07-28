@@ -312,8 +312,7 @@ namespace QPP.Wpf.UI.TreeEditor
             }
         }
         public DesignerItem(DiagramControl diagramControl)
-            : this(Guid.NewGuid().ToString(), diagramControl)
-        { }
+            : this(Guid.NewGuid().ToString(), diagramControl){ }
         public DesignerItem(DiagramItem diagramItem, DiagramControl diagramControl)
         {
             Top = 0d;
@@ -455,5 +454,6 @@ namespace QPP.Wpf.UI.TreeEditor
         //    var data = (ItemData)Data.Clone();
         //    return new DesignerItem(data.ItemId, DiagramControl) { Data = data, DiagramControl = DiagramControl };
         //}
+
     }
 }
