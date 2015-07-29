@@ -13,8 +13,8 @@
         <KeyBinding Key="Tab" Command="{Binding AddAfterCommand}"/>
         <KeyBinding Key="Insert" Command="{Binding AddAfterCommand}"/>
         <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
-        <!--<KeyBinding Key="C" Modifiers="Control" Command="{Binding CopyCommand}"/>
-        <KeyBinding Key="P" Modifiers="Control" Command="{Binding PasteCommand}"/>-->
+        <KeyBinding Key="C" Modifiers="Control" Command="{Binding CopyCommand}"/>
+        <KeyBinding Key="V" Modifiers="Control" Command="{Binding PasteCommand}"/>
     </Window.InputBindings>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -45,15 +45,17 @@
                                        DeletedItems="{Binding DeletedItems}"
                                        SingleRoot="{Binding SingleRoot}"
                                        CanvasDoubleClickCommand="{Binding CanvasDoubleClickCommand}"
+                                       
                                        ZoomBoxControl="{Binding ElementName=ZoomBox}">
                 <!--<treeEditor:DiagramControl
             x:Name="Diagram" 
             DiagramHeader="树状图">-->
+                <!--Images/blue.png-->
                 <treeEditor:DiagramControl.DesignerItemTemplate>
                     <DataTemplate>
                         <Border x:Name="Bdr"  BorderThickness="1" BorderBrush="SkyBlue">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="Images/blue.png" />
+                                <Image Source="{Binding DataContext.ImageUri}" />
                                 <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
                             </StackPanel>
                         </Border>
