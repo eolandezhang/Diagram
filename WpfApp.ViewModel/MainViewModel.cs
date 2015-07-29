@@ -230,7 +230,7 @@ namespace WpfApp.ViewModel
                     //    list.Add(str);
                     //}
                     Clipboard.Clear();
-                    Clipboard.SetDataObject(SelectedItems);
+                    Clipboard.SetDataObject(SelectedItems,false);
                 });
             }
         }
@@ -242,7 +242,11 @@ namespace WpfApp.ViewModel
                 return new RelayCommand(() =>
                 {
                     //MessageBox.Show("Paste");
-                    var list = Clipboard.GetDataObject();
+                    var dataObject = Clipboard.GetDataObject();
+                    if (dataObject != null)
+                    {
+                        var list = dataObject.GetData(typeof(ObservableCollection<ItemData>));
+                    }
                 });
             }
         }
