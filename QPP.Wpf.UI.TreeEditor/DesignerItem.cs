@@ -398,8 +398,14 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             designer.IsMouseDown = true;
             designer.IsChangingParent = true;
-            designer.Shadow.ShadowItem = DiagramControl.DiagramManager.CreateItemShadow(this);
+            var shadow = DiagramControl.DiagramManager.CreateItemShadow(this);
+            designer.Shadow.ShadowItem = shadow;
+
+            shadow.UpdateLayout();
+            shadow.SetTemplate();
             designer.Children.Add(designer.Shadow.ShadowItem);
+           
+
             designer.Shadow.DesignerItem = this;
             designer.Shadow.ShadowItem.Visibility = Visibility.Collapsed;
             designer.Shadow.SelectedItemsAllSubItems = DiagramControl.DiagramManager.GetSelectedItemsAllSubItems();

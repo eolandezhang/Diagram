@@ -6,12 +6,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Xml;
+using System.Windows.Markup;
 
 /*
  * 树状图控件
@@ -391,7 +394,7 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(CanvasDoubleClickCommandProperty, value); }
         }
         #endregion
-
+        
         #region ZoomBoxControlProperty 缩放控件，以后需要修改
 
         public static readonly DependencyProperty ZoomBoxControlProperty = DependencyProperty.Register(
@@ -494,10 +497,15 @@ namespace QPP.Wpf.UI.TreeEditor
             //否则上下左右键，会让其它元素获得焦点
             if (!IsOnEditing)
             {
-                if ((int)e.Key >= 34 && (int)e.Key <= 69 || (int)e.Key >= 74 && (int)e.Key <= 83)
+                if (Keyboard.Modifiers == ModifierKeys.None && ((int)e.Key >= 34 && (int)e.Key <= 69 || (int)e.Key >= 74 && (int)e.Key <= 83))
                 {
                     DiagramManager.Edit(); e.Handled = true;
                 }
+                //if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.C)
+                //{
+                   
+                    
+                //}
                 switch (e.Key)
                 {
                     case Key.Up: { DiagramManager.SelectUpDown(true); e.Handled = true; } break;
