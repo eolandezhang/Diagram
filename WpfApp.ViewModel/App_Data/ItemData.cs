@@ -7,8 +7,10 @@ using System;
  */
 namespace WpfApp.ViewModel.App_Data
 {
+    [Serializable]
     public class ItemData : DataModel
     {
+        
         public string ItemId
         {
             get { return Get<string>("ItemId"); }
