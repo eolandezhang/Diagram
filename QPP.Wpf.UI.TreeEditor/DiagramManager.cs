@@ -826,12 +826,30 @@ namespace QPP.Wpf.UI.TreeEditor
             Canvas.SetLeft(designerItem, newPosition.X);
             DesignerItems.ForEach(x => { x.IsNewParent = false; x.Top = Canvas.GetTop(x); });
             ConnectToNewParent(newParent);
-            var items = selectedItemsAllSubItems.Where(x => x.ItemParentId.IsNullOrEmpty());
+            var items = selectedItemsAllSubItems.Where(x => x.ItemParentId.IsNullOrEmpty()).ToList();
+
+
             foreach (var item in items)
             {
                 Canvas.SetLeft(item, newPosition.X);
                 Canvas.SetTop(item, newPosition.Y - (designerItem.OriginalTop - item.OriginalTop));
             }
+            var topBelowZero = items.Where(item => newPosition.Y - (designerItem.OriginalTop - item.OriginalTop) < 0).ToList();
+            if (topBelowZero.Any())
+            {
+                var minTopItem = topBelowZero.Aggregate((a, b) => Canvas.GetTop(a) < Canvas.GetTop(b) ? a : b);
+                var v = Math.Abs(Canvas.GetTop(minTopItem));
+                items.ForEach(x => { Canvas.SetTop(x, Canvas.GetTop(x) + v); });
+            }
+
+            var leftBelowZero = items.Where(item => newPosition.X < 0).ToList();
+            if (leftBelowZero.Any())
+            {
+                var minLeftItem = topBelowZero.Aggregate((a, b) => Canvas.GetLeft(a) < Canvas.GetLeft(b) ? a : b);
+                var v = Math.Abs(Canvas.GetLeft(minLeftItem));
+                items.ForEach(x => { Canvas.SetLeft(x, Canvas.GetTop(x) + v); });
+            }
+
             Arrange();
         }
 

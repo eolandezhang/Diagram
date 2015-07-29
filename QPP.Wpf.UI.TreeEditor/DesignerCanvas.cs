@@ -66,6 +66,7 @@ namespace QPP.Wpf.UI.TreeEditor
         private bool isGray = false;
         public bool IsMouseDown = false;
         private bool IsMouseMove;
+        public bool IsChangingParent;
         #endregion
 
 
@@ -119,7 +120,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             }
             e.Handled = true;
-            if (IsMouseDown)
+            if (IsMouseDown && IsChangingParent)
             {
                 Move(e); AutoScroll(e);
             }
@@ -213,7 +214,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         void Finish(Point canvasPosition)
         {
-            if (IsMouseMove && Shadow.ShadowItem != null)
+            if (IsChangingParent & IsMouseMove && Shadow.ShadowItem != null)
             //if (Shadow != null && Shadow.ShadowItem != null)
             {
                 var y = canvasPosition.Y - Shadow.Y;
@@ -235,6 +236,7 @@ namespace QPP.Wpf.UI.TreeEditor
             isGray = false;
             IsMouseDown = false;
             IsMouseMove = false;
+            IsChangingParent = false;
         }
         //protected override void OnDrop(DragEventArgs e)
         //{

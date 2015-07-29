@@ -396,6 +396,7 @@ namespace QPP.Wpf.UI.TreeEditor
         void CreateShadow(DesignerCanvas designer, MouseButtonEventArgs e)
         {
             designer.IsMouseDown = true;
+            designer.IsChangingParent = true;
             designer.Shadow.ShadowItem = DiagramControl.DiagramManager.CreateItemShadow(this);
             designer.Children.Add(designer.Shadow.ShadowItem);
             designer.Shadow.DesignerItem = this;
