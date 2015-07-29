@@ -43,7 +43,14 @@ namespace WpfApp.ViewModel.App_Data
             set { Set("Top", value); }
         }
 
+        public string ImageUri
+        {
+            get { return Get<string>("ImageUri"); }
+            set { Set("ImageUri", value); }
+        }
+
         #endregion
+        public ItemData() { }
         public ItemData(string id)
         {
             ItemId = id;
@@ -52,12 +59,14 @@ namespace WpfApp.ViewModel.App_Data
             string id,
             string parentId,
             string text,
-            string desc)
+            string desc,
+            string imageUri = "Images/blue.png")
         {
             ItemId = id;
             ItemParentId = parentId;
             Text = text;
             Desc = desc;
+            ImageUri = imageUri;
         }
         public ItemData(
             string id,
@@ -65,7 +74,8 @@ namespace WpfApp.ViewModel.App_Data
             string text,
             string desc,
             double left,
-            double top)
+            double top,
+            string imageUri = "Images/blue.png")
         {
             ItemId = id;
             ItemParentId = parentId;
@@ -73,6 +83,7 @@ namespace WpfApp.ViewModel.App_Data
             Desc = desc;
             Left = left;
             Top = top;
+            ImageUri = imageUri;
         }
     }
 }

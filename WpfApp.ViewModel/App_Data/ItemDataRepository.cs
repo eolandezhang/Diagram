@@ -18,9 +18,9 @@ namespace WpfApp.ViewModel.App_Data
         {
             DataCollection = new ObservableCollection<ItemData>()
             {
-                new ItemData("0","","01253-PAWNS-GOLD",""),
-                new ItemData("1","0","BGM-109650-108",""),
-                new ItemData("2","1","PL-PLASTIC-PP 3015A",""),
+                new ItemData("0","","01253-PAWNS-GOLD","","Images/fix.png"),
+                new ItemData("1","0","BGM-109650-108","","Images/green.png"),
+                new ItemData("2","1","PL-PLASTIC-PP 3015A","","Images/green.png"),
                 new ItemData("3","1","PL-PIGMENT-7408C",""),
                 new ItemData("4","0","PL005BA16001300PE001",""),
                 new ItemData("5","0","BGM-10965C-101",""),
@@ -147,7 +147,7 @@ namespace WpfApp.ViewModel.App_Data
 
         public ItemData AddNew(string pid, double left, double top)
         {
-            return new ItemData(Guid.NewGuid().ToString(), pid, "Item", "", left, top);
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item", "", left, top,"");
         }
     }
 }
