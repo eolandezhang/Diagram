@@ -80,11 +80,6 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 CurrentSelection.Remove(item);
                 x.IsSelected = false;
-
-                #region 通知控件
-                //_diagramControl.SelectedItem = null;
-                //_diagramControl.SelectedItems.Remove(x);
-                #endregion
             }
 
             //if (item is IGroupable)

@@ -61,14 +61,15 @@
                             <Grid DockPanel.Dock="Bottom" Height="150"  Focusable="False">
                                 <DockPanel>
                                     <ToolBar DockPanel.Dock="Top" Focusable="False">
-                                        <Button Focusable="False" Content="清空" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ClearMessage}"/>
+                                        <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Focusable="False" Content="清空" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ClearMessage}"/>
+                                        <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Focusable="False" Content="查看内存" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ShowMemory}"/>
                                     </ToolBar>
                                     <TextBox  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Message}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False"/>
                                 </DockPanel>
 
                             </Grid>
                             <ScrollViewer HorizontalScrollBarVisibility="Auto"  Focusable="False"
-                      VerticalScrollBarVisibility="Auto" Name="DesignerScrollViewer">
+                      VerticalScrollBarVisibility="Auto" Name="DesignerScrollViewer" Padding="10">
                                 <treeEditor:DesignerCanvas
                                     Focusable="True" 
                                     x:Name="Designer"

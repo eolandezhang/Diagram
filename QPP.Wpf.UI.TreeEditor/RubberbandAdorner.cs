@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -59,12 +60,12 @@ namespace QPP.Wpf.UI.TreeEditor
             if (DiagramControl != null)
             {
                 DiagramControl.SelectedItems.Clear();
-                var selectedItems = designerCanvas.SelectionService.CurrentSelection;
-                foreach (var selectedItem in selectedItems.ConvertAll(x => x as DesignerItem))
+                var selectedItems = designerCanvas.SelectionService.CurrentSelection.OfType<DesignerItem>().ToList();
+                //var selectedItems = designerCanvas.SelectionService.CurrentSelection.Cast<DesignerItem>().ToList();//.ConvertAll(x => x as DesignerItem);
+                selectedItems.ForEach((selectedItem) =>
                 {
-
                     DiagramControl.SelectedItems.Add(selectedItem.DataContext);
-                }
+                });
             }
         }
 

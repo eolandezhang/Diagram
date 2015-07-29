@@ -26,7 +26,20 @@ namespace QPP.Wpf.UI.TreeEditor
 
         private Point? rubberbandSelectionStartPoint = null;
         private DiagramControl _diagramControl;
-        public Shadow Shadow { get; set; }
+        private Shadow _shadow;
+        public Shadow Shadow
+        {
+            get
+            {
+                if (_shadow == null)
+                {
+                    _shadow = new Shadow();
+                    return _shadow;
+                }
+                return _shadow;
+            }
+        }
+
         private DiagramControl DiagramControl
         {
             get
@@ -52,15 +65,15 @@ namespace QPP.Wpf.UI.TreeEditor
         private DesignerItem NewParent;
         private bool isGray = false;
         public bool IsMouseDown = false;
+        private bool IsMouseMove;
         #endregion
 
 
 
         #region Override
 
-        protected override void OnMouseDown(MouseButtonEventArgs e)
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            base.OnMouseDown(e);
             if (e.Source == this)
             {
                 // in case that this click is the start of a 
@@ -73,9 +86,9 @@ namespace QPP.Wpf.UI.TreeEditor
                 DiagramControl.SelectedItems.Clear();
                 DiagramControl.CanExpandAndCollapseSelectedItem = false;
                 Focus();
-                e.Handled = true;
                 isGray = false;
                 IsMouseDown = true;
+                e.Handled = true;
             }
             if (e.ClickCount == 2)
             {
@@ -110,10 +123,12 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 Move(e); AutoScroll(e);
             }
+            //DiagramControl.AddToMessage("finish drag", isFinishDrag.ToString());
         }
         void Move(MouseEventArgs e)//移动影子
         {
-            if (Shadow == null) return;
+            IsMouseMove = true;
+            //if (Shadow == null) return;
             if (Shadow.ShadowItem == null) return;
             if (Math.Abs(Shadow.X - GetLeft(Shadow.DesignerItem)) < 2 && Math.Abs(Shadow.Y - GetTop(Shadow.DesignerItem)) < 2) return;
             Shadow.ShadowItem.Visibility = Visibility.Visible;
@@ -198,7 +213,8 @@ namespace QPP.Wpf.UI.TreeEditor
 
         void Finish(Point canvasPosition)
         {
-            if (Shadow != null && Shadow.ShadowItem != null)
+            if (IsMouseMove && Shadow.ShadowItem != null)
+            //if (Shadow != null && Shadow.ShadowItem != null)
             {
                 var y = canvasPosition.Y - Shadow.Y;
                 var x = canvasPosition.X - Shadow.X;
@@ -211,14 +227,14 @@ namespace QPP.Wpf.UI.TreeEditor
                 {
                     _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x <= 0 ? 0 : x, y <= 0 ? 0 : y), Shadow.SelectedItemsAllSubItems);
                 }
-
                 Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
-                Children.Remove(Shadow.ShadowItem);
             }
-            Shadow = null;
+            Children.Remove(Shadow.ShadowItem);
+            //Shadow = null;
             NewParent = null;
             isGray = false;
             IsMouseDown = false;
+            IsMouseMove = false;
         }
         //protected override void OnDrop(DragEventArgs e)
         //{
@@ -316,6 +332,7 @@ namespace QPP.Wpf.UI.TreeEditor
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             var canvasPosition = e.GetPosition(this);
+
             Finish(canvasPosition);
         }
 

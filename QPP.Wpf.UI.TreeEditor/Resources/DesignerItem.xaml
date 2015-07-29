@@ -209,7 +209,7 @@
                                 </Grid>
                             </Border>
                         </ContentControl>
-                        
+
 
                         <treeEditor:RelativePositionPanel  Grid.Row="1"  x:Name="PART_IsExpanderVisible"  Margin="-3,0,0,0">
                             <ToggleButton
@@ -229,12 +229,12 @@
                             <Setter TargetName="Border" Property="Background" Value="LightSkyBlue"></Setter>
                         </MultiDataTrigger>-->
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsSelected}" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="DeepSkyBlue"></Setter>
-                            <Setter TargetName="Border" Property="Background" Value="LightSkyBlue"></Setter>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="DeepSkyBlue"/>
+                            <Setter TargetName="Border" Property="Background" Value="LightSkyBlue"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsNewParent}" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="OrangeRed"></Setter>
-                            <Setter TargetName="Border" Property="Background" Value="GhostWhite"></Setter>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="OrangeRed"/>
+                            <Setter TargetName="Border" Property="Background" Value="GhostWhite"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsShadow}" Value="True">
                             <Setter TargetName="Border" Property="BorderBrush" Value="DeepSkyBlue"></Setter>
@@ -244,9 +244,9 @@
                             <Setter TargetName="PART_DragThumb" Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>-->
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsDragItemChild}" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="LightGray"></Setter>
-                            <Setter TargetName="Border" Property="Background" Value="LightGray"></Setter>
-                            <Setter TargetName="PART_ContentPresenter" Property="TextBlock.Foreground" Value="Gray"></Setter>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="LightGray"/>
+                            <Setter TargetName="Border" Property="Background" Value="LightGray"/>
+                            <Setter TargetName="PART_ContentPresenter" Property="TextBlock.Foreground" Value="Gray"/>
                         </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>

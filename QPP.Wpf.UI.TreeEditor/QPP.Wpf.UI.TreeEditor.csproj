@@ -86,6 +86,9 @@
     <None Include="TreeEditor.xmind" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Images\green.png" />
+    <Content Include="Resources\Images\blue.png" />
+    <Content Include="Resources\Images\fix.png" />
     <Content Include="Resources\Images\tree_32.ico" />
   </ItemGroup>
   <ItemGroup>

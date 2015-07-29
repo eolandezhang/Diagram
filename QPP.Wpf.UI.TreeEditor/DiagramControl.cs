@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -454,7 +457,7 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Constructors
-
+        DispatcherTimer timer = new DispatcherTimer();
         public DiagramControl()
         {
             DiagramManager = new VerticalTreeManager(this);
@@ -463,6 +466,15 @@ namespace QPP.Wpf.UI.TreeEditor
             /*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
             Loaded += (d, e) => { Bind(); };
             PreviewKeyDown += DiagramControl_PreviewKeyDown;
+
+            timer.Tick += Timer_Tick;
+            timer.Interval = TimeSpan.FromSeconds(1);   //设置刷新的间隔时间
+            //timer.Start();
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            ShowMemory.Execute(null);
         }
 
         #endregion
@@ -675,14 +687,34 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             get { return new RelayCommand(() => { Message = ""; }); }
         }
-        #endregion
+        public ICommand ShowMemory
+        {
+            get
+            {
+                return new RelayCommand(() =>
+          {
+              Process proc = Process.GetCurrentProcess();
 
+              long usedMemory = proc.PrivateMemorySize64 / 1024;//单位Byte 比特，任务管理器的单位是
+              AddToMessage("内存", usedMemory.ToString("N"));
+          });
+            }
+        }
+        #endregion
+        Regex regexNewline = new Regex(Environment.NewLine);
         #region 消息
         public void AddToMessage(string title, string msg)
         {
-
-            if (Message.Length > 5000) Message = "";
-            Message = "[" + DateTime.Now + "]" + title + ":" + msg + "\r\n" + Message;
+            MatchCollection mc = regexNewline.Matches(Message);
+            if (mc.Count > 20)
+            {
+                var start = Message.LastIndexOf(Environment.NewLine, StringComparison.CurrentCultureIgnoreCase);
+                if (start != -1)
+                {
+                    Message = Message.Remove(start);
+                }
+            }
+            Message = "[" + DateTime.Now + "]" + title + ":" + msg + Environment.NewLine + Message;
         }
         #endregion
     }

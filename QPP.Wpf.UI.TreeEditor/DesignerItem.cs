@@ -393,12 +393,10 @@ namespace QPP.Wpf.UI.TreeEditor
                 DiagramControl.Focus();
             }
         }
-        void CreateShadow(DesignerCanvas designer, MouseButtonEventArgs e)//移动影子
+        void CreateShadow(DesignerCanvas designer, MouseButtonEventArgs e)
         {
             designer.IsMouseDown = true;
-            designer.Shadow = new Shadow();
-            var shadowItem = DiagramControl.DiagramManager.CreateItemShadow(this);
-            designer.Shadow.ShadowItem = shadowItem;
+            designer.Shadow.ShadowItem = DiagramControl.DiagramManager.CreateItemShadow(this);
             designer.Children.Add(designer.Shadow.ShadowItem);
             designer.Shadow.DesignerItem = this;
             designer.Shadow.ShadowItem.Visibility = Visibility.Collapsed;
