@@ -120,7 +120,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\blue.png" />
+    <Resource Include="Images\fix.png" />
+    <Resource Include="Images\green.png" />
     <Resource Include="tree.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\tree_32.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
