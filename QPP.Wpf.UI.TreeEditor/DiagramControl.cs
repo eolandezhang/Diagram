@@ -42,7 +42,7 @@ namespace QPP.Wpf.UI.TreeEditor
         public ObservableCollection<DesignerItem> DesignerItems { get; set; }
         public DesignerCanvas DesignerCanvas { get; set; }
         public bool IsOnEditing;/*双击出现编辑框，标识编辑状态，此时回车按键按下之后，会阻止新增相邻节点命令*/
-        public IDiagramManager DiagramManager { get; set; }
+        public DiagramManager DiagramManager { get; set; }
         public List<DesignerItem> DeletedDesignerItems = new List<DesignerItem>();
         #endregion
 
@@ -194,6 +194,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             }
             //dc.DiagramManager.Arrange();
+            dc.DiagramManager.SavePosition();
         }
         string GetPId(object item)
         {
@@ -469,25 +470,28 @@ namespace QPP.Wpf.UI.TreeEditor
         #region 按键
         void DiagramControl_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            //重点：为了不让父元素响应键盘，要将e.Handled设定为true;
+            //否则上下左右键，会让其它元素获得焦点
             if (!IsOnEditing)
             {
                 if ((int)e.Key >= 34 && (int)e.Key <= 69 || (int)e.Key >= 74 && (int)e.Key <= 83)
                 {
-                    DiagramManager.Edit();
+                    DiagramManager.Edit(); e.Handled = true;
                 }
                 switch (e.Key)
                 {
-                    case Key.Up: { DiagramManager.SelectUpDown(true); } break;
-                    case Key.Down: { DiagramManager.SelectUpDown(false); } break;
-                    case Key.Left: { DiagramManager.SelectRightLeft(false); } break;
-                    case Key.Right: { DiagramManager.SelectRightLeft(true); } break;
-                    case Key.F2: { DiagramManager.Edit(); } break;
-                    case Key.Divide: { DiagramManager.CollapseAll(); } break;
-                    case Key.Multiply: { DiagramManager.ExpandAll(); } break;
-                    case Key.Add: { DiagramManager.ExpandSelectedItem(); } break;
-                    case Key.Subtract: { DiagramManager.CollapseSelectedItem(); } break;
+                    case Key.Up: { DiagramManager.SelectUpDown(true); e.Handled = true; } break;
+                    case Key.Down: { DiagramManager.SelectUpDown(false); e.Handled = true; } break;
+                    case Key.Left: { DiagramManager.SelectRightLeft(false); e.Handled = true; } break;
+                    case Key.Right: { DiagramManager.SelectRightLeft(true); e.Handled = true; } break;
+                    case Key.F2: { DiagramManager.Edit(); e.Handled = true; } break;
+                    case Key.Divide: { DiagramManager.CollapseAll(); e.Handled = true; } break;
+                    case Key.Multiply: { DiagramManager.ExpandAll(); e.Handled = true; } break;
+                    case Key.Add: { DiagramManager.ExpandSelectedItem(); e.Handled = true; } break;
+                    case Key.Subtract: { DiagramManager.CollapseSelectedItem(); e.Handled = true; } break;
                 }
             }
+
         }
         #endregion
 

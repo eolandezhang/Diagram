@@ -486,7 +486,7 @@ namespace QPP.Wpf.UI.TreeEditor
             item.OriginalLeft = Canvas.GetLeft(item);
             item.OriginalTop = Canvas.GetTop(item);
         }
-        void SavePosition()
+        public void SavePosition()
         {
             foreach (var item in DesignerItems)
             {
@@ -816,7 +816,7 @@ namespace QPP.Wpf.UI.TreeEditor
             RemoveHelperConnection();
             Canvas.SetTop(designerItem, newPosition.Y);
             Canvas.SetLeft(designerItem, newPosition.X);
-            DesignerItems.ToList().ForEach(x => { x.IsNewParent = false; x.Top = Canvas.GetTop(x); });
+            DesignerItems.ForEach(x => { x.IsNewParent = false; x.Top = Canvas.GetTop(x); });
             ConnectToNewParent(newParent);
             var items = selectedItemsAllSubItems.Where(x => x.ItemParentId.IsNullOrEmpty());
             foreach (var item in items)
@@ -1123,7 +1123,8 @@ namespace QPP.Wpf.UI.TreeEditor
             connectors.ForEach(x => { x.Connections.Clear(); });
             DesignerCanvas.Children.Remove(item);
             _diagramControl.DeletedDesignerItems.Add(item);
-            DesignerItems.Remove(item);
+            _diagramControl.DesignerItems.Remove(item);
+           
         }
         #endregion
         #region Copy&Paste

@@ -69,5 +69,10 @@ namespace QPP.Wpf.UI.TreeEditor
 
         void Scroll(DesignerItem designerItem);
         void SetSelectItem(DesignerItem designerItem);
+
+
+
+
+        void SavePosition();
     }
 }

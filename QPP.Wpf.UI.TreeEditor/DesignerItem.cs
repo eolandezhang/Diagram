@@ -39,7 +39,6 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(ItemIdProperty, value); }
         }
         #endregion
-
         #region ItemParentId Property
         public static readonly DependencyProperty ItemParentIdProperty = DependencyProperty.Register(
             "ItemParentId", typeof(string), typeof(DesignerItem), new PropertyMetadata(default(string)));
@@ -49,7 +48,6 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(ItemParentIdProperty, value); }
         }
         #endregion
-
         #region Text Property
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
             "Text", typeof(string), typeof(DesignerItem), new PropertyMetadata(""));
@@ -59,8 +57,6 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(TextProperty, value); }
         }
         #endregion
-
-
         #region Left , Top Property
 
         public static readonly DependencyProperty LeftProperty = DependencyProperty.Register(
@@ -81,10 +77,7 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(TopProperty, value); }
         }
         #endregion
-
-        //public double Top { get; set; }
-        //public double Left { get; set; }
-
+        
         #region IsSelected Property 被选中的
         public bool IsSelected
         {
@@ -312,7 +305,8 @@ namespace QPP.Wpf.UI.TreeEditor
             }
         }
         public DesignerItem(DiagramControl diagramControl)
-            : this(Guid.NewGuid().ToString(), diagramControl){ }
+            : this(Guid.NewGuid().ToString(), diagramControl)
+        { }
         public DesignerItem(DiagramItem diagramItem, DiagramControl diagramControl)
         {
             Top = 0d;
@@ -356,8 +350,8 @@ namespace QPP.Wpf.UI.TreeEditor
             if (e.ClickCount == 1)
             {
                 CreateShadow(designer, e);
-                //e.Handled = true;
             }
+            e.Handled = true;
         }
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
@@ -395,14 +389,12 @@ namespace QPP.Wpf.UI.TreeEditor
                         DiagramControl.SelectedItems.Add(DataContext);
                         DiagramControl.CanExpandAndCollapseSelectedItem = true;
                     }
-
                 }
                 //Focus();
                 DiagramControl.Focus();
             }
+            //重要：为了能让Canvas捕捉到鼠标按下事件，这里要设定为false
             e.Handled = false;
-
-
         }
         void CreateShadow(DesignerCanvas designer, MouseButtonEventArgs e)//移动影子
         {

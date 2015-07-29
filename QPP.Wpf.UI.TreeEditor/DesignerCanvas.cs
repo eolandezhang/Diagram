@@ -119,9 +119,11 @@ namespace QPP.Wpf.UI.TreeEditor
             Shadow.ShadowItem.Visibility = Visibility.Visible;
             var canvasPosition = e.GetPosition(this);
             var y = canvasPosition.Y - Shadow.Y;
-            var x = canvasPosition.X - Shadow.X;
-            SetTop(Shadow.ShadowItem, y);
-            SetLeft(Shadow.ShadowItem, x);
+            var x = (canvasPosition.X - Shadow.X);
+            //DiagramControl.AddToMessage("position", "x=" + x + ",y=" + y);
+
+            SetTop(Shadow.ShadowItem, y <= 0 ? 0 : y);
+            SetLeft(Shadow.ShadowItem, x <= 0 ? 0 : x);
             var manager = _diagramControl.DiagramManager;
             NewParent = manager.ChangeParent(new Point(x, y), Shadow.DesignerItem, Shadow.SelectedItemsAllSubItems);
             if (!isGray)
@@ -207,7 +209,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
                 if (ox > 2 || oy > 2)
                 {
-                    _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x, y), Shadow.SelectedItemsAllSubItems);
+                    _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x <= 0 ? 0 : x, y <= 0 ? 0 : y), Shadow.SelectedItemsAllSubItems);
                 }
 
                 Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
