@@ -40,7 +40,7 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 if (this.IsMouseCaptured) this.ReleaseMouseCapture();
             }
-
+            designerCanvas.AutoScroll(e);
             e.Handled = true;
         }
 

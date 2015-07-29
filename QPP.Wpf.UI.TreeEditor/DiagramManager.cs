@@ -1302,8 +1302,8 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             if (designerItem == null) return;
             var sv = (ScrollViewer)_diagramControl.Template.FindName("DesignerScrollViewer", _diagramControl);
-            sv.ScrollToVerticalOffset(Canvas.GetTop(designerItem) - 400);
-            sv.ScrollToHorizontalOffset(Canvas.GetLeft(designerItem) - 400);
+            sv.ScrollToVerticalOffset(Canvas.GetTop(designerItem) - 100);
+            sv.ScrollToHorizontalOffset(Canvas.GetLeft(designerItem) - 100);
         }
 
         #endregion

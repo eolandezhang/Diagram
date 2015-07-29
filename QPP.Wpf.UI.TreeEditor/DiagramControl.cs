@@ -42,7 +42,7 @@ namespace QPP.Wpf.UI.TreeEditor
         public ObservableCollection<DesignerItem> DesignerItems { get; set; }
         public DesignerCanvas DesignerCanvas { get; set; }
         public bool IsOnEditing;/*双击出现编辑框，标识编辑状态，此时回车按键按下之后，会阻止新增相邻节点命令*/
-        public DiagramManager DiagramManager { get; set; }
+        public IDiagramManager DiagramManager { get; set; }
         public List<DesignerItem> DeletedDesignerItems = new List<DesignerItem>();
         #endregion
 

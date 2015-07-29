@@ -136,7 +136,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         }
         IScrollInfo _scrollInfo;
-        void AutoScroll(MouseEventArgs e)//自动滚动
+        public void AutoScroll(MouseEventArgs e)//自动滚动
         {
             var scrollViewer = DiagramControl.Template.FindName("DesignerScrollViewer", DiagramControl) as ScrollViewer;
             if (scrollViewer == null) return;

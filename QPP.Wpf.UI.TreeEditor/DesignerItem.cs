@@ -77,7 +77,7 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(TopProperty, value); }
         }
         #endregion
-        
+
         #region IsSelected Property 被选中的
         public bool IsSelected
         {
@@ -351,7 +351,6 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 CreateShadow(designer, e);
             }
-            e.Handled = true;
         }
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
@@ -393,8 +392,6 @@ namespace QPP.Wpf.UI.TreeEditor
                 //Focus();
                 DiagramControl.Focus();
             }
-            //重要：为了能让Canvas捕捉到鼠标按下事件，这里要设定为false
-            e.Handled = false;
         }
         void CreateShadow(DesignerCanvas designer, MouseButtonEventArgs e)//移动影子
         {
