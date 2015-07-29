@@ -85,7 +85,9 @@ namespace WpfApp.ViewModel
         }
         #region AddRootCommand
 
-        public ICommand AddRootCommand => new RelayCommand(AddRootAction, CanAddRoot);
+        public ICommand AddRootCommand {get{return new RelayCommand(AddRootAction, CanAddRoot);
+            
+        }}
 
         private bool CanAddRoot()
         {
@@ -118,7 +120,7 @@ namespace WpfApp.ViewModel
             return null;
         }
         #region AddAfterCommand
-        public ICommand AddAfterCommand => new RelayCommand(AddAfterAction);
+        public ICommand AddAfterCommand{get{return new RelayCommand(AddAfterAction);}}
 
         void AddAfterAction()
         {
@@ -142,7 +144,7 @@ namespace WpfApp.ViewModel
         //}
         #region AddSiblingCommand
 
-        public ICommand AddSiblingCommand => new RelayCommand(AddSiblingAction);
+        public ICommand AddSiblingCommand{get{return new RelayCommand(AddSiblingAction);}}
 
         private void AddSiblingAction()
         {
@@ -161,7 +163,7 @@ namespace WpfApp.ViewModel
         #endregion
         #region DeleteCommand
 
-        public ICommand DeleteCommand => new RelayCommand(DeleteAction);
+        public ICommand DeleteCommand { get { return new RelayCommand(DeleteAction); } }
 
         private void DeleteAction()
         {
@@ -173,7 +175,6 @@ namespace WpfApp.ViewModel
             }
         }
         #endregion
-
         #region CanvasDoubleClickCommand
 
         public ICommand CanvasDoubleClickCommand
@@ -194,8 +195,7 @@ namespace WpfApp.ViewModel
             }
         }
         #endregion
-        #region ShwoMessage
-
+        #region ShowMessage
         public ICommand ShowMessageCommand
         {
             get { return new RelayCommand(() => { MessageBox.Show("Show Message."); }); }
