@@ -24,7 +24,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #region Setters
         private const double LEFT_OFFSET = 20;
-        private const double MIN_ITEM_WIDTH = 150d;
+        private const double MIN_ITEM_WIDTH = 200d;
         private const double FONT_SIZE = 12d;
         private static readonly SolidColorBrush SHADOW_FONT_COLOR_BRUSH = Brushes.Gray;
         private static readonly SolidColorBrush DEFAULT_FONT_COLOR_BRUSH = Brushes.Black;
@@ -391,8 +391,8 @@ namespace QPP.Wpf.UI.TreeEditor
         void ExpandArrange(DesignerItem designerItem)
         {
             var allCollapsedSubItems = GetAllCollapsedSubItems(designerItem);
-            var exp = designerItem.IsExpanded;
-            _diagramControl.AddToMessage("展开", designerItem.Text + "," + exp + "," + allCollapsedSubItems.Count);
+            //var exp = designerItem.IsExpanded;
+            //_diagramControl.AddToMessage("展开", designerItem.Text + "," + exp + "," + allCollapsedSubItems.Count);
             if (!allCollapsedSubItems.Any()) return;
             double h = 0d;
             foreach (var allSubItem in allCollapsedSubItems)
@@ -501,18 +501,26 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             if (designerItem.DataContext != null)
             {
-                string text;
                 var tb = GetTextBlock(designerItem);
                 if (tb != null)
                 {
-                    text = tb.Text;
-                    FormattedText formattedText = new FormattedText(text, CultureInfo.CurrentCulture,
-                    FlowDirection.LeftToRight, new Typeface("Arial"), FONT_SIZE, Brushes.Black);
-                    double width = formattedText.Width + 20;
-                    //double height = formattedText.Height;
+                    var width = GetWidth(tb.Text);
                     return width < MIN_ITEM_WIDTH ? MIN_ITEM_WIDTH : width;
                 }
                 return MIN_ITEM_WIDTH;
+            }
+            return MIN_ITEM_WIDTH;
+        }
+
+        double GetWidth(string text)
+        {
+            if (text.IsNotEmpty())
+            {
+                FormattedText formattedText = new FormattedText(text, CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight, new Typeface("Arial"), FONT_SIZE, Brushes.Black);
+                double width = formattedText.Width + 20 + 16;
+                //double height = formattedText.Height;
+                return width;
             }
             return MIN_ITEM_WIDTH;
         }
@@ -882,24 +890,6 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Connection operations
-        void ChangeOriginalItemConnectionToShadow/*将item上的连线，连接到shadow上*/(DesignerItem item, DesignerItem shadow)
-        {
-            if (item == null || shadow == null) return;
-            _diagramControl.UpdateLayout();
-
-            var connections = GetItemConnections(item).ToList();
-            foreach (var connection in connections)
-            {
-                if (Equals(connection.Source.ParentDesignerItem, item))
-                {
-                    connection.Source = GetItemConnector(shadow, PARENT_CONNECTOR);
-                }
-                else if (Equals(connection.Sink.ParentDesignerItem, item))
-                {
-                    connection.Sink = GetItemConnector(shadow, "Left");
-                }
-            }
-        }
         void ConnectToNewParent/*根据取得的newParent,改变特定item的连线*/(DesignerItem newParent)
         {
             if (_diagramControl.SingleRoot && newParent == null) return;
@@ -1053,18 +1043,23 @@ namespace QPP.Wpf.UI.TreeEditor
             var t = textBox;
             EditorKeyBindings(t);
             t.MinWidth = MIN_ITEM_WIDTH;
-            t.LostFocus += T_LostFocus;
+            t.LostFocus += (sender, e) =>
+            {
+                T_LostFocus(sender);
+                item.Width = GetWidth(item);
+            };
             t.TextChanged += (sender, e) => { t.Width = GetWidth(item); };
             t.KeyDown += (sender, e) =>
             {
                 if (e.Key == Key.Escape)
                 {
                     t.Text = oldValue;
-                    T_LostFocus(t, null);
+                    T_LostFocus(t);
+                    //t.Width = GetWidth(item);
                 }
             };
         }
-        void T_LostFocus(object sender, RoutedEventArgs e)
+        void T_LostFocus(object sender)
         {
             var textBox = sender as TextBox;
             DesignerCanvas.Children.Remove(textBox);
@@ -1090,8 +1085,17 @@ namespace QPP.Wpf.UI.TreeEditor
                 Modifiers = ModifierKeys.Control,
                 Command = new RelayCommand(() =>
                 {
-                    t.Text += Environment.NewLine;
-                    t.SelectionStart = t.Text.Length;
+                    var begin = t.SelectionStart;
+                    if (begin > 0)
+                    {
+                        t.Text = t.Text.Insert(begin, Environment.NewLine);
+                        t.SelectionStart = begin + Environment.NewLine.Length;
+                    }
+                    else
+                    {
+                        t.Text += Environment.NewLine; t.SelectionStart = t.Text.Length;
+                    }
+
                 })
             };
             t.InputBindings.Add(kbCtrlEnter);
@@ -1104,7 +1108,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     if (_diagramControl.IsOnEditing)
                     {
                         DesignerCanvas.Children.Remove(t);
-                        Arrange();
+                        //Arrange();
                         _diagramControl.IsOnEditing = false;
                         _diagramControl.Focus();
                     }
@@ -1124,7 +1128,7 @@ namespace QPP.Wpf.UI.TreeEditor
             DesignerCanvas.Children.Remove(item);
             _diagramControl.DeletedDesignerItems.Add(item);
             _diagramControl.DesignerItems.Remove(item);
-           
+
         }
         #endregion
         #region Copy&Paste
