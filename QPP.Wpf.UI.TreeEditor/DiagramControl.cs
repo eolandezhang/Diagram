@@ -1,20 +1,17 @@
-﻿using QPP.Wpf.Command;
+﻿using QPP.ComponentModel;
+using QPP.Wpf.Command;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using QPP.ComponentModel;
 
 /*
  * 树状图控件
@@ -93,6 +90,17 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(TopFieldProperty, value); }
         }
         #endregion
+        //#region ImageUri Field Property
+
+        //public static readonly DependencyProperty ImageUriProperty = DependencyProperty.Register(
+        //    "ImageUri", typeof(string), typeof(DiagramControl), new PropertyMetadata("ImageUri"));
+
+        //public string ImageUri
+        //{
+        //    get { return (string)GetValue(ImageUriProperty); }
+        //    set { SetValue(ImageUriProperty, value); }
+        //}
+        //#endregion
         #region ItemSource Property 数据源
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
             "ItemsSource", typeof(IList), typeof(DiagramControl),

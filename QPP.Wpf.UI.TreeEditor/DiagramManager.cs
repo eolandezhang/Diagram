@@ -1181,11 +1181,14 @@ namespace QPP.Wpf.UI.TreeEditor
         public void SelectUpDown(bool selectUp)
         {
             var selectedItems = GetSelectedItems();
-            if (selectedItems == null || selectedItems.Count != 1) return;
+            if (selectedItems == null || selectedItems.Count != 1)
+            {
+                return;
+            }
             var selectedItem = selectedItems.FirstOrDefault();
-            if (selectedItem == null) return;
+            if (selectedItem == null) { return; }
             //var siblingDesignerItems = _diagramControl.DesignerItems.Where(x => x.ItemParentId == selectedItem.ItemParentId).ToList();//第一种方案使用
-            DesignerItem selectedDesignerItem = null;
+            DesignerItem selectedDesignerItem;
             if (selectUp)
             {
                 selectedDesignerItem = UpSiblingDesignerItem(selectedItem);
@@ -1197,6 +1200,7 @@ namespace QPP.Wpf.UI.TreeEditor
             if (selectedDesignerItem != null) SetSelectItem(selectedDesignerItem);
             Scroll(selectedDesignerItem);
         }
+
         #region Up
         //第一种方案
         DesignerItem UpDesignerItem(DesignerItem selectedItem, List<DesignerItem> siblingDesignerItems)
@@ -1288,7 +1292,7 @@ namespace QPP.Wpf.UI.TreeEditor
         public void SelectRightLeft(bool selectRight)
         {
             var selectedItems = GetSelectedItems();
-            if (selectedItems == null || selectedItems.Count != 1) return;
+            if (selectedItems == null || selectedItems.Count != 1) { return; }
             var selectedItem = selectedItems.FirstOrDefault();
 
             DesignerItem selectedDesignerItem = null;

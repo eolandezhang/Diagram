@@ -113,7 +113,7 @@
                      VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
             <treeEditor:ResizeThumb Width="1" Cursor="SizeWE" Margin="-1 0 0 0" Visibility="Hidden"
                      VerticalAlignment="Stretch" HorizontalAlignment="Left"/>
-            <treeEditor:ResizeThumb Width="6" Cursor="SizeWE" Margin="0 0 0 0" Visibility="Hidden"
+            <treeEditor:ResizeThumb Width="16" Cursor="SizeWE" Margin="0 0 0 0" Visibility="Visible"
                      VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
             <treeEditor:ResizeThumb Height="1" Cursor="SizeNS" Margin="0 0 0 -1" Visibility="Hidden"
                      VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
@@ -174,25 +174,26 @@
     <Style TargetType="{x:Type treeEditor:DesignerItem}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Focusable" Value="False"></Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type treeEditor:DesignerItem}">
                     <!--<Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                           ContextMenu="{StaticResource DesignerItemContextMenu}">-->
                     <Grid x:Name="Grid"
-                        DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                        DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" Focusable="False">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition Height="10"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <ContentControl  Grid.Row="0" x:Name="TextContent">
+                        <ContentControl  Grid.Row="0" x:Name="TextContent" Focusable="False">
                             <Border x:Name="Border" IsHitTestVisible="True"
-                                 BorderBrush="Transparent" BorderThickness="2" Background="WhiteSmoke">
+                                 BorderBrush="Transparent" BorderThickness="2" Background="WhiteSmoke" Focusable="False">
                                 <Grid Margin="1" Name="ContentGrid">
                                     <!-- PART_ResizeDecorator -->
                                     <Control Grid.Row="0"  x:Name="PART_ResizeDecorator" 
                                  Visibility="Collapsed"
-                                 Template="{StaticResource ResizeDecoratorTemplate}"/>
+                                 Template="{StaticResource ResizeDecoratorTemplate}" Focusable="False"/>
                                     <!-- PART_DragThumb -->
                                     <!--<treeEditor:DragThumb Grid.Row="0" x:Name="PART_DragThumb" 
                                      Cursor="SizeAll"/>-->
@@ -201,10 +202,11 @@
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Stretch"
                                           Content="{TemplateBinding ContentControl.Content}"
-                                          Margin="{TemplateBinding ContentControl.Padding}"/>
+                                          Margin="{TemplateBinding ContentControl.Padding}"
+                                                      Focusable="False"/>
                                     <!-- PART_ConnectorDecorator -->
                                     <Control Grid.Row="0"  x:Name="PART_ConnectorDecorator"
-                                 Visibility="Hidden"
+                                 Visibility="Hidden" Focusable="False"
                                  Template="{StaticResource ConnectorDecoratorTemplate}"/>
                                 </Grid>
                             </Border>

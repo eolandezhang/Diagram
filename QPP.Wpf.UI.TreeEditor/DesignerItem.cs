@@ -275,6 +275,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         void DesignerItem_Loaded(object sender, RoutedEventArgs e)
         {
+
             if (Template != null)
             {
                 ContentPresenter contentPresenter =
@@ -416,6 +417,7 @@ namespace QPP.Wpf.UI.TreeEditor
             //DiagramControl.AddToMessage("Create Shadow", "");
         }
 
+        
         #endregion
 
 
