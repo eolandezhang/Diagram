@@ -310,7 +310,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         foreach (var designerItem in items)
                         {
                             var r = GetRoot(designerItem);
-                            if (r == root)
+                            if (Equals(r, root))
                             {
                                 Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
                             }
@@ -330,7 +330,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         foreach (var designerItem in items)
                         {
                             var r = GetRoot(designerItem);
-                            if (r == root)
+                            if (Equals(r, root))
                             {
                                 Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
                             }
@@ -815,7 +815,7 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             if (parent == null) return;
             var root = GetRoot(parent);
-            var itemTop = Canvas.GetTop(selectedItem) - selectedItem.ActualHeight / 2;
+            var itemTop = Canvas.GetTop(selectedItem);
             var itemsOnCanvas = DesignerCanvas.Children;
             var designerItemsOnCanvas = itemsOnCanvas.OfType<DesignerItem>().Where(x => !x.IsShadow).ToList();
             var downItems = designerItemsOnCanvas.Where(x =>

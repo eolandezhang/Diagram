@@ -15,6 +15,7 @@
         <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
         <KeyBinding Key="C" Modifiers="Control" Command="{Binding CopyCommand}"/>
         <KeyBinding Key="V" Modifiers="Control" Command="{Binding PasteCommand}"/>
+        <KeyBinding Key="X" Modifiers="Control" Command="{Binding CutCommand}"/>
     </Window.InputBindings>
     <Grid>
         <Grid.ColumnDefinitions>

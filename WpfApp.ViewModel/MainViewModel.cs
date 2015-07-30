@@ -214,7 +214,7 @@ namespace WpfApp.ViewModel
         }
         #endregion
 
-        #region Copy Past Command
+        #region Copy Cut Past Command
         public ICommand CopyCommand
         {
             get
@@ -222,16 +222,29 @@ namespace WpfApp.ViewModel
                 return new RelayCommand(() =>
                 {
                     Clipboard.Clear();
-                    var list = new List<ItemData>();
-                    foreach (var selectedItem in SelectedItems)
-                    {
-                        list.Add(selectedItem);
-                    }
+                    var list = SelectedItems.ToList();
                     Clipboard.SetDataObject(list, false);
                 }, () => SelectedItems.Any());
             }
         }
 
+        public ICommand CutCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Clipboard.Clear();
+                    var cutItmes = SelectedItems.ToList();
+                    var list = SelectedItems.ToList();
+                    Clipboard.SetDataObject(list, false);
+                    foreach (var itemData in cutItmes)
+                    {
+                        ItemsSource.Remove(itemData);
+                    }
+                }, () => SelectedItems.Any());
+            }
+        }
 
         public ICommand PasteCommand
         {
@@ -243,48 +256,56 @@ namespace WpfApp.ViewModel
 
         void PasteAction()
         {
-            var dataObject = Clipboard.GetDataObject();
-            if (dataObject != null)
+            var dataOnClipBoard = Clipboard.GetDataObject();
+            if (dataOnClipBoard == null) return;
+
+            var pasteToItemDatas = SelectedItems.ToList();
+            if (!pasteToItemDatas.Any()) { return; }
+            var copyedItemDatas = dataOnClipBoard.GetData(typeof(List<ItemData>)) as List<ItemData>;//从剪切板中取得数据
+            if (copyedItemDatas == null) { return; }
+
+            Paste(pasteToItemDatas, copyedItemDatas);
+
+        }
+
+        void Paste(List<ItemData> parentItemDatas, List<ItemData> copyedItemDatas)
+        {
+            foreach (var parentItemData in parentItemDatas)
             {
-                try
-                {
-                    var selectedItemDatas = dataObject.GetData(typeof(List<ItemData>)) as List<ItemData>;
-                    if (selectedItemDatas == null) return;
-                    var list = SelectedItems.ToList();
-                    if (!list.Any()) { return; }
+                if (parentItemData == null) continue;
+                var copys = GetItemDatasToBeCopy(copyedItemDatas, parentItemData);
+                PasteItemDatas(copys, parentItemData);
+            }
+        }
 
-                    foreach (var selectedItem in list)
-                    {
-                        if (selectedItem == null) continue;
-                        List<ItemData> copys = new List<ItemData>();
-                        var copyItems = GetCopyedItems(selectedItemDatas);
-                        foreach (var copyItem in copyItems)
-                        {
-                            if (copyItem.ItemParentId == string.Empty)
-                            {
-                                copyItem.ItemParentId = selectedItem.ItemId;
-                            }
-                            copys.Add(copyItem);
-                        }
-                        var item = selectedItem;
-                        var roots = copys.Where(x => x.ItemParentId == item.ItemId);
-                        foreach (var itemData in roots)
-                        {
-                            if (itemData.ItemParentId.IsNullOrEmpty())
-                            {
-                                itemData.Left = ClickPoint.X;
-                                itemData.Top = ClickPoint.Y;
-                            }
-                            ItemsSource.Add(itemData);
-                            AddChild(copys, itemData);
-                        }
-                    }
-
-                }
-                catch (Exception ex)
+        List<ItemData> GetItemDatasToBeCopy(List<ItemData> dataItemOnClipBoard, ItemData parentItemData)
+        {
+            var copys = new List<ItemData>();
+            var copyItems = GetCopyedItems(dataItemOnClipBoard);
+            foreach (var copyItem in copyItems)
+            {
+                if (copyItem.ItemParentId == string.Empty)
                 {
-                    throw ex;
+                    copyItem.ItemParentId = parentItemData.ItemId;
                 }
+                copys.Add(copyItem);
+            }
+            return copys;
+        }
+
+        void PasteItemDatas(List<ItemData> copys, ItemData selectedItem)
+        {
+            var item = selectedItem;
+            var roots = copys.Where(x => x.ItemParentId == item.ItemId);
+            foreach (var itemData in roots)
+            {
+                if (itemData.ItemParentId.IsNullOrEmpty())
+                {
+                    itemData.Left = ClickPoint.X;
+                    itemData.Top = ClickPoint.Y;
+                }
+                ItemsSource.Add(itemData);
+                AddChild(copys, itemData);
             }
         }
 
@@ -300,12 +321,7 @@ namespace WpfApp.ViewModel
 
         List<ItemData> GetAllCopyItem(List<ItemData> selectedItemDatas)
         {
-            List<ItemData> list = new List<ItemData>();
-            foreach (var d in selectedItemDatas)
-            {
-                var itemData = new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.Left, d.Top, d.ImageUri);
-                list.Add(itemData);
-            }
+            var list = selectedItemDatas.Select(d => new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.Left, d.Top, d.ImageUri)).ToList();
 
             var childrens = new List<ItemData>();
             //把子节点也添加进来
@@ -314,11 +330,9 @@ namespace WpfApp.ViewModel
                 var children = ItemDataRepository.Default.GetAllSubItemDatas(ItemsSource, selectedItemData);
                 foreach (var d in children)
                 {
-                    if (childrens.All(x => x.ItemId != d.ItemId))
-                    {
-                        ItemData data = new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.Left, d.Top, d.ImageUri);
-                        childrens.Add(data);
-                    }
+                    if (childrens.Any(x => x.ItemId == d.ItemId)) continue;
+                    var data = new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.Left, d.Top, d.ImageUri);
+                    childrens.Add(data);
                 }
             }
             var result = childrens.Where(children => selectedItemDatas.All(x => x.ItemId != children.ItemId)).ToList();
@@ -328,32 +342,16 @@ namespace WpfApp.ViewModel
 
         List<ItemData> GetCopyedItems(List<ItemData> selectedItemDatas)
         {
-            try
+            var list = GetAllCopyItem(selectedItemDatas);
+            var id = new Dictionary<string, string>();
+            list.ForEach(itemData => { id[itemData.ItemId] = Guid.NewGuid().ToString("N"); });
+            foreach (var itemData in list)
             {
-                var list = GetAllCopyItem(selectedItemDatas);
-                Dictionary<string, string> id = new Dictionary<string, string>();
-                foreach (var itemData in list)
-                {
-                    id[itemData.ItemId] = Guid.NewGuid().ToString("N");
-                }
-                foreach (var itemData in list)
-                {
-                    itemData.ItemId = id[itemData.ItemId];
-                    if (id.ContainsKey(itemData.ItemParentId))
-                    {
-                        itemData.ItemParentId = id[itemData.ItemParentId];
-                    }
-                    else
-                    {
-                        itemData.ItemParentId = string.Empty;
-                    }
-                }
-                return list;
+                itemData.ItemId = id[itemData.ItemId];
+                itemData.ItemParentId = id.ContainsKey(itemData.ItemParentId) ?
+                    id[itemData.ItemParentId] : string.Empty;
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return list;
         }
 
         #endregion
