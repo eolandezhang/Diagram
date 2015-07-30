@@ -14,8 +14,8 @@ namespace QPP.Wpf.UI.TreeEditor
 
 
 
-        void Edit(DesignerItem item);
-        void Edit();
+        void Edit(DesignerItem item, string key = "");
+        void Edit(string key = "");
         void DeleteItem(string id);
 
 

@@ -6,15 +6,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using System.Xml;
-using System.Windows.Markup;
 
 /*
  * 树状图控件
@@ -125,22 +122,25 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             items.CollectionChanged += (sender, arg) =>
             {
-                switch (arg.Action)
-                {
-                    case NotifyCollectionChangedAction.Add:
-                        AddAction(dc, arg.NewItems);
-                        break;
-                    case NotifyCollectionChangedAction.Remove:
-                        DeleteAction(dc, arg.OldItems);
-                        break;
-                    case NotifyCollectionChangedAction.Reset:
-                        dc.AddToMessage("Reset", "");
-                        dc.DesignerCanvas.Children.Clear();
-                        dc.DesignerItems.Clear();
-                        dc.DeletedDesignerItems.Clear();
-                        break;
-                }
-
+                var m = dc.DiagramManager.GetTime(() =>
+                 {
+                     switch (arg.Action)
+                     {
+                         case NotifyCollectionChangedAction.Add:
+                             AddAction(dc, arg.NewItems);
+                             break;
+                         case NotifyCollectionChangedAction.Remove:
+                             DeleteAction(dc, arg.OldItems);
+                             break;
+                         case NotifyCollectionChangedAction.Reset:
+                             dc.AddToMessage("Reset", "");
+                             dc.DesignerCanvas.Children.Clear();
+                             dc.DesignerItems.Clear();
+                             dc.DeletedDesignerItems.Clear();
+                             break;
+                     }
+                 });
+                dc.AddToMessage("时间", m);
             };
         }
 
@@ -519,9 +519,26 @@ namespace QPP.Wpf.UI.TreeEditor
             //否则上下左右键，会让其它元素获得焦点
             if (!IsOnEditing)
             {
-                if (Keyboard.Modifiers == ModifierKeys.None && ((int)e.Key >= 34 && (int)e.Key <= 69 || (int)e.Key >= 74 && (int)e.Key <= 83))
+                if (Keyboard.Modifiers == ModifierKeys.None &&
+                       ((int)e.Key >= 74 && (int)e.Key <= 83))
                 {
-                    DiagramManager.Edit(); e.Handled = true;
+
+                    DiagramManager.Edit(e.Key.ToString());
+                    e.Handled = true;
+                }
+
+                else if (Keyboard.Modifiers == ModifierKeys.None &&
+                    ((int)e.Key >= 44 && (int)e.Key <= 69))
+                {
+
+                    DiagramManager.Edit(e.Key.ToString().ToLower());
+                    e.Handled = true;
+                }
+                else if (Keyboard.Modifiers == ModifierKeys.Shift &&
+                    ((int)e.Key >= 44 && (int)e.Key <= 69))
+                {
+                    DiagramManager.Edit(e.Key.ToString().ToUpper());
+                    e.Handled = true;
                 }
                 //if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.C)
                 //{
@@ -760,7 +777,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     Message = Message.Remove(start);
                 }
             }
-            Message = "[" + DateTime.Now + "]" + title + ":" + msg + Environment.NewLine + Message;
+            Message = "[" + DateTime.Now + "]" + title + "   :   " + msg + Environment.NewLine + Message;
         }
         #endregion
     }

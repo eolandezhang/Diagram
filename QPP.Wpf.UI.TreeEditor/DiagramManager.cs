@@ -281,120 +281,120 @@ namespace QPP.Wpf.UI.TreeEditor
         public void AddNewArrange(DesignerItem newItem)
         {
             var root = GetRoot(newItem);
-            var m = GetTime(() =>
-            {
-                //newItem.SetTemplate();
-                SetWidth(newItem);
-                newItem.UpdateLayout();
+            //var m = GetTime(() =>
+            //{
+            //newItem.SetTemplate();
+            SetWidth(newItem);
+            newItem.UpdateLayout();
 
-                var p = DesignerItems.FirstOrDefault(x => x.ItemId == newItem.ItemParentId);
-                if (p != null)
+            var p = DesignerItems.FirstOrDefault(x => x.ItemId == newItem.ItemParentId);
+            if (p != null)
+            {
+                var list = GetAllSubItems(p);
+                UpdateExpander(list, p);
+                var allSub = list.Where(x => !x.Equals(newItem)).ToList();
+                if (allSub.Any())
                 {
-                    var list = GetAllSubItems(p);
-                    UpdateExpander(list, p);
-                    var allSub = list.Where(x => !x.Equals(newItem)).ToList();
-                    if (allSub.Any())
+                    var lastChild = allSub.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
+                    var top = Canvas.GetTop(lastChild) + lastChild.ActualHeight;
+                    var left = Canvas.GetLeft(p) + GetOffset(p);
+                    newItem.Top = top;
+                    newItem.Left = left;
+                    newItem.OriginalTop = top;
+                    newItem.OriginalLeft = left;
+                    Canvas.SetTop(newItem, top);
+                    Canvas.SetLeft(newItem, left);
+                    var items =
+                        DesignerItems.Where(
+                            x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(newItem));
+                    foreach (var designerItem in items)
                     {
-                        var lastChild = allSub.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
-                        var top = Canvas.GetTop(lastChild) + lastChild.ActualHeight;
-                        var left = Canvas.GetLeft(p) + GetOffset(p);
-                        newItem.Top = top;
-                        newItem.Left = left;
-                        newItem.OriginalTop = top;
-                        newItem.OriginalLeft = left;
-                        Canvas.SetTop(newItem, top);
-                        Canvas.SetLeft(newItem, left);
-                        var items =
-                            DesignerItems.Where(
-                                x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(newItem));
-                        foreach (var designerItem in items)
+                        var r = GetRoot(designerItem);
+                        if (Equals(r, root))
                         {
-                            var r = GetRoot(designerItem);
-                            if (Equals(r, root))
-                            {
-                                Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var top = Canvas.GetTop(p) + p.ActualHeight;
-                        var left = Canvas.GetLeft(p) + p.ActualWidth * 0.1d + LEFT_OFFSET;
-                        newItem.Top = top;
-                        newItem.Left = left;
-                        Canvas.SetTop(newItem, top);
-                        Canvas.SetLeft(newItem, left);
-                        var items =
-                            DesignerItems.Where(
-                                x => Canvas.GetTop(x) > Canvas.GetTop(p) && !x.Equals(newItem));
-                        foreach (var designerItem in items)
-                        {
-                            var r = GetRoot(designerItem);
-                            if (Equals(r, root))
-                            {
-                                Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
-                            }
+                            Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
                         }
                     }
                 }
                 else
                 {
-                    if (newItem.ItemParentId.IsNullOrEmpty())
+                    var top = Canvas.GetTop(p) + p.ActualHeight;
+                    var left = Canvas.GetLeft(p) + p.ActualWidth * 0.1d + LEFT_OFFSET;
+                    newItem.Top = top;
+                    newItem.Left = left;
+                    Canvas.SetTop(newItem, top);
+                    Canvas.SetLeft(newItem, left);
+                    var items =
+                        DesignerItems.Where(
+                            x => Canvas.GetTop(x) > Canvas.GetTop(p) && !x.Equals(newItem));
+                    foreach (var designerItem in items)
                     {
-                        Canvas.SetTop(newItem, newItem.Top);
-                        Canvas.SetLeft(newItem, newItem.Left);
+                        var r = GetRoot(designerItem);
+                        if (Equals(r, root))
+                        {
+                            Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) + newItem.ActualHeight);
+                        }
                     }
                 }
-            });
+            }
+            else
+            {
+                if (newItem.ItemParentId.IsNullOrEmpty())
+                {
+                    Canvas.SetTop(newItem, newItem.Top);
+                    Canvas.SetLeft(newItem, newItem.Left);
+                }
+            }
+            //});
             SavePosition();
             //_diagramControl.AddToMessage("新增后重新布局", m);
         }
         public void DeleteArrange(DesignerItem delItem)
         {
-            var m = GetTime(() =>
+            //var m = GetTime(() =>
+            //{
+            var root = GetRoot(delItem);
+            var list = GetAllSubItems(delItem);
+            list.Add(delItem);
+            double h = 0;
+            foreach (var designerItem in list)
             {
-                var root = GetRoot(delItem);
-                var list = GetAllSubItems(delItem);
-                list.Add(delItem);
-                double h = 0;
-                foreach (var designerItem in list)
-                {
-                    h += designerItem.ActualHeight;
-                }
+                h += designerItem.ActualHeight;
+            }
 
-                var allSub = list.ToList();
-                if (allSub.Any())
-                {
-                    var lastChild = allSub.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
+            var allSub = list.ToList();
+            if (allSub.Any())
+            {
+                var lastChild = allSub.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
 
-                    var items =
-                        DesignerItems.Where(
-                            x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(delItem));
-                    foreach (var designerItem in items)
+                var items =
+                    DesignerItems.Where(
+                        x => Canvas.GetTop(x) > Canvas.GetTop(lastChild) && !x.Equals(delItem));
+                foreach (var designerItem in items)
+                {
+                    var r = GetRoot(designerItem);
+                    if (Equals(r, root))
                     {
-                        var r = GetRoot(designerItem);
-                        if (Equals(r, root))
-                        {
-                            Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) - h);
-                        }
+                        Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) - h);
                     }
                 }
-                else
+            }
+            else
+            {
+                var items = DesignerItems
+                .Where(x => Canvas.GetTop(x) > Canvas.GetTop(delItem) && !x.Equals(delItem));
+                foreach (var designerItem in items)
                 {
-                    var items = DesignerItems
-                    .Where(x => Canvas.GetTop(x) > Canvas.GetTop(delItem) && !x.Equals(delItem));
-                    foreach (var designerItem in items)
+                    var r = GetRoot(designerItem);
+                    if (Equals(r, root))
                     {
-                        var r = GetRoot(designerItem);
-                        if (Equals(r, root))
-                        {
-                            Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) - delItem.ActualHeight);
-                        }
+                        Canvas.SetTop(designerItem, Canvas.GetTop(designerItem) - delItem.ActualHeight);
                     }
                 }
+            }
 
 
-            });
+            //});
             SavePosition();
             //_diagramControl.AddToMessage("删除后重新布局", m);
         }
@@ -464,7 +464,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     Arrange(root);
                 }
             });
-            //_diagramControl.AddToMessage("全部重新布局", m);
+            _diagramControl.AddToMessage("全部重新布局", m);
         }
         void Arrange(DesignerItem designerItem)
         {
@@ -885,6 +885,9 @@ namespace QPP.Wpf.UI.TreeEditor
             }
 
             Arrange();
+            //所有移动元素下方节点上移
+            //目标位置下方所有元素下移
+
         }
 
         void ShowId/*测试父id是否正确设置*/(DesignerItem newParent, DesignerItem item)
@@ -1072,8 +1075,9 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #region Edit,Delete,Cut,Copy,Paste
         #region Edit
-        public void Edit(DesignerItem item)
+        public void Edit(DesignerItem item, string key = "")
         {
+            var oldHeight = item.ActualHeight;
             var oldValue = item.Text;
 
             _diagramControl.IsOnEditing = true;
@@ -1085,19 +1089,32 @@ namespace QPP.Wpf.UI.TreeEditor
                 DataContext = item.DataContext
             };
             textBox.SetBinding(TextBox.TextProperty, new Binding(_diagramControl.TextField) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+
             Canvas.SetLeft(textBox, Canvas.GetLeft(item));
             Canvas.SetTop(textBox, Canvas.GetTop(item));
             DesignerCanvas.Children.Add(textBox);
             BringToFront(textBox);
-            textBox.SelectAll();
-            textBox.Focus();
+
 
             var t = textBox;
+            if (key.IsNotEmpty())
+            {
+                //t.Focus();
+                t.Text = key;
+                t.SelectionStart = t.Text.Length;
+                t.Focus();
+            }
+            else
+            {
+                t.SelectAll();
+                t.Focus();
+            }
+
             EditorKeyBindings(t);
             t.MinWidth = MIN_ITEM_WIDTH;
             t.LostFocus += (sender, e) =>
             {
-                T_LostFocus(sender);
+                T_LostFocus(sender, item, oldHeight);
                 item.Width = GetWidth(item);
             };
             t.TextChanged += (sender, e) => { t.Width = GetWidth(item); };
@@ -1106,26 +1123,31 @@ namespace QPP.Wpf.UI.TreeEditor
                 if (e.Key == Key.Escape)
                 {
                     t.Text = oldValue;
-                    T_LostFocus(t);
+                    T_LostFocus(t, item, oldHeight);
                     //t.Width = GetWidth(item);
                 }
             };
         }
-        void T_LostFocus(object sender)
+        void T_LostFocus(object sender, DesignerItem item, double oldHeight)
         {
             var textBox = sender as TextBox;
             DesignerCanvas.Children.Remove(textBox);
-            Arrange();
+            //Arrange();
+            var list = _diagramControl.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(item)).ToList();
+            item.UpdateLayout();
+            var height = item.ActualHeight;
+            var h = height - oldHeight;
+            list.ForEach(x => Canvas.SetTop(x, Canvas.GetTop(x) + h));
             _diagramControl.IsOnEditing = false;
             GlobalInputBindingManager.Default.Recover();
             _diagramControl.Focus();
         }
-        public void Edit()
+        public void Edit(string key = "")
         {
             var selectedItems = GetSelectedItems();
             if (selectedItems == null || selectedItems.Count != 1) return;
             var selectedItem = selectedItems.FirstOrDefault();
-            Edit(selectedItem);
+            Edit(selectedItem, key);
         }
         void EditorKeyBindings(TextBox t)
         {
@@ -1380,7 +1402,7 @@ namespace QPP.Wpf.UI.TreeEditor
                                            //double seconds = timespan.TotalSeconds;  //  总秒数
             double milliseconds = timespan.TotalMilliseconds;  //  总毫秒数
                                                                //return seconds + "秒" + ",共" + _diagramControl.DesignerItems.Count + "个";
-            return milliseconds + "毫秒" + ",共" + DesignerItems.Count + "个";
+            return milliseconds + "  毫秒  " + "   ,[共" + DesignerItems.Count + "个]";
         }
     }
 }

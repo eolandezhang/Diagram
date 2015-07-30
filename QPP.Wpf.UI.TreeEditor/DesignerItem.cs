@@ -348,6 +348,7 @@ namespace QPP.Wpf.UI.TreeEditor
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
+            if (designer == null) return;
             DiagramControl.Focus();
             if (e.ClickCount == 1) { CreateShadow(designer, e); }
         }

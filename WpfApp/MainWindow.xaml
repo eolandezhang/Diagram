@@ -20,7 +20,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
         <DockPanel>
             <ToolBarTray   DockPanel.Dock="Top" HorizontalAlignment="Left">
@@ -54,7 +54,7 @@
                 <!--Images/blue.png-->
                 <treeEditor:DiagramControl.DesignerItemTemplate>
                     <DataTemplate>
-                        <Border x:Name="Bdr"  BorderThickness="1" BorderBrush="SkyBlue" Padding="0">
+                        <Border x:Name="Bdr"  BorderThickness="1" BorderBrush="SkyBlue" Padding="0,2,0,2" CornerRadius="5,5,5,5" >
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="{Binding DataContext.ImageUri}" />
                                 <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
@@ -93,8 +93,8 @@
         </DockPanel>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="300"/>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="250"></RowDefinition>
             </Grid.RowDefinitions>
             <treeEditor:DiagramDataEditorControl x:Name="DiagramDataEditor" Header="属性" DataContext="{Binding SelectedItem}"  >
                 <treeEditor:DiagramDataEditorControl.Content>

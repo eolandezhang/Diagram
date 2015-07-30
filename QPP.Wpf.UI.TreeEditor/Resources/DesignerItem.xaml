@@ -184,11 +184,11 @@
                         DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" Focusable="False">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
-                            <RowDefinition Height="10"></RowDefinition>
+                            <RowDefinition Height="5"></RowDefinition>
                         </Grid.RowDefinitions>
                         <ContentControl  Grid.Row="0" x:Name="TextContent" Focusable="False">
                             <Border x:Name="Border" IsHitTestVisible="True"
-                                 BorderBrush="Transparent" BorderThickness="2" Background="WhiteSmoke" Focusable="False">
+                                 BorderBrush="Transparent" BorderThickness="3" Background="Transparent" Focusable="False"  CornerRadius="7,7,7,7" >
                                 <Grid Margin="1" Name="ContentGrid">
                                     <!-- PART_ResizeDecorator -->
                                     <Control Grid.Row="0"  x:Name="PART_ResizeDecorator" 
