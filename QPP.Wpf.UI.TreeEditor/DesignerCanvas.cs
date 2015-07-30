@@ -191,7 +191,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 #endregion
 
                 #region Horizontal
-                var h = 300;
+                var h = 200;
                 if (mousePos.X < h)
                 {
                     var delta = (mousePos.X - h) / 1; //translate back to original unit

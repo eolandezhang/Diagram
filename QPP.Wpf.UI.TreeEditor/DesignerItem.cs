@@ -400,14 +400,10 @@ namespace QPP.Wpf.UI.TreeEditor
             designer.IsChangingParent = true;
             var shadow = DiagramControl.DiagramManager.CreateItemShadow(this);
             designer.Shadow.ShadowItem = shadow;
-
-            shadow.UpdateLayout();
-            shadow.SetTemplate();
             designer.Children.Add(designer.Shadow.ShadowItem);
-           
-
             designer.Shadow.DesignerItem = this;
-            designer.Shadow.ShadowItem.Visibility = Visibility.Collapsed;
+            
+           
             designer.Shadow.SelectedItemsAllSubItems = DiagramControl.DiagramManager.GetSelectedItemsAllSubItems();
             #region 位置
             var canvasPosition = e.GetPosition(designer);
@@ -419,11 +415,16 @@ namespace QPP.Wpf.UI.TreeEditor
             Canvas.SetZIndex(designer.Shadow.ShadowItem, 10000);
             Canvas.SetTop(designer.Shadow.ShadowItem, top);
             Canvas.SetLeft(designer.Shadow.ShadowItem, left);
+
+            shadow.ApplyTemplate();
+            shadow.SetTemplate();
+
+            designer.Shadow.ShadowItem.Visibility = Visibility.Collapsed;
             #endregion
             //DiagramControl.AddToMessage("Create Shadow", "");
         }
 
-        
+
         #endregion
 
 

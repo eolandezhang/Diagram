@@ -273,7 +273,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 model.MarkCreated();
 
                 var item = new DesignerItem(newItem, dc);
-                item.SetTemplate();
+                //item.SetTemplate();
                 item.Top = double.MaxValue;
                 var left = dc.GetLeft(newItem);
                 var top = dc.GetTop(newItem);

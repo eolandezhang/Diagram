@@ -226,12 +226,20 @@ namespace QPP.Wpf.UI.TreeEditor
             if (item.DataContext == null) return;
             GenerateDesignerItemContent(item, DEFAULT_FONT_COLOR_BRUSH);
             if (!DesignerCanvas.Children.Contains(item))
-            { DesignerCanvas.Children.Add(item); }
+            {
+                DesignerCanvas.Children.Add(item);
+                var menu = DesignerItem.GetItemContextMenu(_diagramControl);
+                menu.DataContext = _diagramControl.DataContext;
+                item.ContextMenu = menu;
+            }
+
             _diagramControl.UpdateLayout();
             var left = leftOffset;
             var top = topOffset;
             SetWidth(item);
             item.UpdateLayout();
+
+            item.SetTemplate();
             if (topOffset != 0d || leftOffset != 0d)
             {
                 left = left - item.ActualWidth / 2;
@@ -275,7 +283,7 @@ namespace QPP.Wpf.UI.TreeEditor
             var root = GetRoot(newItem);
             var m = GetTime(() =>
             {
-                newItem.SetTemplate();
+                //newItem.SetTemplate();
                 SetWidth(newItem);
                 newItem.UpdateLayout();
 
@@ -444,7 +452,7 @@ namespace QPP.Wpf.UI.TreeEditor
         void Arrange(DesignerItem designerItem)
         {
             if (designerItem == null) return;
-            designerItem.SetTemplate();
+            //designerItem.SetTemplate();
             var directSubItems = GetDirectSubItemsAndUpdateExpander(designerItem);
             if (directSubItems == null || directSubItems.Count == 0) return;
             var subItems = directSubItems
@@ -1026,7 +1034,6 @@ namespace QPP.Wpf.UI.TreeEditor
                 Left = item.Left,
                 Top = item.Top,
                 Width = item.Width,
-
             };
             Canvas.SetLeft(shadow, item.OriginalLeft);
             Canvas.SetTop(shadow, item.OriginalTop);
