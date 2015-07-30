@@ -1,4 +1,6 @@
-﻿using QPP;
+﻿using System;
+using System.Collections;
+using QPP;
 using QPP.Command;
 using QPP.ComponentModel;
 using QPP.Wpf.Command;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Markup;
 using System.Xml;
+using QPP.Wpf.UI.TreeEditor;
 using WpfApp.ViewModel.App_Data;
 
 namespace WpfApp.ViewModel
@@ -24,7 +27,7 @@ namespace WpfApp.ViewModel
         public ItemData SelectedItem { get { return Get<ItemData>("SelectedItem"); } set { Set("SelectedItem", value); } }
         public MainViewModel()
         {
-            SingleRoot = false;
+            SingleRoot = true;
             SelectedItems = new ObservableCollection<ItemData>();
             DeletedItems = new ObservableCollection<ItemData>();
             Title = "Tree Editor";
@@ -53,6 +56,17 @@ namespace WpfApp.ViewModel
         {
             ItemsSource = ItemDataRepository.Default.DataCollection;
         }
+        public Point ClickPoint
+        {
+            get
+            {
+                return Get<Point>("ClickPoint");
+            }
+            set
+            {
+                Set("ClickPoint", value);
+            }
+        }
 
         #region Commands
         public ICommand ReloadCommand
@@ -62,28 +76,18 @@ namespace WpfApp.ViewModel
                 return new RelayCommand(() =>
                 {
                     ItemsSource.Clear();
-                    var list = new ObservableCollection<ItemData>()
-                        {
-                        new ItemData("0","","01253-PAWNS-GOLD",""),
-                        new ItemData("1","0","BGM-109650-108",""),
-                        new ItemData("2","1","PL-PLASTIC-PP 3015A",""),
-                        new ItemData("3","1","PL-PIGMENT-7408C",""),
-                        new ItemData("4","0","PL005BA16001300PE001",""),
-                        new ItemData("5","0","BGM-10965C-101",""),
-                        new ItemData("6","0","BGM-10965C-102",""),
-                    //new ItemData("0", "", "0.0", "Root　Item1"),
-                    //new ItemData("1", "0", "1.1", "-"),
-                    //new ItemData("3", "1", "2.1", "-"),
-                    //new ItemData("5", "3", "2.2", "-"),
-                    //new ItemData("2", "0", "1.2", "-"),
-                    //new ItemData("4", "2", "3.1", "-"),
-                    ////new ItemData("6","0", "1.3", "-"),
-                    //new ItemData("7", "4", "3.2", "-"),
-                        };
-                    foreach (var itemData in list)
-                    {
-                        ItemsSource.Add(itemData);
-                    }
+                    ItemsSource.Add(new ItemData("0", "", "0.0", "Root　Item1", "Images/fix.png"));
+                    ItemsSource.Add(new ItemData("1", "0", "1.1", "-", "Images/green.png"));
+                    ItemsSource.Add(new ItemData("3", "1", "2.1", "-"));
+                    ItemsSource.Add(new ItemData("5", "3", "2.2", "-"));
+                    ItemsSource.Add(new ItemData("2", "0", "1.2", "-"));
+                    ItemsSource.Add(new ItemData("4", "2", "3.1", "-"));
+                    ItemsSource.Add(new ItemData("7", "4", "3.2", "-"));
+                    ItemsSource.Add(new ItemData("6", "0", "1.3", "-"));
+                    ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 1", ""));
+                    ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 2", ""));
+                    ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 3", ""));
+
                 });
             }
         }
@@ -217,21 +221,14 @@ namespace WpfApp.ViewModel
             {
                 return new RelayCommand(() =>
                 {
-
-
-                    //MessageBox.Show("Copy");
-                    //List<string> list = new List<string>();
-                    //foreach (var selectedItem in SelectedItems)
-                    //{
-                    //    string str = XamlWriter.Save(selectedItem);
-                    //    //StringReader stringReader = new StringReader(str);
-                    //    //XmlReader xmlReader = XmlReader.Create(stringReader);
-                    //    //var item = XamlReader.Load(xmlReader);
-                    //    list.Add(str);
-                    //}
                     Clipboard.Clear();
-                    Clipboard.SetDataObject(SelectedItems, false);
-                });
+                    var list = new List<ItemData>();
+                    foreach (var selectedItem in SelectedItems)
+                    {
+                        list.Add(selectedItem);
+                    }
+                    Clipboard.SetDataObject(list, false);
+                }, () => SelectedItems.Any());
             }
         }
 
@@ -240,36 +237,125 @@ namespace WpfApp.ViewModel
         {
             get
             {
-                return new RelayCommand(() =>
-                {
-                    //MessageBox.Show("Paste");
-                    var dataObject = Clipboard.GetDataObject();
-                    if (dataObject != null)
-                    {
-                        var list = dataObject.GetData(typeof(ObservableCollection<ItemData>)) as ObservableCollection<ItemData>;
-                        if (list == null) return;
-                        var selectedItemDatas = list.ToList();
-                        var childrens = new List<ItemData>();
-                        //把子节点也添加进来
-                        foreach (var selectedItemData in selectedItemDatas)
-                        {
-                            var children = ItemDataRepository.Default.GetAllSubItemDatas(ItemsSource, selectedItemData);
-                            if (children.Any())
-                            {
-                                children.ForEach(x =>
-                                {
-                                    if (!childrens.Contains(x))
-                                    {
-                                        childrens.Add(x);
-                                    }
-                                });
-                            }
-                        }
-                        var l = childrens;
-                    }
-                });
+                return new RelayCommand(PasteAction, () => SelectedItems.Any());
             }
         }
+
+        void PasteAction()
+        {
+            var dataObject = Clipboard.GetDataObject();
+            if (dataObject != null)
+            {
+                try
+                {
+                    var selectedItemDatas = dataObject.GetData(typeof(List<ItemData>)) as List<ItemData>;
+                    if (selectedItemDatas == null) return;
+                    var list = SelectedItems.ToList();
+                    if (!list.Any()) { return; }
+
+                    foreach (var selectedItem in list)
+                    {
+                        if (selectedItem == null) continue;
+                        List<ItemData> copys = new List<ItemData>();
+                        var copyItems = GetCopyedItems(selectedItemDatas);
+                        foreach (var copyItem in copyItems)
+                        {
+                            if (copyItem.ItemParentId == string.Empty)
+                            {
+                                copyItem.ItemParentId = selectedItem.ItemId;
+                            }
+                            copys.Add(copyItem);
+                        }
+                        var item = selectedItem;
+                        var roots = copys.Where(x => x.ItemParentId == item.ItemId);
+                        foreach (var itemData in roots)
+                        {
+                            if (itemData.ItemParentId.IsNullOrEmpty())
+                            {
+                                itemData.Left = ClickPoint.X;
+                                itemData.Top = ClickPoint.Y;
+                            }
+                            ItemsSource.Add(itemData);
+                            AddChild(copys, itemData);
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        void AddChild(List<ItemData> itemDatas, ItemData itemData)
+        {
+            var roots = itemDatas.Where(x => x.ItemParentId == itemData.ItemId);
+            foreach (var data in roots)
+            {
+                ItemsSource.Add(data);
+                AddChild(itemDatas, data);
+            }
+        }
+
+        List<ItemData> GetAllCopyItem(List<ItemData> selectedItemDatas)
+        {
+            List<ItemData> list = new List<ItemData>();
+            foreach (var d in selectedItemDatas)
+            {
+                var itemData = new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.Left, d.Top, d.ImageUri);
+                list.Add(itemData);
+            }
+
+            var childrens = new List<ItemData>();
+            //把子节点也添加进来
+            foreach (var selectedItemData in selectedItemDatas)
+            {
+                var children = ItemDataRepository.Default.GetAllSubItemDatas(ItemsSource, selectedItemData);
+                foreach (var d in children)
+                {
+                    if (childrens.All(x => x.ItemId != d.ItemId))
+                    {
+                        ItemData data = new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.Left, d.Top, d.ImageUri);
+                        childrens.Add(data);
+                    }
+                }
+            }
+            var result = childrens.Where(children => selectedItemDatas.All(x => x.ItemId != children.ItemId)).ToList();
+            result.AddRange(list);
+            return result;
+        }
+
+        List<ItemData> GetCopyedItems(List<ItemData> selectedItemDatas)
+        {
+            try
+            {
+                var list = GetAllCopyItem(selectedItemDatas);
+                Dictionary<string, string> id = new Dictionary<string, string>();
+                foreach (var itemData in list)
+                {
+                    id[itemData.ItemId] = Guid.NewGuid().ToString("N");
+                }
+                foreach (var itemData in list)
+                {
+                    itemData.ItemId = id[itemData.ItemId];
+                    if (id.ContainsKey(itemData.ItemParentId))
+                    {
+                        itemData.ItemParentId = id[itemData.ItemParentId];
+                    }
+                    else
+                    {
+                        itemData.ItemParentId = string.Empty;
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         #endregion
         #endregion
     }
