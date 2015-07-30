@@ -133,7 +133,7 @@ namespace WpfApp.ViewModel
             return null;
         }
         #region AddAfterCommand
-        public ICommand AddAfterCommand { get { return new RelayCommand(AddAfterAction); } }
+        public ICommand AddAfterCommand { get { return new RelayCommand(AddAfterAction, () => SelectedItems.Count == 1); } }
 
         void AddAfterAction()
         {
@@ -157,7 +157,7 @@ namespace WpfApp.ViewModel
         //}
 
         #region AddSiblingCommand
-        public ICommand AddSiblingCommand { get { return new RelayCommand(AddSiblingAction); } }
+        public ICommand AddSiblingCommand { get { return new RelayCommand(AddSiblingAction, () => SelectedItems.Count == 1); } }
         private void AddSiblingAction()
         {
             var selectedItem = GetSelectedItem();
@@ -175,7 +175,7 @@ namespace WpfApp.ViewModel
         #endregion
 
         #region DeleteCommand
-        public ICommand DeleteCommand { get { return new RelayCommand(DeleteAction); } }
+        public ICommand DeleteCommand { get { return new RelayCommand(DeleteAction, () => SelectedItems.Any()); } }
         private void DeleteAction()
         {
             if (SelectedItems == null) return;

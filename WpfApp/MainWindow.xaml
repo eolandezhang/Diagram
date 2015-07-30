@@ -31,6 +31,7 @@
                     <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(之后)" Command="{Binding Path=AddAfterCommand}" ToolTip="Tab or Insert"/>
                     <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="移除" Command="{Binding Path=DeleteCommand}" ToolTip="Delete"/>
                     <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="复制" Command="{Binding Path=CopyCommand}"/>
+                    <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="剪切" Command="{Binding Path=CutCommand}"/>
                     <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="粘贴" Command="{Binding Path=PasteCommand}"/>
                 </ToolBar>
             </ToolBarTray>
@@ -71,6 +72,10 @@
                         <MenuItem  Header="增加(相邻)" Command="{Binding Path=AddSiblingCommand}"/>
                         <MenuItem  Header="增加(之后)" Command="{Binding Path=AddAfterCommand}"/>
                         <MenuItem  Header="移除" Command="{Binding Path=DeleteCommand}"/>
+                        <Separator/>
+                        <MenuItem  Header="复制" Command="{Binding Path=CopyCommand}"/>
+                        <MenuItem  Header="剪切" Command="{Binding Path=CutCommand}"/>
+                        <MenuItem  Header="粘贴" Command="{Binding Path=PasteCommand}"/>
                     </ContextMenu>
                 </treeEditor:DesignerItem.ItemContextMenu>
                 <!--当DiagramControl.ItemsSource为null时，才能用DiagramControl.Items初始化，否则会抛异常-->
