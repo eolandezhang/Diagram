@@ -274,7 +274,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
                 var item = new DesignerItem(newItem, dc);
                 //item.SetTemplate();
-                item.Top = double.MaxValue;
+                if (item.ItemParentId.IsNotEmpty()) { item.Top = double.MaxValue; }
                 var left = dc.GetLeft(newItem);
                 var top = dc.GetTop(newItem);
 
@@ -298,12 +298,12 @@ namespace QPP.Wpf.UI.TreeEditor
 
                     //  }));
                 }
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                {
-                    //dc.DiagramManager.ExpandAll();
-                    dc.DiagramManager.AddNewArrange(item);
-                    dc.DiagramManager.Scroll(item);
-                }));
+                //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                //{
+                //dc.DiagramManager.ExpandAll();
+                dc.DiagramManager.AddNewArrange(item);
+                dc.DiagramManager.Scroll(item);
+                //}));
             }
         }
 
@@ -383,18 +383,6 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         #endregion
 
-        #region Canvas Double Click Command Property
-
-        public static readonly DependencyProperty CanvasDoubleClickCommandProperty = DependencyProperty.Register(
-            "CanvasDoubleClickCommand", typeof(ICommand), typeof(DiagramControl), new PropertyMetadata(null));
-
-        public ICommand CanvasDoubleClickCommand
-        {
-            get { return (ICommand)GetValue(CanvasDoubleClickCommandProperty); }
-            set { SetValue(CanvasDoubleClickCommandProperty, value); }
-        }
-        #endregion
-        
         #region ZoomBoxControlProperty 缩放控件，以后需要修改
 
         public static readonly DependencyProperty ZoomBoxControlProperty = DependencyProperty.Register(
@@ -465,6 +453,40 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         #endregion
 
+
+        #region Canvas Double Click Command Property 双击canvas 创建节点
+        public static readonly DependencyProperty CanvasDoubleClickCommandProperty = DependencyProperty.Register(
+            "CanvasDoubleClickCommand", typeof(ICommand), typeof(DiagramControl), new PropertyMetadata(null));
+        public ICommand CanvasDoubleClickCommand
+        {
+            get { return (ICommand)GetValue(CanvasDoubleClickCommandProperty); }
+            set { SetValue(CanvasDoubleClickCommandProperty, value); }
+        }
+        #endregion
+        #region ReloadCommand 用于重新载入测试数据
+
+        public static readonly DependencyProperty ReloadCommandProperty = DependencyProperty.Register(
+            "ReloadCommand", typeof(ICommand), typeof(DiagramControl), new PropertyMetadata(null));
+
+        public ICommand ReloadCommand
+        {
+            get { return (ICommand)GetValue(ReloadCommandProperty); }
+            set { SetValue(ReloadCommandProperty, value); }
+        }
+        #endregion
+
+        #region ClickPoint 用于记录鼠标点击Canvas的坐标
+
+        public static readonly DependencyProperty ClickPointProperty = DependencyProperty.Register(
+            "ClickPoint", typeof(Point), typeof(DiagramControl), new PropertyMetadata(new Point(0, 0)));
+
+        public Point ClickPoint
+        {
+            get { return (Point)GetValue(ClickPointProperty); }
+            set { SetValue(ClickPointProperty, value); }
+        }
+        #endregion
+
         #endregion
 
         #region Constructors
@@ -503,8 +525,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 //if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.C)
                 //{
-                   
-                    
+
+
                 //}
                 switch (e.Key)
                 {
@@ -642,7 +664,15 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         public ICommand RefreshCommand
         {
-            get { return new RelayCommand(Bind); }
+            get { return new RelayCommand(RefreshAction); }
+        }
+
+        void RefreshAction()
+        {
+            if (ReloadCommand != null)
+            { ReloadCommand.Execute(null); }
+            //UpdateLayout();
+            //DiagramManager.Arrange();
         }
         public ICommand CollapseAllCommand
         {

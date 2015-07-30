@@ -16,6 +16,7 @@ namespace QPP.Wpf.UI.TreeEditor
     {
         public double X { get; set; }
         public double Y { get; set; }
+        public Point MousePoint { get; set; }
         public DesignerItem ShadowItem { get; set; }
         public DesignerItem DesignerItem { get; set; }
         public List<DesignerItem> SelectedItemsAllSubItems { get; set; }
@@ -93,9 +94,11 @@ namespace QPP.Wpf.UI.TreeEditor
             }
             if (e.ClickCount == 2)
             {
-                DiagramControl.CanvasDoubleClickCommand.Execute(e.GetPosition(this));
+                if (DiagramControl.CanvasDoubleClickCommand != null)
+                { DiagramControl.CanvasDoubleClickCommand.Execute(e.GetPosition(this)); }
             }
         }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -120,24 +123,40 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             }
             e.Handled = true;
-            if (IsMouseDown && IsChangingParent)
+            var point = e.GetPosition(this);
+            if (Shadow.MousePoint.X > 0 && Shadow.MousePoint.Y > 0)
             {
-                Move(e); AutoScroll(e);
+                var x = Math.Abs(Shadow.MousePoint.X - point.X);
+                var y = Math.Abs(Shadow.MousePoint.Y - point.Y);
+                if (IsMouseDown)
+                {
+                    if (Shadow.ShadowItem != null && Shadow.DesignerItem != null)
+                    {
+
+                        if (x > 2 || y > 2)
+                        {
+                            IsChangingParent = true;
+                        }
+                        else
+                        {
+                            IsChangingParent = false;
+                        }
+                    }
+                }
+                if (IsMouseDown && IsChangingParent)
+                {
+                    Move(e); AutoScroll(e);
+                }
             }
-            //DiagramControl.AddToMessage("finish drag", isFinishDrag.ToString());
         }
         void Move(MouseEventArgs e)//移动影子
         {
             IsMouseMove = true;
-            //if (Shadow == null) return;
             if (Shadow.ShadowItem == null) return;
-            if (Math.Abs(Shadow.X - GetLeft(Shadow.DesignerItem)) < 2 && Math.Abs(Shadow.Y - GetTop(Shadow.DesignerItem)) < 2) return;
             Shadow.ShadowItem.Visibility = Visibility.Visible;
             var canvasPosition = e.GetPosition(this);
             var y = canvasPosition.Y - Shadow.Y;
             var x = (canvasPosition.X - Shadow.X);
-            //DiagramControl.AddToMessage("position", "x=" + x + ",y=" + y);
-
             SetTop(Shadow.ShadowItem, y <= 0 ? 0 : y);
             SetLeft(Shadow.ShadowItem, x <= 0 ? 0 : x);
             var manager = _diagramControl.DiagramManager;
@@ -180,13 +199,11 @@ namespace QPP.Wpf.UI.TreeEditor
                 {
                     var delta = (mousePos.Y - v) / 1; //translate back to original unit
                     _scrollInfo.SetVerticalOffset(_scrollInfo.VerticalOffset + delta);
-                    //_diagramControl.AddToMessage("滚动", "上移");
                 }
                 else if (mousePos.Y > (scrollable.RenderSize.Height - v))
                 {
                     var delta = (mousePos.Y + v - scrollable.RenderSize.Height) / 1; //translate back to original unit
                     _scrollInfo.SetVerticalOffset(_scrollInfo.VerticalOffset + delta);
-                    //_diagramControl.AddToMessage("滚动", "下移");
                 }
                 #endregion
 
@@ -215,13 +232,11 @@ namespace QPP.Wpf.UI.TreeEditor
         void Finish(Point canvasPosition)
         {
             if (IsChangingParent & IsMouseMove && Shadow.ShadowItem != null)
-            //if (Shadow != null && Shadow.ShadowItem != null)
             {
-                var y = canvasPosition.Y - Shadow.Y;
+                var y = canvasPosition.Y - Shadow.Y;//shadow在canvas的y坐标
                 var x = canvasPosition.X - Shadow.X;
-                //var orgParent = _diagramControl.DesignerItems.FirstOrDefault(p => p.ItemId == Shadow.DesignerItem.ItemParentId);
 
-                var ox = Math.Abs(x - GetLeft(Shadow.DesignerItem));
+                var ox = Math.Abs(x - GetLeft(Shadow.DesignerItem));//shadow与designerItem之间的偏移
                 var oy = Math.Abs(y - GetTop(Shadow.DesignerItem));
 
                 if (ox > 2 || oy > 2)
@@ -231,12 +246,12 @@ namespace QPP.Wpf.UI.TreeEditor
                 Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
             }
             Children.Remove(Shadow.ShadowItem);
-            //Shadow = null;
             NewParent = null;
             isGray = false;
             IsMouseDown = false;
             IsMouseMove = false;
             IsChangingParent = false;
+            Shadow.MousePoint = new Point(0, 0);
         }
         //protected override void OnDrop(DragEventArgs e)
         //{
@@ -329,6 +344,11 @@ namespace QPP.Wpf.UI.TreeEditor
                 if (decorator != null && template != null)
                     decorator.Template = template;
             }
+        }
+
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            DiagramControl.ClickPoint = e.GetPosition(this);
         }
 
         protected override void OnMouseLeave(MouseEventArgs e)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using System;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
@@ -74,5 +75,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
 
         void SavePosition();
+
+        string GetTime(Action action);
     }
 }

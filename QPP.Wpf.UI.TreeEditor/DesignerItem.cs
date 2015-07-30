@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Remoting.Channels;
 using System.Windows;
 using System.Windows.Controls;
@@ -348,10 +349,7 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
             DiagramControl.Focus();
-            if (e.ClickCount == 1)
-            {
-                CreateShadow(designer, e);
-            }
+            if (e.ClickCount == 1) { CreateShadow(designer, e); }
         }
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
@@ -396,23 +394,25 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         void CreateShadow(DesignerCanvas designer, MouseButtonEventArgs e)
         {
-            designer.IsMouseDown = true;
-            designer.IsChangingParent = true;
+            designer.IsMouseDown = false;
+            designer.IsChangingParent = false;
+
             var shadow = DiagramControl.DiagramManager.CreateItemShadow(this);
             designer.Shadow.ShadowItem = shadow;
             designer.Children.Add(designer.Shadow.ShadowItem);
             designer.Shadow.DesignerItem = this;
-            
-           
+
             designer.Shadow.SelectedItemsAllSubItems = DiagramControl.DiagramManager.GetSelectedItemsAllSubItems();
+
             #region 位置
             var canvasPosition = e.GetPosition(designer);
             var itemPosition = e.GetPosition(this);
+            designer.Shadow.MousePoint = canvasPosition;
             var top = canvasPosition.Y - itemPosition.Y;
             var left = canvasPosition.X - itemPosition.X;
-            designer.Shadow.X = itemPosition.X;
+            designer.Shadow.X = itemPosition.X;//点击处与左边框的距离
             designer.Shadow.Y = itemPosition.Y;
-            Canvas.SetZIndex(designer.Shadow.ShadowItem, 10000);
+            Panel.SetZIndex(designer.Shadow.ShadowItem, 10000);
             Canvas.SetTop(designer.Shadow.ShadowItem, top);
             Canvas.SetLeft(designer.Shadow.ShadowItem, left);
 
@@ -420,9 +420,14 @@ namespace QPP.Wpf.UI.TreeEditor
             shadow.SetTemplate();
 
             designer.Shadow.ShadowItem.Visibility = Visibility.Collapsed;
+
+            designer.IsMouseDown = true;
+            //designer.IsChangingParent = true;
+
             #endregion
             //DiagramControl.AddToMessage("Create Shadow", "");
         }
+
 
 
         #endregion
