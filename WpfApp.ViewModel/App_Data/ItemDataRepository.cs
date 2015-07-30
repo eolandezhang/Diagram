@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Xml.XPath;
 
 namespace WpfApp.ViewModel.App_Data
 {
@@ -147,7 +150,38 @@ namespace WpfApp.ViewModel.App_Data
 
         public ItemData AddNew(string pid, double left, double top)
         {
-            return new ItemData(Guid.NewGuid().ToString(), pid, "Item", "", left, top,"");
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item", "", left, top, "");
+        }
+        //        var result = new List<DesignerItem>();
+        //        var child = new List<DesignerItem>();
+        //        var list = DesignerItems
+        //            .Where(x => x.ItemParentId == item.ItemId)
+        //            .OrderBy(x => x.Top).ToList();
+        //            foreach (var subItem in list.Where(subItem => !result.Contains(subItem)))
+        //            {
+        //                child.Add(subItem);
+        //                result.Add(subItem);
+        //                foreach (var designerItem in child)
+        //                {
+        //                    result.AddRange(GetAllSubItems(designerItem));
+        //                }
+        //}
+        //            return result;
+        public List<ItemData> GetAllSubItemDatas(IList<ItemData> itemDatas, ItemData itemData)
+        {
+            var result = new List<ItemData>();
+            var child = new List<ItemData>();
+            var list = itemDatas.Where(x => x.ItemParentId == itemData.ItemId);
+            foreach (var subItem in list.Where(subitem => !result.Contains(subitem)))
+            {
+                child.Add(subItem);
+                result.Add(subItem);
+                foreach (var item in child)
+                {
+                    result.AddRange(GetAllSubItemDatas(itemDatas, item));
+                }
+            }
+            return result;
         }
     }
 }

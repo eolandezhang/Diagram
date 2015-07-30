@@ -230,10 +230,11 @@ namespace WpfApp.ViewModel
                     //    list.Add(str);
                     //}
                     Clipboard.Clear();
-                    Clipboard.SetDataObject(SelectedItems,false);
+                    Clipboard.SetDataObject(SelectedItems, false);
                 });
             }
         }
+
 
         public ICommand PasteCommand
         {
@@ -245,7 +246,26 @@ namespace WpfApp.ViewModel
                     var dataObject = Clipboard.GetDataObject();
                     if (dataObject != null)
                     {
-                        var list = dataObject.GetData(typeof(ObservableCollection<ItemData>));
+                        var list = dataObject.GetData(typeof(ObservableCollection<ItemData>)) as ObservableCollection<ItemData>;
+                        if (list == null) return;
+                        var selectedItemDatas = list.ToList();
+                        var childrens = new List<ItemData>();
+                        //把子节点也添加进来
+                        foreach (var selectedItemData in selectedItemDatas)
+                        {
+                            var children = ItemDataRepository.Default.GetAllSubItemDatas(ItemsSource, selectedItemData);
+                            if (children.Any())
+                            {
+                                children.ForEach(x =>
+                                {
+                                    if (!childrens.Contains(x))
+                                    {
+                                        childrens.Add(x);
+                                    }
+                                });
+                            }
+                        }
+                        var l = childrens;
                     }
                 });
             }
