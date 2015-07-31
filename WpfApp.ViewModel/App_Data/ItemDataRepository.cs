@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml.XPath;
+using QPP.Collections;
 
 namespace WpfApp.ViewModel.App_Data
 {
     public class ItemDataRepository
     {
         public static ItemDataRepository Default;
-        public ObservableCollection<ItemData> DataCollection { get; set; }
+        public RangeObservableCollection<ItemData> DataCollection { get; set; }
 
 
         static ItemDataRepository()
@@ -19,7 +20,7 @@ namespace WpfApp.ViewModel.App_Data
 
         public ItemDataRepository()
         {
-            DataCollection = new ObservableCollection<ItemData>()
+            DataCollection = new RangeObservableCollection<ItemData>()
             {
                 //new ItemData("0","","01253-PAWNS-GOLD","","Images/fix.png"),
                 //new ItemData("1","0","BGM-109650-108","","Images/green.png"),

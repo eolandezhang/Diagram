@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using QPP.Collections;
 using WpfApp.ViewModel.App_Data;
 
 namespace WpfApp.ViewModel
@@ -16,7 +17,7 @@ namespace WpfApp.ViewModel
     {
         public string Title { get { return Get<string>("Title"); } set { Set("Title", value); } }
         public bool SingleRoot { get { return Get<bool>("SingleRoot"); } set { Set("SingleRoot", value); } }
-        public ObservableCollection<ItemData> ItemsSource { get; set; }
+        public RangeObservableCollection<ItemData> ItemsSource { get; set; }
         public ObservableCollection<ItemData> SelectedItems { get; set; }
         public ObservableCollection<ItemData> DeletedItems { get; set; }
         public ItemData SelectedItem { get { return Get<ItemData>("SelectedItem"); } set { Set("SelectedItem", value); } }
@@ -70,17 +71,33 @@ namespace WpfApp.ViewModel
                 return new RelayCommand(() =>
                 {
                     ItemsSource.Clear();
-                    ItemsSource.Add(new ItemData("0", "", "0.0", "Root　Item1", "Images/fix.png"));
-                    ItemsSource.Add(new ItemData("1", "0", "1.1", "-", "Images/green.png"));
-                    ItemsSource.Add(new ItemData("3", "1", "2.1", "-"));
-                    ItemsSource.Add(new ItemData("5", "3", "2.2", "-"));
-                    ItemsSource.Add(new ItemData("2", "0", "1.2", "-"));
-                    ItemsSource.Add(new ItemData("4", "2", "3.1", "-"));
-                    ItemsSource.Add(new ItemData("7", "4", "3.2", "-"));
-                    ItemsSource.Add(new ItemData("6", "0", "1.3", "-"));
-                    ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 1", ""));
-                    ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 2", ""));
-                    ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 3", ""));
+                    var list = new List<ItemData>()
+                    {
+                        new ItemData("0", "", "0.0", "Root　Item1", "Images/fix.png"),
+                        new ItemData("1", "0", "1.1", "-", "Images/green.png"),
+                        new ItemData("3", "1", "2.1", "-"),
+                        new ItemData("5", "3", "2.2", "-"),
+                        new ItemData("2", "0", "1.2", "-"),
+                        new ItemData("4", "2", "3.1", "-"),
+                        new ItemData("7", "4", "3.2", "-"),
+                        new ItemData("6", "0", "1.3", "-"),
+                        new ItemData(Guid.NewGuid().ToString(), "0", "Item 1", ""),
+                        new ItemData(Guid.NewGuid().ToString(), "0", "Item 2", ""),
+                        new ItemData(Guid.NewGuid().ToString(), "0", "Item 3", "")
+                    };
+                    ItemsSource.AddRange(list);
+
+                    //ItemsSource.Add(new ItemData("0", "", "0.0", "Root　Item1", "Images/fix.png"));
+                    //ItemsSource.Add(new ItemData("1", "0", "1.1", "-", "Images/green.png"));
+                    //ItemsSource.Add(new ItemData("3", "1", "2.1", "-"));
+                    //ItemsSource.Add(new ItemData("5", "3", "2.2", "-"));
+                    //ItemsSource.Add(new ItemData("2", "0", "1.2", "-"));
+                    //ItemsSource.Add(new ItemData("4", "2", "3.1", "-"));
+                    //ItemsSource.Add(new ItemData("7", "4", "3.2", "-"));
+                    //ItemsSource.Add(new ItemData("6", "0", "1.3", "-"));
+                    //ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 1", ""));
+                    //ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 2", ""));
+                    //ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 3", ""));
 
                 });
             }
@@ -110,7 +127,7 @@ namespace WpfApp.ViewModel
         {
             if (ItemsSource == null || !ItemsSource.Any())
             {
-                if (ItemsSource == null) ItemsSource = new ObservableCollection<ItemData>();
+                if (ItemsSource == null) ItemsSource = new RangeObservableCollection<ItemData>();
                 var newItem = ItemDataRepository.Default.AddNew("");
                 ItemsSource.Add(newItem);
             }

@@ -122,25 +122,24 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             items.CollectionChanged += (sender, arg) =>
             {
-                var m = dc.DiagramManager.GetTime(() =>
-                 {
-                     switch (arg.Action)
-                     {
-                         case NotifyCollectionChangedAction.Add:
-                             AddAction(dc, arg.NewItems);
-                             break;
-                         case NotifyCollectionChangedAction.Remove:
-                             DeleteAction(dc, arg.OldItems);
-                             break;
-                         case NotifyCollectionChangedAction.Reset:
-                             dc.AddToMessage("Reset", "");
-                             dc.DesignerCanvas.Children.Clear();
-                             dc.DesignerItems.Clear();
-                             dc.DeletedDesignerItems.Clear();
-                             break;
-                     }
-                 });
-                dc.AddToMessage("时间", m);
+                //var m = dc.DiagramManager.GetTime(() =>
+                //{
+                switch (arg.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        AddAction(dc, arg.NewItems);
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        DeleteAction(dc, arg.OldItems);
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        dc.DesignerCanvas.Children.Clear();
+                        dc.DesignerItems.Clear();
+                        dc.DeletedDesignerItems.Clear();
+                        break;
+                }
+                // });
+                //dc.AddToMessage("时间", m);
             };
         }
 
@@ -266,45 +265,64 @@ namespace QPP.Wpf.UI.TreeEditor
         static void AddAction(DiagramControl dc, IList newItems)
         {
             if (newItems == null || newItems.Count == 0) return;
-            foreach (var newItem in newItems)
+            if (newItems.Count > 1)
             {
-                var model = newItem as DataModel;
-                if (model == null) continue;
-                model.MarkCreated();
-
-                var item = new DesignerItem(newItem, dc);
-                //item.SetTemplate();
-                if (item.ItemParentId.IsNotEmpty()) { item.Top = double.MaxValue; }
-                var left = dc.GetLeft(newItem);
-                var top = dc.GetTop(newItem);
-
-                dc.DesignerItems.Add(item);
-                var parentid = dc.GetPId(newItem);// dc.DiagramManager.GetPId(item);
-                if (parentid.IsNotEmpty())
+                if (dc.ItemsSource == null) return;
+                if (dc.Check())
                 {
-                    //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
-                    //{
-                    var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
-                    dc.DiagramManager.DrawChild(parent, item);
-                    dc.DiagramManager.SetSelectItem(item);
-                    //}));
+                    dc.Bind();
                 }
-                else
-                {
-                    //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
-                    //   {
-                    dc.DiagramManager.DrawRoot(item, top, left);
-                    dc.DiagramManager.SetSelectItem(item);
-
-                    //  }));
-                }
-                //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                //{
-                //dc.DiagramManager.ExpandAll();
-                dc.DiagramManager.AddNewArrange(item);
-                dc.DiagramManager.Scroll(item);
-                //}));
             }
+            else
+            {
+                foreach (var newItem in newItems)
+                {
+                    var model = newItem as DataModel;
+                    if (model == null) continue;
+                    model.MarkCreated();
+
+                    var item = new DesignerItem(newItem, dc);
+                    //item.SetTemplate();
+                    if (item.ItemParentId.IsNotEmpty()) { item.Top = double.MaxValue; }
+                    var left = dc.GetLeft(newItem);
+                    var top = dc.GetTop(newItem);
+
+                    dc.DesignerItems.Add(item);
+                    var parentid = dc.GetPId(newItem);// dc.DiagramManager.GetPId(item);
+                    if (parentid.IsNotEmpty())
+                    {
+                        //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
+                        //{
+                        var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
+                        dc.DiagramManager.DrawChild(parent, item);
+                        dc.DiagramManager.SetSelectItem(item);
+                        //}));
+                    }
+                    else
+                    {
+                        //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
+                        //   {
+                        dc.DiagramManager.DrawRoot(item, top, left);
+                        dc.DiagramManager.SetSelectItem(item);
+
+                        //  }));
+                    }
+                    //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                    //{
+                    //dc.DiagramManager.ExpandAll();
+                    var msg = dc.DiagramManager.GetTime(() =>
+                    {
+                        dc.DiagramManager.AddNewArrange(item);
+                    });
+                    dc.AddToMessage("新增节点布局", msg);
+                    dc.DiagramManager.Scroll(item);
+                    //}));
+
+                }
+            }
+
+
+
         }
 
         public IList ItemsSource
