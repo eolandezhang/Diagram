@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
@@ -439,6 +440,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         public void Arrange()
         {
+
             var m = GetTime(() =>
             {
                 var items = DesignerItems.ToList();
@@ -465,6 +467,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             });
             _diagramControl.AddToMessage("全部重新布局", m);
+
         }
         void Arrange(DesignerItem designerItem)
         {
@@ -813,6 +816,8 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         public void MoveUpAndDown(DesignerItem parent, DesignerItem selectedItem)
         {
+            //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+            //{
             if (parent == null) return;
             var root = GetRoot(parent);
             var itemTop = Canvas.GetTop(selectedItem);
@@ -822,7 +827,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 x.OriginalTop > itemTop
                 && x.ItemId != selectedItem.ItemId
                 && x.ItemParentId.IsNotEmpty()
-               ).ToList();/*比元素大的，全部向下移*/
+                ).ToList(); /*比元素大的，全部向下移*/
             foreach (var designerItem in downItems)
             {
                 var r = GetRoot(designerItem);
@@ -835,7 +840,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 x.OriginalTop < itemTop
                 && x.OriginalTop > Canvas.GetTop(parent)
                 && x.ItemId != selectedItem.ItemId
-                ).ToList();/*比父节点大的，比元素小的，恢复位置*/
+                ).ToList(); /*比父节点大的，比元素小的，恢复位置*/
             foreach (var designerItem in upItems)
             {
                 var r = GetRoot(designerItem);
@@ -852,13 +857,19 @@ namespace QPP.Wpf.UI.TreeEditor
                     list.ForEach(x => { Canvas.SetTop(x, x.OriginalTop); });
                 }
             }
+            //}));
         }
         public void AfterChangeParent(DesignerItem designerItem, DesignerItem newParent, Point newPosition, List<DesignerItem> selectedItemsAllSubItems)
         {
+
             RemoveHelperConnection();
             Canvas.SetTop(designerItem, newPosition.Y);
             Canvas.SetLeft(designerItem, newPosition.X);
-            DesignerItems.ForEach(x => { x.IsNewParent = false; x.Top = Canvas.GetTop(x); });
+            DesignerItems.ForEach(x =>
+            {
+                x.IsNewParent = false;
+                x.Top = Canvas.GetTop(x);
+            });
             ConnectToNewParent(newParent);
             var items = selectedItemsAllSubItems.Where(x => x.ItemParentId.IsNullOrEmpty()).ToList();
 
@@ -868,7 +879,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 Canvas.SetLeft(item, newPosition.X);
                 Canvas.SetTop(item, newPosition.Y - (designerItem.OriginalTop - item.OriginalTop));
             }
-            var topBelowZero = items.Where(item => newPosition.Y - (designerItem.OriginalTop - item.OriginalTop) < 0).ToList();
+            var topBelowZero =
+                items.Where(item => newPosition.Y - (designerItem.OriginalTop - item.OriginalTop) < 0).ToList();
             if (topBelowZero.Any())
             {
                 var minTopItem = topBelowZero.Aggregate((a, b) => Canvas.GetTop(a) < Canvas.GetTop(b) ? a : b);
@@ -883,8 +895,9 @@ namespace QPP.Wpf.UI.TreeEditor
                 var v = Math.Abs(Canvas.GetLeft(minLeftItem));
                 items.ForEach(x => { Canvas.SetLeft(x, Canvas.GetTop(x) + v); });
             }
-
-            Arrange();
+            
+                Arrange();
+            
             //所有移动元素下方节点上移
             //目标位置下方所有元素下移
 
@@ -1194,40 +1207,17 @@ namespace QPP.Wpf.UI.TreeEditor
         #region Delete
         public void DeleteItem(string id)
         {
-            var item = GetDesignerItemById(id);
-            var connections = GetItemConnections(item).ToList();
-            connections.ForEach(x => { DesignerCanvas.Children.Remove(x); });
-            var connectors = GetItemConnectors(item);
-            connectors.ForEach(x => { x.Connections.Clear(); });
-            DesignerCanvas.Children.Remove(item);
-            _diagramControl.DeletedDesignerItems.Add(item);
-            _diagramControl.DesignerItems.Remove(item);
-
-        }
-        #endregion
-        #region Copy&Paste
-        //List<ItemDataBase> _clipbrd = new List<ItemDataBase>();//clipboard 复制，剪切板
-
-        public void Cut()
-        {
-            //_clipbrd.Clear();
-            //foreach (var selectedItem in GetSelectedItems())
-            //{
-            //    _clipbrd.Add(selectedItem.Data);
-            //    _diagramControl.ItemDatas.Remove(selectedItem.Data);
-            //}
-
-        }
-        public void Copy()
-        {
-            //_clipbrd.Clear();
-            //foreach (var selectedItem in GetSelectedItems())
-            //{
-            //    _clipbrd.Add(selectedItem.Data);
-            //}
-        }
-        public void Paste()
-        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+            {
+                var item = GetDesignerItemById(id);
+                var connections = GetItemConnections(item).ToList();
+                connections.ForEach(x => { DesignerCanvas.Children.Remove(x); });
+                var connectors = GetItemConnectors(item);
+                connectors.ForEach(x => { x.Connections.Clear(); });
+                DesignerCanvas.Children.Remove(item);
+                _diagramControl.DeletedDesignerItems.Add(item);
+                _diagramControl.DesignerItems.Remove(item);
+            }));
 
         }
         #endregion
@@ -1386,8 +1376,8 @@ namespace QPP.Wpf.UI.TreeEditor
             var sv = (ScrollViewer)_diagramControl.Template.FindName("DesignerScrollViewer", _diagramControl);
             var top = Canvas.GetTop(designerItem);
             var left = Canvas.GetLeft(designerItem);
-            sv.ScrollToVerticalOffset(Double.IsNaN(top) ? 100 : top - 100);
-            sv.ScrollToHorizontalOffset(Double.IsNaN(left) ? 100 : left - 100);
+            sv.ScrollToVerticalOffset(Double.IsNaN(top) ? 100 : top);
+            sv.ScrollToHorizontalOffset(Double.IsNaN(left) ? 100 : left);
         }
 
         #endregion

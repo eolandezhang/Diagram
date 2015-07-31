@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Xml;
 
 namespace QPP.Wpf.UI.TreeEditor
@@ -145,12 +146,16 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 if (IsMouseDown && IsChangingParent)
                 {
-                    Move(e); AutoScroll(e);
+
+                    Move(e);
+                    AutoScroll(e);
+
                 }
             }
         }
         void Move(MouseEventArgs e)//移动影子
         {
+
             IsMouseMove = true;
             if (Shadow.ShadowItem == null) return;
             Shadow.ShadowItem.Visibility = Visibility.Visible;
@@ -231,6 +236,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         void Finish(Point canvasPosition)
         {
+
             if (IsChangingParent & IsMouseMove && Shadow.ShadowItem != null)
             {
                 var y = canvasPosition.Y - Shadow.Y;//shadow在canvas的y坐标
@@ -241,17 +247,24 @@ namespace QPP.Wpf.UI.TreeEditor
 
                 if (ox > 2 || oy > 2)
                 {
-                    _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x <= 0 ? 0 : x, y <= 0 ? 0 : y), Shadow.SelectedItemsAllSubItems);
+                   
+                        _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x <= 0 ? 0 : x, y <= 0 ? 0 : y), Shadow.SelectedItemsAllSubItems);
+                        Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
+                        Children.Remove(Shadow.ShadowItem);
+                        NewParent = null;
+                        isGray = false;
+                        IsMouseDown = false;
+                        IsMouseMove = false;
+                        IsChangingParent = false;
+                        Shadow.MousePoint = new Point(0, 0);
+                    //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                    //{ }));
                 }
-                Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
+
             }
-            Children.Remove(Shadow.ShadowItem);
-            NewParent = null;
-            isGray = false;
-            IsMouseDown = false;
-            IsMouseMove = false;
-            IsChangingParent = false;
-            Shadow.MousePoint = new Point(0, 0);
+
+
+
         }
         //protected override void OnDrop(DragEventArgs e)
         //{

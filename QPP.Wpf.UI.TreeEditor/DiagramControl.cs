@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,7 +34,6 @@ namespace QPP.Wpf.UI.TreeEditor
             var diagramHeader = (GroupBox)GetTemplateChild("DiagramHeader");
             if (diagramHeader != null) diagramHeader.Header = DiagramHeader;
         }
-
 
         #endregion
 
@@ -115,7 +115,10 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 if (e.NewValue is INotifyCollectionChanged)
                 {
-                    ItemsSourceCollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
+                    dc.AddToMessage("创建对象", dc.DiagramManager.GetTime(() =>
+                    {
+                        ItemsSourceCollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
+                    }));
                 }
             }));
         static void ItemsSourceCollectionChanged(DiagramControl dc, INotifyCollectionChanged items)
@@ -171,6 +174,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
                 var deleteItem = dc.DiagramManager.GetDesignerItemById(dc.GetId(oldItem));
                 if (deleteItem == null) continue;
+
                 dc.DiagramManager.DeleteArrange(deleteItem);
                 var model = oldItem as DataModel;
                 if (model == null) continue;
@@ -287,36 +291,45 @@ namespace QPP.Wpf.UI.TreeEditor
                     var left = dc.GetLeft(newItem);
                     var top = dc.GetTop(newItem);
 
-                    dc.DesignerItems.Add(item);
-                    var parentid = dc.GetPId(newItem);// dc.DiagramManager.GetPId(item);
-                    if (parentid.IsNotEmpty())
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
                     {
-                        //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
-                        //{
-                        var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
-                        dc.DiagramManager.DrawChild(parent, item);
-                        dc.DiagramManager.SetSelectItem(item);
-                        //}));
-                    }
-                    else
-                    {
-                        //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
-                        //   {
-                        dc.DiagramManager.DrawRoot(item, top, left);
-                        dc.DiagramManager.SetSelectItem(item);
 
-                        //  }));
-                    }
-                    //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                    //{
-                    //dc.DiagramManager.ExpandAll();
-                    var msg = dc.DiagramManager.GetTime(() =>
-                    {
-                        dc.DiagramManager.AddNewArrange(item);
-                    });
-                    dc.AddToMessage("新增节点布局", msg);
-                    dc.DiagramManager.Scroll(item);
-                    //}));
+                        dc.DesignerItems.Add(item);
+                        var parentid = dc.GetPId(newItem);// dc.DiagramManager.GetPId(item);
+                        if (parentid.IsNotEmpty())
+                        {
+                            //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
+                            //{
+                            var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
+                            dc.DiagramManager.DrawChild(parent, item);
+                            dc.DiagramManager.SetSelectItem(item);
+                            //}));
+                        }
+                        else
+                        {
+                            //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
+                            //   {
+                            dc.DiagramManager.DrawRoot(item, top, left);
+                            dc.DiagramManager.SetSelectItem(item);
+
+                            //  }));
+                        }
+
+                        var msg = dc.DiagramManager.GetTime(() =>
+                        {
+                            dc.DiagramManager.AddNewArrange(item);
+                        });
+                        dc.AddToMessage("新增节点布局", msg);
+                        //dc.KeyUp += (s, e) =>
+                        //{
+                        //    if (e.Key == Key.Enter)
+                        //    {
+
+                        //        //e.Handled = true;
+                        //    }
+                        //};
+                        dc.DiagramManager.Scroll(item);
+                    }));
 
                 }
             }
@@ -324,6 +337,8 @@ namespace QPP.Wpf.UI.TreeEditor
 
 
         }
+
+
 
         public IList ItemsSource
         {
@@ -515,7 +530,10 @@ namespace QPP.Wpf.UI.TreeEditor
             Items = new ObservableCollection<DiagramItem>();
             DesignerItems = new ObservableCollection<DesignerItem>();
             /*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
-            Loaded += (d, e) => { Bind(); };
+            Loaded += (d, e) =>
+            {
+                Bind();
+            };
             PreviewKeyDown += DiagramControl_PreviewKeyDown;
 
             timer.Tick += Timer_Tick;
@@ -610,11 +628,12 @@ namespace QPP.Wpf.UI.TreeEditor
                     {
                         throw new Exception("在使用 ItemsSource 之前，项集Items合必须为空");
                     }
+                    if (ItemsSource != null)
+                    {
+                        DesignerItems = GenerateDesignerItemList();
+                    }
                 }
-                if (ItemsSource != null)
-                {
-                    DesignerItems = GenerateDesignerItemList();
-                }
+
 
                 if (DesignerItems.Any())
                 {
@@ -714,9 +733,12 @@ namespace QPP.Wpf.UI.TreeEditor
             get
             {
                 return new RelayCommand(() =>
+                {
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
                     {
                         DiagramManager.CollapseAll();
-                    });
+                    }));
+                });
             }
         }
         public ICommand ExpandAllCommand
@@ -725,7 +747,10 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 return new RelayCommand(() =>
                 {
-                    DiagramManager.ExpandAll();
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                    {
+                        DiagramManager.ExpandAll();
+                    }));
                 });
             }
         }
@@ -735,7 +760,10 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 return new RelayCommand(() =>
                 {
-                    DiagramManager.ExpandSelectedItem();
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                    {
+                        DiagramManager.ExpandSelectedItem();
+                    }));
                 }, CanExpandAndCollapseSelectedItemCommand);
             }
         }
@@ -759,7 +787,10 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 return new RelayCommand(() =>
                 {
-                    DiagramManager.CollapseSelectedItem();
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                    {
+                        DiagramManager.CollapseSelectedItem();
+                    }));
                 }, CanExpandAndCollapseSelectedItemCommand);
             }
         }
