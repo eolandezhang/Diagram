@@ -47,6 +47,7 @@
                                        CanvasDoubleClickCommand="{Binding CanvasDoubleClickCommand}"
                                        ReloadCommand="{Binding ReloadCommand}"
                                        ClickPoint="{Binding ClickPoint,Mode=OneWayToSource}"
+                                       IsAddAfter="{Binding IsAddAfter}"
                                        ZoomBoxControl="{Binding ElementName=ZoomBox}">
                 <!--<treeEditor:DiagramControl
             x:Name="Diagram" 

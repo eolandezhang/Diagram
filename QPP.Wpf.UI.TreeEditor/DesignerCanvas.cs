@@ -172,7 +172,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 isGray = true;
             }
             DiagramControl.DiagramManager.CreateHelperConnection(NewParent, Shadow.ShadowItem);
-            DiagramControl.DiagramManager.MoveUpAndDown(NewParent, Shadow.ShadowItem);
+            //DiagramControl.DiagramManager.MoveUpAndDown(NewParent, Shadow.ShadowItem);
 
         }
         IScrollInfo _scrollInfo;
@@ -247,24 +247,21 @@ namespace QPP.Wpf.UI.TreeEditor
 
                 if (ox > 2 || oy > 2)
                 {
-                   
-                        _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x <= 0 ? 0 : x, y <= 0 ? 0 : y), Shadow.SelectedItemsAllSubItems);
-                        Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
-                        Children.Remove(Shadow.ShadowItem);
-                        NewParent = null;
-                        isGray = false;
-                        IsMouseDown = false;
-                        IsMouseMove = false;
-                        IsChangingParent = false;
-                        Shadow.MousePoint = new Point(0, 0);
+
+                    _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x <= 0 ? 0 : x, y <= 0 ? 0 : y), Shadow.SelectedItemsAllSubItems);
+                    Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
+
                     //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
                     //{ }));
                 }
-
             }
-
-
-
+            Children.Remove(Shadow.ShadowItem);
+            NewParent = null;
+            isGray = false;
+            IsMouseDown = false;
+            IsMouseMove = false;
+            IsChangingParent = false;
+            Shadow.MousePoint = new Point(0, 0);
         }
         //protected override void OnDrop(DragEventArgs e)
         //{

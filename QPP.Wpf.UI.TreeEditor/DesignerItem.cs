@@ -25,6 +25,8 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
         public DesignerItem ShadowOrignal;/*当此节点为shadow时，记录shadow的原节点*/
         public DiagramControl DiagramControl;
+        public DesignerItem ParentDesignerItem { get; set; }
+        public List<DesignerItem> ChildrenDesignerItems { get; set; }
 
         #endregion
 
@@ -273,6 +275,7 @@ namespace QPP.Wpf.UI.TreeEditor
             Focusable = false;
             MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
             Loaded += DesignerItem_Loaded;
+            ChildrenDesignerItems = new List<DesignerItem>();
         }
         void DesignerItem_Loaded(object sender, RoutedEventArgs e)
         {
@@ -321,6 +324,7 @@ namespace QPP.Wpf.UI.TreeEditor
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
             Loaded += DesignerItem_Loaded;
+            ChildrenDesignerItems = new List<DesignerItem>();
         }
         public DesignerItem(object itemData, DiagramControl diagramControl)
         {
@@ -334,6 +338,7 @@ namespace QPP.Wpf.UI.TreeEditor
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
             Loaded += DesignerItem_Loaded;
+            ChildrenDesignerItems = new List<DesignerItem>();
         }
         static DesignerItem()
         {
@@ -458,5 +463,30 @@ namespace QPP.Wpf.UI.TreeEditor
         //    return new DesignerItem(data.ItemId, DiagramControl) { Data = data, DiagramControl = DiagramControl };
         //}
 
+        public virtual int Level
+        {
+            get
+            {
+                int result = 1;
+                var parent = ParentDesignerItem;
+                while (parent != null)
+                {
+                    result++;
+                    parent = parent.ParentDesignerItem;
+                }
+
+                return result;
+            }
+        }
+
+        public virtual bool HasChild
+        {
+            get { return ChildrenDesignerItems.Count > 0; }
+        }
+        public void UpdateExpander()
+        {
+            if (ParentDesignerItem != null)
+                ParentDesignerItem.IsExpanderVisible = ParentDesignerItem.HasChild && ParentDesignerItem.CanCollapsed;
+        }
     }
 }

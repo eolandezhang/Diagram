@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,8 +41,9 @@ namespace QPP.Wpf.UI.TreeEditor
         public ObservableCollection<DesignerItem> DesignerItems { get; set; }
         public DesignerCanvas DesignerCanvas { get; set; }
         public bool IsOnEditing;/*双击出现编辑框，标识编辑状态，此时回车按键按下之后，会阻止新增相邻节点命令*/
-        public IDiagramManager DiagramManager { get; set; }
+        public DiagramManager DiagramManager { get; set; }
         public List<DesignerItem> DeletedDesignerItems = new List<DesignerItem>();
+
         #endregion
 
         #region Dependency Property
@@ -109,16 +109,16 @@ namespace QPP.Wpf.UI.TreeEditor
                 var dc = d as DiagramControl;
                 if (dc == null) return;
                 if (dc.ItemsSource == null) return;
-                if (dc.Check())
-                {
-                    dc.DesignerItems = dc.GenerateDesignerItemList();
-                }
+                //if (dc.Check())
+                //{
+                //dc.AddToMessage("利用数据源创建节点对象", dc.DiagramManager.GetTime(() =>
+                //{
+                //    dc.DesignerItems = dc.GenerateDesignerItemList();
+                //}));
+                //}
                 if (e.NewValue is INotifyCollectionChanged)
                 {
-                    dc.AddToMessage("创建对象", dc.DiagramManager.GetTime(() =>
-                    {
-                        ItemsSourceCollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
-                    }));
+                    ItemsSourceCollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
                 }
             }));
         static void ItemsSourceCollectionChanged(DiagramControl dc, INotifyCollectionChanged items)
@@ -201,7 +201,9 @@ namespace QPP.Wpf.UI.TreeEditor
                 if (pid.IsNotEmpty())
                 {
                     var parentDesignerItem = dc.DiagramManager.GetDesignerItemById(pid);
-                    var subitems = dc.DiagramManager.GetDirectSubItemsAndUpdateExpander(parentDesignerItem);//更新展开按钮显示状态
+                    var subitems = parentDesignerItem.ChildrenDesignerItems;
+                    // dc.DiagramManager.GetDirectSubItemsAndUpdateExpander(parentDesignerItem);//更新展开按钮显示状态
+
                     #region 选中上方相邻节点
                     var topItems = subitems.Where(x => Canvas.GetTop(x) < Canvas.GetTop(deleteItem));
                     var item = topItems.Any() ? topItems.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b) : parentDesignerItem;
@@ -301,7 +303,7 @@ namespace QPP.Wpf.UI.TreeEditor
                             //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
                             //{
                             var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
-                            dc.DiagramManager.DrawChild(parent, item);
+                            dc.DiagramManager.DrawChild(parent, item, new List<DesignerItem>());
                             dc.DiagramManager.SetSelectItem(item);
                             //}));
                         }
@@ -309,12 +311,11 @@ namespace QPP.Wpf.UI.TreeEditor
                         {
                             //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
                             //   {
-                            dc.DiagramManager.DrawRoot(item, top, left);
+                            dc.DiagramManager.DrawRoot(item);
                             dc.DiagramManager.SetSelectItem(item);
 
                             //  }));
                         }
-
                         var msg = dc.DiagramManager.GetTime(() =>
                         {
                             dc.DiagramManager.AddNewArrange(item);
@@ -520,13 +521,25 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         #endregion
 
+        #region IsAddAfter
+
+        public static readonly DependencyProperty IsAddAfterProperty = DependencyProperty.Register(
+            "IsAddAfter", typeof(bool), typeof(DiagramControl), new PropertyMetadata(true));
+
+        public bool IsAddAfter
+        {
+            get { return (bool)GetValue(IsAddAfterProperty); }
+            set { SetValue(IsAddAfterProperty, value); }
+        }
+
+        #endregion
         #endregion
 
         #region Constructors
         DispatcherTimer timer = new DispatcherTimer();
         public DiagramControl()
         {
-            DiagramManager = new VerticalTreeManager(this);
+            DiagramManager = new DiagramManager(this);
             Items = new ObservableCollection<DiagramItem>();
             DesignerItems = new ObservableCollection<DesignerItem>();
             /*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
@@ -600,12 +613,56 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #region 用数据源创建节点
 
+        class Item
+        {
+            public string Id { get; set; }
+            public string PId { get; set; }
+            public object Data { get; set; }
+        }
         internal ObservableCollection<DesignerItem> GenerateDesignerItemList()
         {
-            ObservableCollection<DesignerItem> list = new ObservableCollection<DesignerItem>();
-            foreach (var t in ItemsSource)
+            ObservableCollection<DesignerItem> result = new ObservableCollection<DesignerItem>();
+            List<DesignerItem> list = new List<DesignerItem>();
+            List<Item> dic = (from object item in ItemsSource
+                              select new Item()
+                              {
+                                  Id = GetId(item),
+                                  PId = GetPId(item),
+                                  Data = item
+                              }).ToList();
+            var roots = dic.Where(x => x.PId.IsNullOrEmpty());
+            foreach (var root in roots)
             {
-                list.Add(new DesignerItem(t, this));
+                var r = root;
+                var d = new DesignerItem(root.Data, this);
+                d.ParentDesignerItem = null;
+                list.Add(d);
+                var childs = dic.Where(x => x.PId == r.Id).ToList();
+                list.AddRange(CreateDesignerItem(dic, childs, d));
+            }
+            foreach (var designerItem in list)
+            {
+                result.Add(designerItem);
+            }
+            return result;
+        }
+
+        List<DesignerItem> CreateDesignerItem(List<Item> source, List<Item> childItems, DesignerItem root)
+        {
+            var list = new List<DesignerItem>();
+            foreach (var e in childItems)
+            {
+                var r = e;
+                var d = new DesignerItem(r.Data, this);
+                d.ParentDesignerItem = root;
+                root.ChildrenDesignerItems.Add(d);
+                list.Add(d);
+                var childs = source.Where(x => x.PId == r.Id).ToList();
+                var c = CreateDesignerItem(source, childs, d);
+                if (c.Any())
+                {
+                    list.AddRange(c);
+                }
             }
             return list;
         }
@@ -628,20 +685,23 @@ namespace QPP.Wpf.UI.TreeEditor
                     {
                         throw new Exception("在使用 ItemsSource 之前，项集Items合必须为空");
                     }
-                    if (ItemsSource != null)
-                    {
-                        DesignerItems = GenerateDesignerItemList();
-                    }
+
                 }
 
-
+                if (ItemsSource != null && (DesignerItems == null || !DesignerItems.Any()))
+                {
+                    AddToMessage("创建节点", DiagramManager.GetTime(() =>
+                    {
+                        DesignerItems = GenerateDesignerItemList();
+                    }));
+                }
                 if (DesignerItems.Any())
                 {
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                    {
+                    
                         DiagramManager.Draw();
+                   
 
-                    }));
+
                 }
                 else
                 {

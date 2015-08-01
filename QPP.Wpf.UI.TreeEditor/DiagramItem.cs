@@ -19,5 +19,6 @@ namespace QPP.Wpf.UI.TreeEditor
             PId = "";
             Items = new ObservableCollection<DiagramItem>();
         }
+        
     }
 }

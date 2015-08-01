@@ -25,7 +25,6 @@ namespace QPP.Wpf.UI.TreeEditor
 
         DesignerItem GetDesignerItemById(string id);
         List<DesignerItem> GetSelectedItemsAllSubItems();
-        List<DesignerItem> GetDirectSubItemsAndUpdateExpander(DesignerItem item);
 
 
 
@@ -33,8 +32,8 @@ namespace QPP.Wpf.UI.TreeEditor
 
 
         void Draw();
-        void DrawChild /*创建非根节点时，同时创建与父节点之间的连线*/(DesignerItem parent, DesignerItem childItem);
-        void DrawRoot /*创建根节点*/(DesignerItem item, double topOffset, double leftOffset);
+        void DrawChild /*创建非根节点时，同时创建与父节点之间的连线*/(DesignerItem parent, DesignerItem childItem, List<DesignerItem> list);
+        void DrawRoot /*创建根节点*/(DesignerItem item);
 
 
 

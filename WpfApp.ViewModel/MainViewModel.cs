@@ -21,6 +21,7 @@ namespace WpfApp.ViewModel
         public ObservableCollection<ItemData> SelectedItems { get; set; }
         public ObservableCollection<ItemData> DeletedItems { get; set; }
         public ItemData SelectedItem { get { return Get<ItemData>("SelectedItem"); } set { Set("SelectedItem", value); } }
+        public bool IsAddAfter { get; set; }
         public MainViewModel()
         {
             SingleRoot = true;
@@ -80,11 +81,12 @@ namespace WpfApp.ViewModel
                         new ItemData("2", "0", "1.2", "-"),
                         new ItemData("4", "2", "3.1", "-"),
                         new ItemData("7", "4", "3.2", "-"),
-                        new ItemData("6", "0", "1.3", "-"),
-                        new ItemData(Guid.NewGuid().ToString(), "0", "Item 1", ""),
-                        new ItemData(Guid.NewGuid().ToString(), "0", "Item 2", ""),
-                        new ItemData(Guid.NewGuid().ToString(), "0", "Item 3", "")
+                        new ItemData("6", "0", "1.3", "-")
                     };
+                    for (var i = 0; i <= 400; i++)
+                    {
+                        list.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item " + i, "Images/green.png"));
+                    }
                     ItemsSource.AddRange(list);
 
                     //ItemsSource.Add(new ItemData("0", "", "0.0", "Root　Item1", "Images/fix.png"));
@@ -148,6 +150,7 @@ namespace WpfApp.ViewModel
 
         void AddAfterAction()
         {
+            IsAddAfter = true;
             var selectedItem = GetSelectedItem();
             if (selectedItem != null)
             {
@@ -171,6 +174,7 @@ namespace WpfApp.ViewModel
         public ICommand AddSiblingCommand { get { return new RelayCommand(AddSiblingAction, () => SelectedItems.Count == 1); } }
         private void AddSiblingAction()
         {
+            IsAddAfter = false;
             var selectedItem = GetSelectedItem();
             if (selectedItem != null)
             {
