@@ -250,9 +250,6 @@ namespace QPP.Wpf.UI.TreeEditor
 
                     _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x <= 0 ? 0 : x, y <= 0 ? 0 : y), Shadow.SelectedItemsAllSubItems);
                     Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
-
-                    //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
-                    //{ }));
                 }
             }
             Children.Remove(Shadow.ShadowItem);

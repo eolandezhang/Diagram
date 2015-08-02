@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:treeEditor="clr-namespace:QPP.Wpf.UI.TreeEditor;assembly=QPP.Wpf.UI.TreeEditor"
         xmlns:vm="clr-namespace:WpfApp.ViewModel;assembly=WpfApp.ViewModel"
+        xmlns:wpf="http://qpp.com/winfx/xaml/controls"
         Title="{Binding Title}" Height="600" Width="800"
         WindowState="Normal" Icon="tree.ico"  WindowStartupLocation="CenterScreen">
     <Window.DataContext>
@@ -17,18 +18,22 @@
         <KeyBinding Key="V" Modifiers="Control" Command="{Binding PasteCommand}"/>
         <KeyBinding Key="X" Modifiers="Control" Command="{Binding CutCommand}"/>
     </Window.InputBindings>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="250"/>
-        </Grid.ColumnDefinitions>
-        <DockPanel>
-            <ToolBarTray   DockPanel.Dock="Top" HorizontalAlignment="Left">
-                <ToolBar>
-                    <!--<Button Margin="4,0,4,0" Padding="5,4,5,4" Content="重新载入测试数据" Command="{Binding Path=ReloadCommand}"/>-->
-                    <!--<TextBox Width="50" Text="{Binding Num,UpdateSourceTrigger=PropertyChanged}"/>-->
-                    <Label Content="节点数量"/>
-                    <Slider VerticalAlignment="Center" 
+    <wpf:DockingManager>
+        <wpf:DockingManager.Theme>
+            <wpf:GenericTheme/>
+        </wpf:DockingManager.Theme>
+        <wpf:LayoutRoot>
+            <wpf:LayoutPanel>
+                <wpf:LayoutDocumentPaneGroup>
+                    <wpf:LayoutDocumentPane>
+                        <wpf:LayoutDocument  Title="Diagram" CanClose="False" >
+                            <DockPanel>
+                                <ToolBarTray   DockPanel.Dock="Top" HorizontalAlignment="Left">
+                                    <ToolBar>
+                                        <!--<Button Margin="4,0,4,0" Padding="5,4,5,4" Content="重新载入测试数据" Command="{Binding Path=ReloadCommand}"/>-->
+                                        <!--<TextBox Width="50" Text="{Binding Num,UpdateSourceTrigger=PropertyChanged}"/>-->
+                                        <Label Content="节点数量"/>
+                                        <Slider VerticalAlignment="Center" 
                             HorizontalAlignment="Center"
                             Margin="0"
                             Ticks="0,100,200,300,400"
@@ -37,17 +42,18 @@
                             Value="{Binding Num,UpdateSourceTrigger=PropertyChanged}"
                             IsSnapToTickEnabled="True"
                             IsMoveToPointEnabled="False" Width="100" />
-                    <TextBlock Text="{Binding Num}"/>
-                    <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(根)" Command="{Binding Path=AddRootCommand}" ToolTip="Enter"/>
-                    <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(相邻)" Command="{Binding Path=AddSiblingCommand}" ToolTip="Enter"/>
-                    <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(之后)" Command="{Binding Path=AddAfterCommand}" ToolTip="Tab or Insert"/>
-                    <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="移除" Command="{Binding Path=DeleteCommand}" ToolTip="Delete"/>
-                    <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="复制" Command="{Binding Path=CopyCommand}"/>
-                    <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="剪切" Command="{Binding Path=CutCommand}"/>
-                    <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="粘贴" Command="{Binding Path=PasteCommand}"/>
-                </ToolBar>
-            </ToolBarTray>
-            <treeEditor:DiagramControl x:Name="Diagram" 
+                                        <TextBlock Text="{Binding Num}"/>
+                                        <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(根)" Command="{Binding Path=AddRootCommand}" ToolTip="Enter"/>
+                                        <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(相邻)" Command="{Binding Path=AddSiblingCommand}" ToolTip="Enter"/>
+                                        <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(之后)" Command="{Binding Path=AddAfterCommand}" ToolTip="Tab or Insert"/>
+                                        <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="移除" Command="{Binding Path=DeleteCommand}" ToolTip="Delete"/>
+                                        <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="复制" Command="{Binding Path=CopyCommand}"/>
+                                        <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="剪切" Command="{Binding Path=CutCommand}"/>
+                                        <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="粘贴" Command="{Binding Path=PasteCommand}"/>
+                                    </ToolBar>
+                                </ToolBarTray>
+                                <!--ZoomBoxControl="{Binding ElementName=ZoomBox}"-->
+                                <treeEditor:DiagramControl x:Name="Diagram" 
                                        DiagramHeader="树状图"
                                        ItemsSource="{Binding ItemsSource}"
                                        IdField="ItemId"
@@ -60,39 +66,47 @@
                                        ReloadCommand="{Binding ReloadCommand}"
                                        ClickPoint="{Binding ClickPoint,Mode=OneWayToSource}"
                                        IsAddAfter="{Binding IsAddAfter}"
-                                       ZoomBoxControl="{Binding ElementName=ZoomBox}">
-                <!--<treeEditor:DiagramControl
+                                       
+                                                           >
+                                    <!--<treeEditor:DiagramControl
             x:Name="Diagram" 
             DiagramHeader="树状图">-->
-                <!--Images/blue.png-->
-                <treeEditor:DiagramControl.DesignerItemTemplate>
-                    <DataTemplate>
-                        <Border x:Name="Bdr"  BorderThickness="1" BorderBrush="SkyBlue" Padding="0,2,0,2" CornerRadius="5,5,5,5" >
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="{Binding DataContext.ImageUri}" />
-                                <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
-                            </StackPanel>
-                        </Border>
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsDragItemChild}" Value="True">
-                                <Setter TargetName="Bdr" Property="BorderBrush" Value="Transparent"/>
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </treeEditor:DiagramControl.DesignerItemTemplate>
-                <treeEditor:DesignerItem.ItemContextMenu>
-                    <ContextMenu>
-                        <MenuItem  Header="增加(相邻)" Command="{Binding Path=AddSiblingCommand}"/>
-                        <MenuItem  Header="增加(之后)" Command="{Binding Path=AddAfterCommand}"/>
-                        <MenuItem  Header="移除" Command="{Binding Path=DeleteCommand}"/>
-                        <Separator/>
-                        <MenuItem  Header="复制" Command="{Binding Path=CopyCommand}"/>
-                        <MenuItem  Header="剪切" Command="{Binding Path=CutCommand}"/>
-                        <MenuItem  Header="粘贴" Command="{Binding Path=PasteCommand}"/>
-                    </ContextMenu>
-                </treeEditor:DesignerItem.ItemContextMenu>
-                <!--当DiagramControl.ItemsSource为null时，才能用DiagramControl.Items初始化，否则会抛异常-->
-                <!--<treeEditor:DiagramControl.Items>
+                                    <!--Images/blue.png-->
+                                    <treeEditor:DiagramControl.DesignerItemTemplate>
+                                        <DataTemplate>
+                                            <Border x:Name="Bdr"  BorderThickness="1" BorderBrush="SkyBlue" Padding="0,2,0,2" CornerRadius="5,5,5,5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="{Binding DataContext.ImageUri}" />
+                                                    <Border Width="10" Height="10" BorderThickness="1" x:Name="Expanded"/>
+                                                    <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsDragItemChild}" Value="True">
+                                                    <Setter TargetName="Bdr" Property="BorderBrush" Value="Transparent"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding  RelativeSource={RelativeSource TemplatedParent},Path=IsExpanded}" Value="true">
+                                                    <Setter TargetName="Expanded" Property="Background" Value="#FFC14343"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding  RelativeSource={RelativeSource TemplatedParent},Path=IsExpanded}" Value="false">
+                                                    <Setter TargetName="Expanded" Property="Background" Value="silver"></Setter>
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </treeEditor:DiagramControl.DesignerItemTemplate>
+                                    <treeEditor:DesignerItem.ItemContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem  Header="增加(相邻)" Command="{Binding Path=AddSiblingCommand}"/>
+                                            <MenuItem  Header="增加(之后)" Command="{Binding Path=AddAfterCommand}"/>
+                                            <MenuItem  Header="移除" Command="{Binding Path=DeleteCommand}"/>
+                                            <Separator/>
+                                            <MenuItem  Header="复制" Command="{Binding Path=CopyCommand}"/>
+                                            <MenuItem  Header="剪切" Command="{Binding Path=CutCommand}"/>
+                                            <MenuItem  Header="粘贴" Command="{Binding Path=PasteCommand}"/>
+                                        </ContextMenu>
+                                    </treeEditor:DesignerItem.ItemContextMenu>
+                                    <!--当DiagramControl.ItemsSource为null时，才能用DiagramControl.Items初始化，否则会抛异常-->
+                                    <!--<treeEditor:DiagramControl.Items>
                 <treeEditor:DiagramItem Text="Root">
                     <treeEditor:DiagramItem Text="Item 1"/>
                     <treeEditor:DiagramItem Text="Item 2"/>
@@ -102,39 +116,58 @@
                     </treeEditor:DiagramItem>
                 </treeEditor:DiagramItem>
             </treeEditor:DiagramControl.Items>-->
-            </treeEditor:DiagramControl>
-        </DockPanel>
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="250"></RowDefinition>
-            </Grid.RowDefinitions>
-            <treeEditor:DiagramDataEditorControl x:Name="DiagramDataEditor" Header="属性" DataContext="{Binding SelectedItem}"  >
-                <treeEditor:DiagramDataEditorControl.Content>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Text" Grid.Row="0" Grid.Column="0"/>
-                        <TextBox Text="{Binding Text,UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1"/>
-                        <Label Content="Desc" Grid.Row="1" Grid.Column="0"/>
-                        <TextBox Text="{Binding Desc ,UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"  Grid.Column="1"/>
-                        <Label Content="Id" Grid.Row="2" Grid.Column="0"/>
-                        <TextBox Text="{Binding ItemId ,UpdateSourceTrigger=PropertyChanged}" Grid.Row="2"  Grid.Column="1" TextWrapping="Wrap" IsReadOnly="True"/>
-                        <Label Content="ParentId" Grid.Row="3" Grid.Column="0"/>
-                        <TextBox Text="{Binding ItemParentId ,UpdateSourceTrigger=PropertyChanged}" Grid.Row="3"  Grid.Column="1"  TextWrapping="Wrap" IsReadOnly="True"/>
-                    </Grid>
-                </treeEditor:DiagramDataEditorControl.Content>
-            </treeEditor:DiagramDataEditorControl>
-            <treeEditor:ZoomBoxControl x:Name="ZoomBox" Grid.Row="1" />
-        </Grid>
-    </Grid>
+                                </treeEditor:DiagramControl>
+                            </DockPanel>
+                        </wpf:LayoutDocument>
+                    </wpf:LayoutDocumentPane>
+                </wpf:LayoutDocumentPaneGroup>
+                <wpf:LayoutAnchorablePaneGroup DockWidth="230" DockMinWidth="230" Orientation="Vertical" >
+                    <wpf:LayoutAnchorablePane>
+                        <wpf:LayoutAnchorable x:Name="Side" Title="Attributes" AutoHideMinWidth="230" AutoHideWidth="230" CanClose="False">
+                            <Grid>
+                                <!--<Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="250"></RowDefinition>
+                                </Grid.RowDefinitions>-->
+                                <treeEditor:DiagramDataEditorControl x:Name="DiagramDataEditor" Header="属性" DataContext="{Binding SelectedItem}"  >
+                                    <treeEditor:DiagramDataEditorControl.Content>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="Text" Grid.Row="0" Grid.Column="0"/>
+                                            <TextBox Text="{Binding Text,UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1"/>
+                                            <Label Content="Desc" Grid.Row="1" Grid.Column="0"/>
+                                            <TextBox Text="{Binding Desc ,UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"  Grid.Column="1"/>
+                                            <Label Content="Id" Grid.Row="2" Grid.Column="0"/>
+                                            <TextBox Text="{Binding ItemId ,UpdateSourceTrigger=PropertyChanged}" Grid.Row="2"  Grid.Column="1" TextWrapping="Wrap" IsReadOnly="True"/>
+                                            <Label Content="ParentId" Grid.Row="3" Grid.Column="0"/>
+                                            <TextBox Text="{Binding ItemParentId ,UpdateSourceTrigger=PropertyChanged}" Grid.Row="3"  Grid.Column="1"  TextWrapping="Wrap" IsReadOnly="True"/>
+                                        </Grid>
+                                    </treeEditor:DiagramDataEditorControl.Content>
+                                </treeEditor:DiagramDataEditorControl>
+                                <!--<treeEditor:ZoomBoxControl x:Name="ZoomBox" Grid.Row="1" />-->
+                            </Grid>
+                        </wpf:LayoutAnchorable>
+                    </wpf:LayoutAnchorablePane>
+                </wpf:LayoutAnchorablePaneGroup>
+            </wpf:LayoutPanel>
+            <!--<wpf:LayoutRoot.RightSide>
+                <wpf:LayoutAnchorSide>
+                    <wpf:LayoutAnchorGroup>
+            
+                    </wpf:LayoutAnchorGroup>
+                </wpf:LayoutAnchorSide>
+            </wpf:LayoutRoot.RightSide>-->
+        </wpf:LayoutRoot>
+    </wpf:DockingManager>
+
 </Window>

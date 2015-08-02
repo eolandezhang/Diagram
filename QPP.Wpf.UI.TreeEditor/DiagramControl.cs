@@ -281,9 +281,9 @@ namespace QPP.Wpf.UI.TreeEditor
                 {
                     var model = newItem as DataModel;
                     if (model == null) continue;
-                    model.MarkCreated();
+
                     var item = new DesignerItem(newItem, dc);
-                    dc.DesignerItems.Add(item);
+
                     var parentid = dc.GetPId(newItem);
 
                     if (parentid.IsNotEmpty())
@@ -292,6 +292,36 @@ namespace QPP.Wpf.UI.TreeEditor
                         parent.ChildrenDesignerItems.Add(item);
                         item.ParentDesignerItem = parent;
                         dc.DiagramManager.DrawChild(parent, item, new List<DesignerItem>());
+                        if (dc.IsAddAfter)/*增加子节点*/
+                        {
+                            var childs = dc.DiagramManager.GetAllSubItems(parent).Where(x => !x.Equals(item));
+                            var lastChild = !childs.Any() ? parent : childs.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
+                            var below = dc.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(lastChild)).ToList();
+
+                            dc.AddToMessage("增加子节点", dc.DiagramManager.GetTime(() =>
+                            {
+                                below.ForEach(x => { Canvas.SetTop(x, Canvas.GetTop(x) + item.ActualHeight); });
+                                Canvas.SetTop(item, Canvas.GetTop(lastChild) + lastChild.ActualHeight);
+                            }));
+
+                            dc.DiagramManager.SetSelectItem(item);
+
+                        }
+                        else/*增加相邻节点*/
+                        {
+                            var selectedItem = parent;
+                            var childs = dc.DiagramManager.GetAllSubItems(selectedItem);
+                            var lastChild = !childs.Any() ? selectedItem : childs.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
+                            var below = dc.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(lastChild)).ToList();
+
+                            dc.AddToMessage("增加相邻节点", dc.DiagramManager.GetTime(() =>
+                            {
+                                below.ForEach(x => { Canvas.SetTop(x, Canvas.GetTop(x) + item.ActualHeight); });
+                                Canvas.SetTop(item, Canvas.GetTop(lastChild) + lastChild.ActualHeight);
+                            }));
+
+                        }
+                        dc.DesignerItems.Add(item);
                         dc.DiagramManager.SetSelectItem(item);
                     }
                     else
@@ -299,7 +329,8 @@ namespace QPP.Wpf.UI.TreeEditor
                         dc.DiagramManager.DrawRoot(item);
                         dc.DiagramManager.SetSelectItem(item);
                     }
-                    dc.DiagramManager.Arrange();
+                    //dc.DiagramManager.Arrange();
+
                     dc.DiagramManager.Scroll(item);
                 }
             }

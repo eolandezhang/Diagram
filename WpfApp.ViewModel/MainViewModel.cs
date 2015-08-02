@@ -22,14 +22,14 @@ namespace WpfApp.ViewModel
         public ObservableCollection<ItemData> SelectedItems { get; set; }
         public ObservableCollection<ItemData> DeletedItems { get; set; }
         public ItemData SelectedItem { get { return Get<ItemData>("SelectedItem"); } set { Set("SelectedItem", value); } }
-        public bool IsAddAfter { get; set; }
+        public bool IsAddAfter { get { return Get<bool>("IsAddAfter"); } set { Set("IsAddAfter", value); } }
         public MainViewModel()
         {
             SingleRoot = true;
             SelectedItems = new ObservableCollection<ItemData>();
             DeletedItems = new ObservableCollection<ItemData>();
             Title = "Tree Editor";
-            ItemsSource=new RangeObservableCollection<ItemData>();
+            ItemsSource = new RangeObservableCollection<ItemData>();
 
             SelectedItems.CollectionChanged += (d, e) =>
             {

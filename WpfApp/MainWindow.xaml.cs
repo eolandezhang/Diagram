@@ -10,6 +10,8 @@ namespace WpfApp
         public MainWindow()
         {
             InitializeComponent();
+            
+
         }
     }
 }
