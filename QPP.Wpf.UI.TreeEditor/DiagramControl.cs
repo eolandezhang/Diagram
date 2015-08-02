@@ -205,7 +205,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         dc.DiagramManager.Scroll(item);
                         #endregion
                     }
-                    
+
                 }
             }
             //dc.DiagramManager.Arrange();
@@ -514,7 +514,7 @@ namespace QPP.Wpf.UI.TreeEditor
             /*界面上，如果控件未设定ItemSource属性，在后台代码中设定，则需要调用Bind()方法*/
             Loaded += (d, e) =>
             {
-                Bind();
+                //Bind();
             };
             PreviewKeyDown += DiagramControl_PreviewKeyDown;
 
@@ -693,17 +693,34 @@ namespace QPP.Wpf.UI.TreeEditor
         public void Bind(IList newItems)
         {
             if (!IsLoaded || !Check()) return;
+
             AddToMessage("创建节点", DiagramManager.GetTime(() =>
             {
                 var list = GenerateDesignerItemList(newItems);
+                if (list.Any(x => x.ItemParentId.IsNullOrEmpty()))
+                {
+                    foreach (var designerItem in list)
+                    {
+                        DesignerItems.Add(designerItem);
+                    }
+                    Bind();
+                    return;
+                }
                 foreach (var designerItem in list)
                 {
                     DesignerItems.Add(designerItem);
+                    if (list.Any(x => x.ItemId != designerItem.ItemParentId))
+                    { DiagramManager.DrawDesignerItems(designerItem.ParentDesignerItem); }
                 }
+
+
+
+                DiagramManager.Arrange();
+
             }));
             if (DesignerItems.Any())
             {
-                DiagramManager.Draw();
+                // DiagramManager.Draw();
             }
             else
             {
