@@ -196,13 +196,16 @@ namespace QPP.Wpf.UI.TreeEditor
                     var parentDesignerItem = dc.DiagramManager.GetDesignerItemById(pid);
                     var subitems = parentDesignerItem.ChildrenDesignerItems;
                     // dc.DiagramManager.GetDirectSubItemsAndUpdateExpander(parentDesignerItem);//更新展开按钮显示状态
-
-                    #region 选中上方相邻节点
-                    var topItems = subitems.Where(x => Canvas.GetTop(x) < Canvas.GetTop(deleteItem));
-                    var item = topItems.Any() ? topItems.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b) : parentDesignerItem;
-                    dc.DiagramManager.SetSelectItem(item);
-                    #endregion
-                    dc.DiagramManager.Scroll(item);
+                    if (subitems != null)
+                    {
+                        #region 选中上方相邻节点
+                        var topItems = subitems.Where(x => Canvas.GetTop(x) < Canvas.GetTop(deleteItem));
+                        var item = topItems.Any() ? topItems.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b) : parentDesignerItem;
+                        dc.DiagramManager.SetSelectItem(item);
+                        dc.DiagramManager.Scroll(item);
+                        #endregion
+                    }
+                    
                 }
             }
             //dc.DiagramManager.Arrange();
@@ -230,20 +233,20 @@ namespace QPP.Wpf.UI.TreeEditor
             var id = oType.GetProperty(textField);
             return id.GetValue(item, null).ToString();
         }
-        double GetLeft(object item)
-        {
-            var oType = item.GetType();
-            var leftField = LeftField;
-            var left = oType.GetProperty(leftField);
-            return (double)left.GetValue(item, null);
-        }
-        double GetTop(object item)
-        {
-            var oType = item.GetType();
-            var topField = TopField;
-            var top = oType.GetProperty(topField);
-            return (double)top.GetValue(item, null);
-        }
+        //double GetLeft(object item)
+        //{
+        //    var oType = item.GetType();
+        //    var leftField = LeftField;
+        //    var left = oType.GetProperty(leftField);
+        //    return (double)left.GetValue(item, null);
+        //}
+        //double GetTop(object item)
+        //{
+        //    var oType = item.GetType();
+        //    var topField = TopField;
+        //    var top = oType.GetProperty(topField);
+        //    return (double)top.GetValue(item, null);
+        //}
         List<object> GetChildren(object item)
         {
             List<object> children = new List<object>();
@@ -288,7 +291,6 @@ namespace QPP.Wpf.UI.TreeEditor
                         var parent = dc.DiagramManager.GetDesignerItemById(parentid);
                         parent.ChildrenDesignerItems.Add(item);
                         item.ParentDesignerItem = parent;
-
                         dc.DiagramManager.DrawChild(parent, item, new List<DesignerItem>());
                         dc.DiagramManager.SetSelectItem(item);
                     }
@@ -297,11 +299,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         dc.DiagramManager.DrawRoot(item);
                         dc.DiagramManager.SetSelectItem(item);
                     }
-                    var msg = dc.DiagramManager.GetTime(() =>
-                    {
-                        //dc.DiagramManager.AddNewArrange(item);
-                    });
-                    dc.AddToMessage("新增节点布局", msg);
+                    dc.DiagramManager.Arrange();
                     dc.DiagramManager.Scroll(item);
                 }
             }
@@ -675,7 +673,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             }
 
-            if (ItemsSource != null && (DesignerItems == null || !DesignerItems.Any()))
+            if (ItemsSource != null && ItemsSource.Count > 0 && (DesignerItems == null || !DesignerItems.Any()))
             {
                 AddToMessage("创建节点", DiagramManager.GetTime(() =>
                 {

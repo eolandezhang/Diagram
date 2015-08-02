@@ -214,7 +214,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         }
 
-        List<DesignerItem> DrawDesignerItems(DesignerItem designerItem)
+        public List<DesignerItem> DrawDesignerItems(DesignerItem designerItem)
         {
             var list = new List<DesignerItem>();
             if (designerItem == null) return list;
@@ -882,8 +882,12 @@ namespace QPP.Wpf.UI.TreeEditor
         public DesignerItem ChangeParent(Point position, DesignerItem designerItem, List<DesignerItem> selectedItemsAllSubItems)
         {
             var newParent = GetNewParent(position, designerItem, selectedItemsAllSubItems);
-            DesignerItems.Where(x => x.IsNewParent).ToList().ForEach(x => { x.IsNewParent = false; });
-            newParent.IsNewParent = true;
+            if (newParent != null)
+            {
+                DesignerItems.Where(x => x.IsNewParent).ToList().ForEach(x => { x.IsNewParent = false; });
+                newParent.IsNewParent = true;
+            }
+
             return newParent;
         }
 
@@ -895,8 +899,9 @@ namespace QPP.Wpf.UI.TreeEditor
                 if (designerItem.ParentDesignerItem != null)
                 {
                     designerItem.ParentDesignerItem.ChildrenDesignerItems.Remove(designerItem);
-                    designerItem.UpdateExpander();
+
                 }
+                designerItem.UpdateExpander();
                 designerItem.ParentDesignerItem = newParent;
                 newParent.ChildrenDesignerItems.Add(designerItem);
 
@@ -1081,7 +1086,9 @@ namespace QPP.Wpf.UI.TreeEditor
                 if (designerItem.ParentDesignerItem != null)
                 {
                     designerItem.ParentDesignerItem.ChildrenDesignerItems.Remove(designerItem);
+
                 }
+                designerItem.UpdateExpander();
                 designerItem.ParentDesignerItem = newParent;
                 newParent.ChildrenDesignerItems.Add(designerItem);
                 designerItem.ItemParentId = newParent == null ? "" : newParent.ItemId;
@@ -1333,6 +1340,11 @@ namespace QPP.Wpf.UI.TreeEditor
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
             {
                 var item = GetDesignerItemById(id);
+                var parent = item.ParentDesignerItem;
+                if (parent.ChildrenDesignerItems != null)
+                { parent.ChildrenDesignerItems.Remove(item); }
+                item.UpdateExpander();
+                item.ParentDesignerItem = null;
                 var connections = GetItemConnections(item).ToList();
                 connections.ForEach(x => { DesignerCanvas.Children.Remove(x); });
                 var connectors = GetItemConnectors(item);

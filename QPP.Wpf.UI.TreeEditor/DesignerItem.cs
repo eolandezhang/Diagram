@@ -26,7 +26,19 @@ namespace QPP.Wpf.UI.TreeEditor
         public DesignerItem ShadowOrignal;/*当此节点为shadow时，记录shadow的原节点*/
         public DiagramControl DiagramControl;
         public DesignerItem ParentDesignerItem { get; set; }
-        public List<DesignerItem> ChildrenDesignerItems { get; set; }
+        private List<DesignerItem> _childDesignerItems;
+
+        public List<DesignerItem> ChildrenDesignerItems
+        {
+            get
+            {
+                if (_childDesignerItems == null)
+                {
+                    _childDesignerItems = new List<DesignerItem>();
+                }
+                return _childDesignerItems;
+            }
+        }
 
         #endregion
 
@@ -275,7 +287,6 @@ namespace QPP.Wpf.UI.TreeEditor
             Focusable = false;
             MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
             Loaded += DesignerItem_Loaded;
-            ChildrenDesignerItems = new List<DesignerItem>();
         }
         void DesignerItem_Loaded(object sender, RoutedEventArgs e)
         {
@@ -324,7 +335,6 @@ namespace QPP.Wpf.UI.TreeEditor
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
             Loaded += DesignerItem_Loaded;
-            ChildrenDesignerItems = new List<DesignerItem>();
         }
         public DesignerItem(object itemData, DiagramControl diagramControl)
         {
@@ -338,7 +348,6 @@ namespace QPP.Wpf.UI.TreeEditor
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
             Loaded += DesignerItem_Loaded;
-            ChildrenDesignerItems = new List<DesignerItem>();
         }
         static DesignerItem()
         {
@@ -478,7 +487,10 @@ namespace QPP.Wpf.UI.TreeEditor
 
         public virtual bool HasChild
         {
-            get { return ChildrenDesignerItems.Count > 0; }
+            get
+            {
+                return ChildrenDesignerItems != null && ChildrenDesignerItems.Count > 0;
+            }
         }
         public void UpdateExpander()
         {
