@@ -426,12 +426,9 @@ namespace QPP.Wpf.UI.TreeEditor
             shadow.SetTemplate();
 
             designer.Shadow.ShadowItem.Visibility = Visibility.Collapsed;
-
             designer.IsMouseDown = true;
-            //designer.IsChangingParent = true;
 
             #endregion
-            //DiagramControl.AddToMessage("Create Shadow", "");
         }
 
 

@@ -26,6 +26,18 @@
             <ToolBarTray   DockPanel.Dock="Top" HorizontalAlignment="Left">
                 <ToolBar>
                     <!--<Button Margin="4,0,4,0" Padding="5,4,5,4" Content="重新载入测试数据" Command="{Binding Path=ReloadCommand}"/>-->
+                    <!--<TextBox Width="50" Text="{Binding Num,UpdateSourceTrigger=PropertyChanged}"/>-->
+                    <Label Content="节点数量"/>
+                    <Slider VerticalAlignment="Center" 
+                            HorizontalAlignment="Center"
+                            Margin="0"
+                            Ticks="0,100,200,300,400"
+                            Minimum="0"
+                            Maximum="400"
+                            Value="{Binding Num,UpdateSourceTrigger=PropertyChanged}"
+                            IsSnapToTickEnabled="True"
+                            IsMoveToPointEnabled="False" Width="100" />
+                    <TextBlock Text="{Binding Num}"/>
                     <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(根)" Command="{Binding Path=AddRootCommand}" ToolTip="Enter"/>
                     <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(相邻)" Command="{Binding Path=AddSiblingCommand}" ToolTip="Enter"/>
                     <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(之后)" Command="{Binding Path=AddAfterCommand}" ToolTip="Tab or Insert"/>

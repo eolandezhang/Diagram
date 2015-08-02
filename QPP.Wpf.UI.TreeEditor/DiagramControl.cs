@@ -109,13 +109,6 @@ namespace QPP.Wpf.UI.TreeEditor
                 var dc = d as DiagramControl;
                 if (dc == null) return;
                 if (dc.ItemsSource == null) return;
-                //if (dc.Check())
-                //{
-                //dc.AddToMessage("利用数据源创建节点对象", dc.DiagramManager.GetTime(() =>
-                //{
-                //    dc.DesignerItems = dc.GenerateDesignerItemList();
-                //}));
-                //}
                 if (e.NewValue is INotifyCollectionChanged)
                 {
                     ItemsSourceCollectionChanged(dc, (INotifyCollectionChanged)e.NewValue);
@@ -276,7 +269,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 if (dc.ItemsSource == null) return;
                 if (dc.Check())
                 {
-                    dc.Bind();
+                    dc.Bind(newItems);
                 }
             }
             else
@@ -286,52 +279,30 @@ namespace QPP.Wpf.UI.TreeEditor
                     var model = newItem as DataModel;
                     if (model == null) continue;
                     model.MarkCreated();
-
                     var item = new DesignerItem(newItem, dc);
-                    //item.SetTemplate();
-                    if (item.ItemParentId.IsNotEmpty()) { item.Top = double.MaxValue; }
-                    var left = dc.GetLeft(newItem);
-                    var top = dc.GetTop(newItem);
+                    dc.DesignerItems.Add(item);
+                    var parentid = dc.GetPId(newItem);
 
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                    if (parentid.IsNotEmpty())
                     {
+                        var parent = dc.DiagramManager.GetDesignerItemById(parentid);
+                        parent.ChildrenDesignerItems.Add(item);
+                        item.ParentDesignerItem = parent;
 
-                        dc.DesignerItems.Add(item);
-                        var parentid = dc.GetPId(newItem);// dc.DiagramManager.GetPId(item);
-                        if (parentid.IsNotEmpty())
-                        {
-                            //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
-                            //{
-                            var parent = dc.DesignerItems.FirstOrDefault(a => a.ItemId == parentid);
-                            dc.DiagramManager.DrawChild(parent, item, new List<DesignerItem>());
-                            dc.DiagramManager.SetSelectItem(item);
-                            //}));
-                        }
-                        else
-                        {
-                            //dc.AddToMessage("增加节点", dc.DiagramManager.GetTime(() =>
-                            //   {
-                            dc.DiagramManager.DrawRoot(item);
-                            dc.DiagramManager.SetSelectItem(item);
-
-                            //  }));
-                        }
-                        var msg = dc.DiagramManager.GetTime(() =>
-                        {
-                            dc.DiagramManager.AddNewArrange(item);
-                        });
-                        dc.AddToMessage("新增节点布局", msg);
-                        //dc.KeyUp += (s, e) =>
-                        //{
-                        //    if (e.Key == Key.Enter)
-                        //    {
-
-                        //        //e.Handled = true;
-                        //    }
-                        //};
-                        dc.DiagramManager.Scroll(item);
-                    }));
-
+                        dc.DiagramManager.DrawChild(parent, item, new List<DesignerItem>());
+                        dc.DiagramManager.SetSelectItem(item);
+                    }
+                    else
+                    {
+                        dc.DiagramManager.DrawRoot(item);
+                        dc.DiagramManager.SetSelectItem(item);
+                    }
+                    var msg = dc.DiagramManager.GetTime(() =>
+                    {
+                        //dc.DiagramManager.AddNewArrange(item);
+                    });
+                    dc.AddToMessage("新增节点布局", msg);
+                    dc.DiagramManager.Scroll(item);
                 }
             }
 
@@ -619,11 +590,11 @@ namespace QPP.Wpf.UI.TreeEditor
             public string PId { get; set; }
             public object Data { get; set; }
         }
-        internal ObservableCollection<DesignerItem> GenerateDesignerItemList()
+        internal ObservableCollection<DesignerItem> GenerateDesignerItemList(IList itemSource)
         {
             ObservableCollection<DesignerItem> result = new ObservableCollection<DesignerItem>();
             List<DesignerItem> list = new List<DesignerItem>();
-            List<Item> dic = (from object item in ItemsSource
+            List<Item> dic = (from object item in itemSource
                               select new Item()
                               {
                                   Id = GetId(item),
@@ -631,15 +602,33 @@ namespace QPP.Wpf.UI.TreeEditor
                                   Data = item
                               }).ToList();
             var roots = dic.Where(x => x.PId.IsNullOrEmpty());
-            foreach (var root in roots)
+            if (roots.Any())
             {
-                var r = root;
-                var d = new DesignerItem(root.Data, this);
-                d.ParentDesignerItem = null;
-                list.Add(d);
-                var childs = dic.Where(x => x.PId == r.Id).ToList();
-                list.AddRange(CreateDesignerItem(dic, childs, d));
+                foreach (var root in roots)
+                {
+                    var r = root;
+                    var d = new DesignerItem(root.Data, this);
+                    d.ParentDesignerItem = null;
+                    list.Add(d);
+                    var childs = dic.Where(x => x.PId == r.Id).ToList();
+                    list.AddRange(CreateDesignerItem(dic, childs, d));
+                }
             }
+            else
+            {
+                var r = dic.Where(x => dic.All(y => y.Id != x.PId));
+                foreach (var item in r)
+                {
+                    var d = new DesignerItem(item.Data, this);
+                    var parent = DiagramManager.GetDesignerItemById(item.PId);
+                    d.ParentDesignerItem = parent;
+                    parent.ChildrenDesignerItems.Add(d);
+                    list.Add(d);
+                    var childs = dic.Where(x => x.PId == item.Id).ToList();
+                    list.AddRange(CreateDesignerItem(dic, childs, d));
+                }
+            }
+
             foreach (var designerItem in list)
             {
                 result.Add(designerItem);
@@ -671,44 +660,59 @@ namespace QPP.Wpf.UI.TreeEditor
         #region 绑定
         public void Bind()
         {
-            if (IsLoaded)
+            if (!IsLoaded || !Check()) return;
+            if (Items.Any())
             {
-                if (Items.Any())
+                if (ItemsSource == null)
                 {
-                    if (ItemsSource == null)
-                    {
-                        SetItemsParent();
-                        DesignerItems.Clear();
-                        GenerateFromItems();
-                    }
-                    else
-                    {
-                        throw new Exception("在使用 ItemsSource 之前，项集Items合必须为空");
-                    }
-
-                }
-
-                if (ItemsSource != null && (DesignerItems == null || !DesignerItems.Any()))
-                {
-                    AddToMessage("创建节点", DiagramManager.GetTime(() =>
-                    {
-                        DesignerItems = GenerateDesignerItemList();
-                    }));
-                }
-                if (DesignerItems.Any())
-                {
-                    
-                        DiagramManager.Draw();
-                   
-
-
+                    SetItemsParent();
+                    DesignerItems.Clear();
+                    GenerateFromItems();
                 }
                 else
                 {
-                    DesignerCanvas.Children.Clear();
+                    throw new Exception("在使用 ItemsSource 之前，项集Items合必须为空");
                 }
             }
+
+            if (ItemsSource != null && (DesignerItems == null || !DesignerItems.Any()))
+            {
+                AddToMessage("创建节点", DiagramManager.GetTime(() =>
+                {
+                    DesignerItems = GenerateDesignerItemList(ItemsSource);
+                }));
+            }
+            if (DesignerItems.Any())
+            {
+                DiagramManager.Draw();
+            }
+            else
+            {
+                DesignerCanvas.Children.Clear();
+            }
         }
+
+        public void Bind(IList newItems)
+        {
+            if (!IsLoaded || !Check()) return;
+            AddToMessage("创建节点", DiagramManager.GetTime(() =>
+            {
+                var list = GenerateDesignerItemList(newItems);
+                foreach (var designerItem in list)
+                {
+                    DesignerItems.Add(designerItem);
+                }
+            }));
+            if (DesignerItems.Any())
+            {
+                DiagramManager.Draw();
+            }
+            else
+            {
+                DesignerCanvas.Children.Clear();
+            }
+        }
+
         #region SetItemsParent
         public void SetItemsParent()
         {

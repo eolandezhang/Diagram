@@ -15,6 +15,7 @@ namespace WpfApp.ViewModel
 {
     public class MainViewModel : ObservableObject
     {
+        public int Num { get { return Get<int>("Num"); } set { Set("Num", value); } }
         public string Title { get { return Get<string>("Title"); } set { Set("Title", value); } }
         public bool SingleRoot { get { return Get<bool>("SingleRoot"); } set { Set("SingleRoot", value); } }
         public RangeObservableCollection<ItemData> ItemsSource { get; set; }
@@ -28,7 +29,7 @@ namespace WpfApp.ViewModel
             SelectedItems = new ObservableCollection<ItemData>();
             DeletedItems = new ObservableCollection<ItemData>();
             Title = "Tree Editor";
-            LoadData();
+            ItemsSource=new RangeObservableCollection<ItemData>();
 
             SelectedItems.CollectionChanged += (d, e) =>
             {
@@ -48,9 +49,10 @@ namespace WpfApp.ViewModel
             };
         }
 
-        private void LoadData()
+        private void LoadData(int num)
         {
-            ItemsSource = ItemDataRepository.Default.DataCollection;
+            ItemsSource = new RangeObservableCollection<ItemData>();
+            ItemsSource.AddRange(ItemDataRepository.Default.CreateData(num));
         }
         public Point ClickPoint
         {
@@ -71,6 +73,7 @@ namespace WpfApp.ViewModel
             {
                 return new RelayCommand(() =>
                 {
+                    //LoadData(Num);
                     ItemsSource.Clear();
                     var list = new List<ItemData>()
                     {
@@ -83,7 +86,7 @@ namespace WpfApp.ViewModel
                         new ItemData("7", "4", "3.2", "-"),
                         new ItemData("6", "0", "1.3", "-")
                     };
-                    for (var i = 0; i <= 400; i++)
+                    for (var i = 0; i <= Num; i++)
                     {
                         list.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item " + i, "Images/green.png"));
                     }
@@ -273,14 +276,11 @@ namespace WpfApp.ViewModel
         {
             var dataOnClipBoard = Clipboard.GetDataObject();
             if (dataOnClipBoard == null) return;
-
             var pasteToItemDatas = SelectedItems.ToList();
             if (!pasteToItemDatas.Any()) { return; }
             var copyedItemDatas = dataOnClipBoard.GetData(typeof(List<ItemData>)) as List<ItemData>;//从剪切板中取得数据
             if (copyedItemDatas == null) { return; }
-
             Paste(pasteToItemDatas, copyedItemDatas);
-
         }
 
         void Paste(List<ItemData> parentItemDatas, List<ItemData> copyedItemDatas)
@@ -313,6 +313,7 @@ namespace WpfApp.ViewModel
 
         void PasteItemDatas(List<ItemData> copys, ItemData selectedItem)
         {
+            var list = new List<ItemData>();
             var item = selectedItem;
             var roots = copys.Where(x => x.ItemParentId == item.ItemId);
             foreach (var itemData in roots)
@@ -322,19 +323,22 @@ namespace WpfApp.ViewModel
                     itemData.Left = ClickPoint.X;
                     itemData.Top = ClickPoint.Y;
                 }
-                ItemsSource.Add(itemData);
-                AddChild(copys, itemData);
+                list.Add(itemData);
+                list.AddRange(AddChild(copys, itemData));
             }
+            ItemsSource.AddRange(list);
         }
 
-        void AddChild(List<ItemData> itemDatas, ItemData itemData)
+        List<ItemData> AddChild(List<ItemData> itemDatas, ItemData itemData)
         {
+            var list = new List<ItemData>();
             var roots = itemDatas.Where(x => x.ItemParentId == itemData.ItemId);
             foreach (var data in roots)
             {
-                ItemsSource.Add(data);
-                AddChild(itemDatas, data);
+                list.Add(data);
+                list.AddRange(AddChild(itemDatas, data));
             }
+            return list;
         }
 
         #region ItemsToCopy

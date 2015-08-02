@@ -224,10 +224,6 @@ namespace QPP.Wpf.UI.TreeEditor
             foreach (var childItem in childs)
             {
                 DrawChild(designerItem, childItem, list);
-                //childItem.UpdateLayout();
-
-
-
                 list.AddRange(DrawDesignerItems(childItem));
             }
             return list;
@@ -242,7 +238,8 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             if (designerItem == null) return;
             DrawDesignerItem(childItem);/*创建子节点*/
-
+            childItem.UpdateLayout();
+            childItem.SetTemplate();
             var top = Canvas.GetTop(designerItem) + designerItem.ActualHeight + list.Sum(x => x.ActualHeight);
             list.Add(childItem);
             var left = Canvas.GetLeft(designerItem) + GetOffset(designerItem);
@@ -261,6 +258,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
             #endregion
             childItem.CanCollapsed = true;
+            childItem.UpdateExpander();
         }
         void DrawDesignerItem(DesignerItem item)
         {
@@ -885,14 +883,25 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             var newParent = GetNewParent(position, designerItem, selectedItemsAllSubItems);
             DesignerItems.Where(x => x.IsNewParent).ToList().ForEach(x => { x.IsNewParent = false; });
+            newParent.IsNewParent = true;
+            return newParent;
+        }
+
+        void ChangeParent(DesignerItem newParent, DesignerItem designerItem)
+        {
+
             if (newParent != null)
             {
-                designerItem.ParentDesignerItem.ChildrenDesignerItems.Remove(designerItem);
+                if (designerItem.ParentDesignerItem != null)
+                {
+                    designerItem.ParentDesignerItem.ChildrenDesignerItems.Remove(designerItem);
+                    designerItem.UpdateExpander();
+                }
                 designerItem.ParentDesignerItem = newParent;
                 newParent.ChildrenDesignerItems.Add(designerItem);
-                newParent.IsNewParent = true;
+
+                designerItem.UpdateExpander();
             }
-            return newParent;
         }
         public List<DesignerItem> GetSelectedItemsAllSubItems()
         {
@@ -966,14 +975,13 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         public void AfterChangeParent(DesignerItem designerItem, DesignerItem newParent, Point newPosition, List<DesignerItem> selectedItemsAllSubItems)
         {
-
+            ChangeParent(newParent, designerItem);
             RemoveHelperConnection();
             Canvas.SetTop(designerItem, newPosition.Y);
             Canvas.SetLeft(designerItem, newPosition.X);
             DesignerItems.ForEach(x =>
             {
                 x.IsNewParent = false;
-                // x.Top = Canvas.GetTop(x);
             });
             ConnectToNewParent(newParent);
             var items = selectedItemsAllSubItems.Where(x => x.ItemParentId.IsNullOrEmpty()).ToList();
@@ -1070,23 +1078,23 @@ namespace QPP.Wpf.UI.TreeEditor
             var itemsToChangeParent = items.Where(a => items.All(y => y.ItemId != a.ItemParentId));/*在选中的集合a中，只改变“父节点不在集合a中的”节点*/
             foreach (var designerItem in itemsToChangeParent)
             {
+                if (designerItem.ParentDesignerItem != null)
+                {
+                    designerItem.ParentDesignerItem.ChildrenDesignerItems.Remove(designerItem);
+                }
+                designerItem.ParentDesignerItem = newParent;
+                newParent.ChildrenDesignerItems.Add(designerItem);
                 designerItem.ItemParentId = newParent == null ? "" : newParent.ItemId;
                 if (_diagramControl.Items.Any())//用items初始化的
                 {
                     var x = designerItem.DataContext as DiagramItem;
                     if (x != null)
                     {
-                        designerItem.ParentDesignerItem.ChildrenDesignerItems.Remove(designerItem);
-                        designerItem.ParentDesignerItem = newParent;
-                        newParent.ChildrenDesignerItems.Add(designerItem);
                         x.PId = designerItem.ItemParentId;
                     }
                 }
                 else //用ItemsSource初始化的
                 {
-                    designerItem.ParentDesignerItem.ChildrenDesignerItems.Remove(designerItem);
-                    designerItem.ParentDesignerItem = newParent;
-                    newParent.ChildrenDesignerItems.Add(designerItem);
                     SetPId(designerItem);
                 }
                 var connections = GetItemConnections(designerItem).Where(x => Equals(x.Sink.ParentDesignerItem, designerItem)).ToList();
@@ -1103,6 +1111,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     CreateConnection(newParent, designerItem);
                 }
             }
+
         }
         void CreateConnection(DesignerItem newParent, DesignerItem designerItem)
         {
