@@ -24,7 +24,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
 
         DesignerItem GetDesignerItemById(string id);
-        List<DesignerItem> GetSelectedItemsAllSubItems();
+        List<DesignerItem> GetSelectedItemsAndAllSubItems();
 
 
 
@@ -55,7 +55,7 @@ namespace QPP.Wpf.UI.TreeEditor
         void CreateHelperConnection(DesignerItem newParent, DesignerItem dragItem);
         void AfterChangeParent(DesignerItem designerItem, DesignerItem newParent, Point newPosition,
             List<DesignerItem> selectedItemsAllSubItems);
-        void MoveUpAndDown(DesignerItem parent, DesignerItem selectedItem);
+        void MoveUpAndDown(DesignerItem parent, DesignerItem selectedItem, DesignerItem root);
 
 
 

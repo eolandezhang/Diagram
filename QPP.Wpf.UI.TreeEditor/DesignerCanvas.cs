@@ -41,7 +41,6 @@ namespace QPP.Wpf.UI.TreeEditor
                 return _shadow;
             }
         }
-
         private DiagramControl DiagramControl
         {
             get
@@ -69,6 +68,8 @@ namespace QPP.Wpf.UI.TreeEditor
         public bool IsMouseDown = false;
         private bool IsMouseMove;
         public bool IsChangingParent;
+        //public Point StartPoint = new Point(0, 0);
+        public DesignerItem Root;
         #endregion
 
 
@@ -98,8 +99,9 @@ namespace QPP.Wpf.UI.TreeEditor
                 if (DiagramControl.CanvasDoubleClickCommand != null)
                 { DiagramControl.CanvasDoubleClickCommand.Execute(e.GetPosition(this)); }
             }
-        }
+            //StartPoint = e.GetPosition(this);
 
+        }
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -144,18 +146,17 @@ namespace QPP.Wpf.UI.TreeEditor
                         }
                     }
                 }
-                if (IsMouseDown && IsChangingParent)
+                if (IsMouseDown && IsChangingParent && Root != null)
                 {
 
-                    Move(e);
+                    Move(e, Root);
                     AutoScroll(e);
 
                 }
             }
         }
-        void Move(MouseEventArgs e)//移动影子
+        void Move(MouseEventArgs e, DesignerItem root)//移动影子
         {
-
             IsMouseMove = true;
             if (Shadow.ShadowItem == null) return;
             Shadow.ShadowItem.Visibility = Visibility.Visible;
@@ -172,7 +173,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 isGray = true;
             }
             DiagramControl.DiagramManager.CreateHelperConnection(NewParent, Shadow.ShadowItem);
-            //DiagramControl.DiagramManager.MoveUpAndDown(NewParent, Shadow.ShadowItem);
+
+            DiagramControl.DiagramManager.MoveUpAndDown(NewParent, Shadow.ShadowItem, root);
 
         }
         IScrollInfo _scrollInfo;
@@ -233,7 +235,6 @@ namespace QPP.Wpf.UI.TreeEditor
             var canvasPosition = e.GetPosition(this);
             Finish(canvasPosition);
         }
-
         void Finish(Point canvasPosition)
         {
 
@@ -352,12 +353,10 @@ namespace QPP.Wpf.UI.TreeEditor
                     decorator.Template = template;
             }
         }
-
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             DiagramControl.ClickPoint = e.GetPosition(this);
         }
-
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             var canvasPosition = e.GetPosition(this);

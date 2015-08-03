@@ -4,7 +4,7 @@
         xmlns:treeEditor="clr-namespace:QPP.Wpf.UI.TreeEditor;assembly=QPP.Wpf.UI.TreeEditor"
         xmlns:vm="clr-namespace:WpfApp.ViewModel;assembly=WpfApp.ViewModel"
         xmlns:wpf="http://qpp.com/winfx/xaml/controls"
-        Title="{Binding Title}" Height="600" Width="800"
+        Title="{Binding Title}" Height="800" Width="1000"
         WindowState="Normal" Icon="tree.ico"  WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <vm:MainViewModel/>

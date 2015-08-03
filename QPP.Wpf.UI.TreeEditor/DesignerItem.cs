@@ -364,7 +364,11 @@ namespace QPP.Wpf.UI.TreeEditor
             DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
             if (designer == null) return;
             DiagramControl.Focus();
-            if (e.ClickCount == 1) { CreateShadow(designer, e); }
+            if (e.ClickCount == 1)
+            {
+                CreateShadow(designer, e);
+
+            }
         }
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
@@ -417,7 +421,10 @@ namespace QPP.Wpf.UI.TreeEditor
             designer.Children.Add(designer.Shadow.ShadowItem);
             designer.Shadow.DesignerItem = this;
 
-            designer.Shadow.SelectedItemsAllSubItems = DiagramControl.DiagramManager.GetSelectedItemsAllSubItems();
+            designer.Root = DiagramControl.DiagramManager.GetRoot(designer.Shadow.DesignerItem);
+
+
+            designer.Shadow.SelectedItemsAllSubItems = DiagramControl.DiagramManager.GetSelectedItemsAndAllSubItems();
 
             #region 位置
             var canvasPosition = e.GetPosition(designer);

@@ -25,7 +25,7 @@ namespace WpfApp.ViewModel
         public bool IsAddAfter { get { return Get<bool>("IsAddAfter"); } set { Set("IsAddAfter", value); } }
         public MainViewModel()
         {
-            SingleRoot = true;
+            SingleRoot = false;
             SelectedItems = new ObservableCollection<ItemData>();
             DeletedItems = new ObservableCollection<ItemData>();
             Title = "Tree Editor";

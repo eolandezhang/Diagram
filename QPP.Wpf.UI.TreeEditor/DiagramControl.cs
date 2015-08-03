@@ -153,7 +153,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
             #region 先取得所有选中节点的子节点，再判断被删除的节点是否在内，是则不删除
 
-            var items = dc.DiagramManager.GetSelectedItemsAllSubItems();
+            var items = dc.DiagramManager.GetSelectedItemsAndAllSubItems();
             List<DesignerItem> allSubItems = items.Where(designerItem => !items.Contains(designerItem)).ToList();
 
             #endregion
