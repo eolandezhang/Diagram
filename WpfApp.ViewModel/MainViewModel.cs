@@ -274,6 +274,7 @@ namespace WpfApp.ViewModel
 
         void PasteAction()
         {
+            IsAddAfter = true;
             var dataOnClipBoard = Clipboard.GetDataObject();
             if (dataOnClipBoard == null) return;
             var pasteToItemDatas = SelectedItems.ToList();
