@@ -42,11 +42,11 @@ namespace WpfApp.ViewModel.App_Data
             return DataCollection;
         }
 
-        public ItemData AddNew(string pid)
-        {
-            if (pid == null) throw new ArgumentNullException("pid");
-            return new ItemData(Guid.NewGuid().ToString(), pid, "Item", "");
-        }
+        //public ItemData AddNew(string pid)
+        //{
+        //    if (pid == null) throw new ArgumentNullException("pid");
+        //    return new ItemData(Guid.NewGuid().ToString(), pid, "Item", "");
+        //}
 
         public ItemData AddNew(string pid, double left, double top)
         {

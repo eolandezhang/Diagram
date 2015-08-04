@@ -233,20 +233,20 @@ namespace QPP.Wpf.UI.TreeEditor
             var id = oType.GetProperty(textField);
             return id.GetValue(item, null).ToString();
         }
-        //double GetLeft(object item)
-        //{
-        //    var oType = item.GetType();
-        //    var leftField = LeftField;
-        //    var left = oType.GetProperty(leftField);
-        //    return (double)left.GetValue(item, null);
-        //}
-        //double GetTop(object item)
-        //{
-        //    var oType = item.GetType();
-        //    var topField = TopField;
-        //    var top = oType.GetProperty(topField);
-        //    return (double)top.GetValue(item, null);
-        //}
+        double GetLeft(object item)
+        {
+            var oType = item.GetType();
+            var leftField = LeftField;
+            var left = oType.GetProperty(leftField);
+            return (double)left.GetValue(item, null);
+        }
+        double GetTop(object item)
+        {
+            var oType = item.GetType();
+            var topField = TopField;
+            var top = oType.GetProperty(topField);
+            return (double)top.GetValue(item, null);
+        }
         List<object> GetChildren(object item)
         {
             List<object> children = new List<object>();
@@ -266,6 +266,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         static void AddAction(DiagramControl dc, IList newItems)
         {
+
             if (newItems == null || newItems.Count == 0) return;
             if (newItems.Count > 1)
             {
@@ -275,17 +276,17 @@ namespace QPP.Wpf.UI.TreeEditor
                     dc.Bind(newItems);
                 }
             }
-            else
+            else //增加单一节点
             {
+
+
                 foreach (var newItem in newItems)
                 {
                     var model = newItem as DataModel;
                     if (model == null) continue;
 
                     var item = new DesignerItem(newItem, dc);
-
                     var parentid = dc.GetPId(newItem);
-
                     if (parentid.IsNotEmpty())
                     {
                         var parent = dc.DiagramManager.GetDesignerItemById(parentid);
@@ -309,16 +310,42 @@ namespace QPP.Wpf.UI.TreeEditor
                         }
                         else/*增加相邻节点*/
                         {
-                            var selectedItem = parent;
-                            var childs = dc.DiagramManager.GetAllSubItems(selectedItem);
-                            var lastChild = !childs.Any() ? selectedItem : childs.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
-                            var below = dc.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(lastChild)).ToList();
 
-                            dc.AddToMessage("增加相邻节点", dc.DiagramManager.GetTime(() =>
+                            var s = dc.DesignerCanvas.SelectionService.CurrentSelection.ConvertAll<DesignerItem>(x => x as DesignerItem);
+                            if (!s.Any()) return;
+                            var selectedItem = s.FirstOrDefault();
+                            if (selectedItem == null) return;
+
+                            DesignerItem libling;
+                            var down = dc.DesignerItems.Where(x => x.Level == selectedItem.Level && Canvas.GetTop(x) > Canvas.GetTop(selectedItem) && x.ParentDesignerItem.Equals(selectedItem.ParentDesignerItem)).ToList();
+                            if (down.Any())
                             {
-                                below.ForEach(x => { Canvas.SetTop(x, Canvas.GetTop(x) + item.ActualHeight); });
-                                Canvas.SetTop(item, Canvas.GetTop(lastChild) + lastChild.ActualHeight);
-                            }));
+                                libling = down.Aggregate((a, b) => Canvas.GetTop(a) < Canvas.GetTop(b) ? a : b);
+                                var below = dc.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(libling)).ToList();
+                                below.Add(libling);
+
+                                dc.AddToMessage("增加相邻节点", dc.DiagramManager.GetTime(() =>
+                                {
+                                    below.ForEach(x => { Canvas.SetTop(x, Canvas.GetTop(x) + item.ActualHeight); });
+                                    Canvas.SetTop(item, Canvas.GetTop(libling) - libling.ActualHeight);
+                                }));
+                            }
+                            else
+                            {
+                                var childs = dc.DiagramManager.GetAllSubItems(parent);
+                                var lastChild = !childs.Any() ? parent : childs.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
+
+                                var below = dc.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(lastChild)).ToList();
+
+
+                                dc.AddToMessage("增加相邻节点", dc.DiagramManager.GetTime(() =>
+                                {
+                                    below.ForEach(x => { Canvas.SetTop(x, Canvas.GetTop(x) + item.ActualHeight); });
+                                    Canvas.SetTop(item, Canvas.GetTop(lastChild) + lastChild.ActualHeight);
+                                }));
+                            }
+
+
 
                         }
                         dc.DesignerItems.Add(item);
@@ -327,6 +354,12 @@ namespace QPP.Wpf.UI.TreeEditor
                     else
                     {
                         dc.DiagramManager.DrawRoot(item);
+
+                        item.ApplyTemplate();
+                        item.SetTemplate();
+                        item.UpdateLayout();
+                        Canvas.SetTop(item, dc.GetTop(newItem) - item.ActualHeight / 2);
+                        Canvas.SetLeft(item, dc.GetLeft(newItem) - item.ActualWidth / 2);
                         dc.DiagramManager.SetSelectItem(item);
                     }
                     //dc.DiagramManager.Arrange();

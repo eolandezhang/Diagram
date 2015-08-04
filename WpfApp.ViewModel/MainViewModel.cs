@@ -92,17 +92,7 @@ namespace WpfApp.ViewModel
                     }
                     ItemsSource.AddRange(list);
 
-                    //ItemsSource.Add(new ItemData("0", "", "0.0", "Root　Item1", "Images/fix.png"));
-                    //ItemsSource.Add(new ItemData("1", "0", "1.1", "-", "Images/green.png"));
-                    //ItemsSource.Add(new ItemData("3", "1", "2.1", "-"));
-                    //ItemsSource.Add(new ItemData("5", "3", "2.2", "-"));
-                    //ItemsSource.Add(new ItemData("2", "0", "1.2", "-"));
-                    //ItemsSource.Add(new ItemData("4", "2", "3.1", "-"));
-                    //ItemsSource.Add(new ItemData("7", "4", "3.2", "-"));
-                    //ItemsSource.Add(new ItemData("6", "0", "1.3", "-"));
-                    //ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 1", ""));
-                    //ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 2", ""));
-                    //ItemsSource.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item 3", ""));
+
 
                 });
             }
@@ -133,7 +123,7 @@ namespace WpfApp.ViewModel
             if (ItemsSource == null || !ItemsSource.Any())
             {
                 if (ItemsSource == null) ItemsSource = new RangeObservableCollection<ItemData>();
-                var newItem = ItemDataRepository.Default.AddNew("");
+                var newItem = ItemDataRepository.Default.AddNew("", 0, 0);
                 ItemsSource.Add(newItem);
             }
         }
@@ -157,9 +147,15 @@ namespace WpfApp.ViewModel
             var selectedItem = GetSelectedItem();
             if (selectedItem != null)
             {
-                var newItem = ItemDataRepository.Default.AddNew(selectedItem.ItemId);
+                var newItem = AddNew(selectedItem.ItemId);
                 ItemsSource.Add(newItem);
             }
+        }
+        public ItemData AddNew(string pid)
+        {
+            var item = ItemsSource;
+            if (pid == null) throw new ArgumentNullException("pid");
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item" + ItemsSource.Count(), "");
         }
         #endregion
         //public bool EnableCommand()
@@ -186,7 +182,7 @@ namespace WpfApp.ViewModel
                     AddAfterAction();
                     return;
                 }
-                var newItem = ItemDataRepository.Default.AddNew(selectedItem.ItemParentId);
+                var newItem = AddNew(selectedItem.ItemParentId);
                 ItemsSource.Add(newItem);
             }
         }
@@ -216,12 +212,16 @@ namespace WpfApp.ViewModel
                         {
                             if (!SingleRoot)
                             {
-                                var newItem = ItemDataRepository.Default.AddNew("", p.X, p.Y);
+                                var newItem = AddNew("", p.X, p.Y);
                                 ItemsSource.Add(newItem);
                             }
                         }
                     });
             }
+        }
+        public ItemData AddNew(string pid, double left, double top)
+        {
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item " + ItemsSource.Count, "", left, top, "");
         }
         #endregion
 
