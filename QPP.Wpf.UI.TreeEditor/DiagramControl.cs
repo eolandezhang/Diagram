@@ -278,8 +278,6 @@ namespace QPP.Wpf.UI.TreeEditor
             }
             else //增加单一节点
             {
-
-
                 foreach (var newItem in newItems)
                 {
                     var model = newItem as DataModel;
@@ -304,13 +302,10 @@ namespace QPP.Wpf.UI.TreeEditor
                                 below.ForEach(x => { Canvas.SetTop(x, Canvas.GetTop(x) + item.ActualHeight); });
                                 Canvas.SetTop(item, Canvas.GetTop(lastChild) + lastChild.ActualHeight);
                             }));
-
                             dc.DiagramManager.SetSelectItem(item);
-
                         }
                         else/*增加相邻节点*/
                         {
-
                             var s = dc.DesignerCanvas.SelectionService.CurrentSelection.ConvertAll<DesignerItem>(x => x as DesignerItem);
                             if (!s.Any()) return;
                             var selectedItem = s.FirstOrDefault();
@@ -323,7 +318,6 @@ namespace QPP.Wpf.UI.TreeEditor
                                 libling = down.Aggregate((a, b) => Canvas.GetTop(a) < Canvas.GetTop(b) ? a : b);
                                 var below = dc.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(libling)).ToList();
                                 below.Add(libling);
-
                                 dc.AddToMessage("增加相邻节点", dc.DiagramManager.GetTime(() =>
                                 {
                                     below.ForEach(x => { Canvas.SetTop(x, Canvas.GetTop(x) + item.ActualHeight); });
@@ -336,34 +330,25 @@ namespace QPP.Wpf.UI.TreeEditor
                                 var lastChild = !childs.Any() ? parent : childs.Aggregate((a, b) => Canvas.GetTop(a) > Canvas.GetTop(b) ? a : b);
 
                                 var below = dc.DesignerItems.Where(x => Canvas.GetTop(x) > Canvas.GetTop(lastChild)).ToList();
-
-
                                 dc.AddToMessage("增加相邻节点", dc.DiagramManager.GetTime(() =>
                                 {
                                     below.ForEach(x => { Canvas.SetTop(x, Canvas.GetTop(x) + item.ActualHeight); });
                                     Canvas.SetTop(item, Canvas.GetTop(lastChild) + lastChild.ActualHeight);
                                 }));
                             }
-
-
-
                         }
-                        dc.DesignerItems.Add(item);
-                        dc.DiagramManager.SetSelectItem(item);
                     }
                     else
                     {
                         dc.DiagramManager.DrawRoot(item);
-
                         item.ApplyTemplate();
                         item.SetTemplate();
                         item.UpdateLayout();
                         Canvas.SetTop(item, dc.GetTop(newItem) - item.ActualHeight / 2);
                         Canvas.SetLeft(item, dc.GetLeft(newItem) - item.ActualWidth / 2);
-                        dc.DiagramManager.SetSelectItem(item);
                     }
-                    //dc.DiagramManager.Arrange();
-
+                    dc.DesignerItems.Add(item);
+                    dc.DiagramManager.SetSelectItem(item);
                     dc.DiagramManager.Scroll(item);
                 }
             }
