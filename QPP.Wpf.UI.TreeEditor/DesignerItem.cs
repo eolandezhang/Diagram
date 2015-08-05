@@ -120,7 +120,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     {
                         var diagramControl = canvas.TemplatedParent as DiagramControl;
                         if (diagramControl != null)
-                            diagramControl.DiagramManager.HideOrExpandChildItems(designerItem);
+                            diagramControl.Manager.HideOrExpandChildItems(designerItem);
                     }
                 }
             }));
@@ -285,7 +285,7 @@ namespace QPP.Wpf.UI.TreeEditor
             ItemId = id;
             DiagramControl = diagramControl;
             Focusable = false;
-            MouseDoubleClick += (sender, e) => { diagramControl.DiagramManager.Edit(this); };
+            MouseDoubleClick += (sender, e) => { diagramControl.Manager.Edit(this); };
             Loaded += DesignerItem_Loaded;
         }
         void DesignerItem_Loaded(object sender, RoutedEventArgs e)
@@ -314,7 +314,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 {
                     c.MouseDoubleClick += (a, b) =>
                     {
-                        DiagramControl.DiagramManager.Edit(this);
+                        DiagramControl.Manager.Edit(this);
                         b.Handled = true;
                     };
                 }
@@ -416,15 +416,15 @@ namespace QPP.Wpf.UI.TreeEditor
             designer.IsMouseDown = false;
             designer.IsChangingParent = false;
 
-            var shadow = DiagramControl.DiagramManager.CreateItemShadow(this);
+            var shadow = DiagramControl.Manager.CreateItemShadow(this);
             designer.Shadow.ShadowItem = shadow;
             designer.Children.Add(designer.Shadow.ShadowItem);
             designer.Shadow.DesignerItem = this;
 
-            designer.Root = DiagramControl.DiagramManager.GetRoot(designer.Shadow.DesignerItem);
+            designer.Root = DiagramControl.Manager.GetRoot(designer.Shadow.DesignerItem);
 
 
-            designer.Shadow.SelectedItemsAllSubItems = DiagramControl.DiagramManager.GetSelectedItemsAndAllSubItems();
+            designer.Shadow.SelectedItemsAllSubItems = DiagramControl.Manager.GetSelectedItemsAndAllSubItems();
 
             #region 位置
             var canvasPosition = e.GetPosition(designer);

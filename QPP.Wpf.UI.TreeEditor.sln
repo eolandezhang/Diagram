@@ -9,14 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp", "WpfApp\WpfApp.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp.ViewModel", "WpfApp.ViewModel\WpfApp.ViewModel.csproj", "{B82A158A-22B3-42D9-AB11-D02FA8C73169}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QPP", "Core\QPP\QPP.csproj", "{E02E3FEC-B370-4435-BA52-5414FFDB91D0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QPP.Wpf", "Core\QPP.Wpf\QPP.Wpf.csproj", "{49AE1A60-9616-4720-BE0C-A937C3E702E9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QPP.Wpf.UI", "Core\QPP.Wpf.UI\QPP.Wpf.UI.csproj", "{25BE43CA-1238-477A-B232-83FBA7A9D452}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Examples", "Examples\Examples.csproj", "{B3BB61C7-DE54-48A4-B563-E570C810B29C}"
-EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -47,28 +39,6 @@ Global
 		{B82A158A-22B3-42D9-AB11-D02FA8C73169}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B82A158A-22B3-42D9-AB11-D02FA8C73169}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B82A158A-22B3-42D9-AB11-D02FA8C73169}.Release|x86.ActiveCfg = Release|Any CPU
-		{E02E3FEC-B370-4435-BA52-5414FFDB91D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E02E3FEC-B370-4435-BA52-5414FFDB91D0}.Debug|x86.ActiveCfg = Debug|x86
-		{E02E3FEC-B370-4435-BA52-5414FFDB91D0}.Debug|x86.Build.0 = Debug|x86
-		{E02E3FEC-B370-4435-BA52-5414FFDB91D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E02E3FEC-B370-4435-BA52-5414FFDB91D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E02E3FEC-B370-4435-BA52-5414FFDB91D0}.Release|x86.ActiveCfg = Release|x86
-		{E02E3FEC-B370-4435-BA52-5414FFDB91D0}.Release|x86.Build.0 = Release|x86
-		{49AE1A60-9616-4720-BE0C-A937C3E702E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49AE1A60-9616-4720-BE0C-A937C3E702E9}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{49AE1A60-9616-4720-BE0C-A937C3E702E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49AE1A60-9616-4720-BE0C-A937C3E702E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49AE1A60-9616-4720-BE0C-A937C3E702E9}.Release|x86.ActiveCfg = Release|Any CPU
-		{25BE43CA-1238-477A-B232-83FBA7A9D452}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{25BE43CA-1238-477A-B232-83FBA7A9D452}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{25BE43CA-1238-477A-B232-83FBA7A9D452}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{25BE43CA-1238-477A-B232-83FBA7A9D452}.Release|Any CPU.Build.0 = Release|Any CPU
-		{25BE43CA-1238-477A-B232-83FBA7A9D452}.Release|x86.ActiveCfg = Release|Any CPU
-		{B3BB61C7-DE54-48A4-B563-E570C810B29C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3BB61C7-DE54-48A4-B563-E570C810B29C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B3BB61C7-DE54-48A4-B563-E570C810B29C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3BB61C7-DE54-48A4-B563-E570C810B29C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3BB61C7-DE54-48A4-B563-E570C810B29C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

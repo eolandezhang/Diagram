@@ -3,89 +3,56 @@
                     xmlns:treeEditor="clr-namespace:QPP.Wpf.UI.TreeEditor">
 
     <Style TargetType="treeEditor:DiagramControl">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <GroupBox x:Name="DiagramHeader"  Focusable="False">
-                        <DockPanel  Focusable="False">
-                            <ToolBar DockPanel.Dock="Top"  Focusable="False">
-                                <Button  Margin="4,0,4,0" Padding="5,4,5,4" 
+                    <!--<GroupBox x:Name="DiagramHeader"  Focusable="False">-->
+                    <DockPanel  Focusable="False">
+                        <ToolBar DockPanel.Dock="Top"  Focusable="False">
+                            <Button  Margin="4,0,4,0" Padding="5,4,5,4" 
                                          Content="刷新" 
                                          Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RefreshCommand}" 
                                          Focusable="False"/>
-                                <Button Content="标题(_T)"  Margin="4,0,4,0" Padding="5,4,5,4" 
+                            <Button Content="标题(_T)"  Margin="4,0,4,0" Padding="5,4,5,4" 
                                         Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=EditSelectedItemCommand}"  
                                            Focusable="False"       />
-                                <Button Content="折叠(_C)" Margin="4,0,4,0" Padding="5,4,5,4" 
+                            <Button Content="折叠(_C)" Margin="4,0,4,0" Padding="5,4,5,4" 
                                                   Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CollapseSelectedItemCommand}" 
                                                   IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CanExpandAndCollapseSelectedItem}" 
                                                    Focusable="False"/>
-                                <Button Content="展开(_E)"  Margin="4,0,4,0" Padding="5,4,5,4" 
+                            <Button Content="展开(_E)"  Margin="4,0,4,0" Padding="5,4,5,4" 
                                                   Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ExpandSelectedItemCommand}"  
                                                   IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CanExpandAndCollapseSelectedItem}"
                                                    Focusable="False"/>
-                                <Button Content="全部折叠(_P)" Margin="4,0,4,0" Padding="5,4,5,4" 
+                            <Button Content="全部折叠(_P)" Margin="4,0,4,0" Padding="5,4,5,4" 
                                                   Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CollapseAllCommand}" 
                                                   Focusable="False" />
-                                <Button Content="全部展开(_X)" Margin="4,0,4,0" Padding="5,4,5,4" 
+                            <Button Content="全部展开(_X)" Margin="4,0,4,0" Padding="5,4,5,4" 
                                                   Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ExpandAllCommand}" 
                                                    Focusable="False"/>
-                                <!--<Menu  Margin="4,0,4,0" Padding="5,4,5,4" 
-                                    Focusable="False" Background="Transparent">
-                                    <MenuItem Header="编辑(_E)"  Focusable="False">
-                                        <MenuItem Header="标题(_T)" InputGestureText="F2"
-                                                  Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=EditSelectedItemCommand}"  
-                                                  />
-                                        <MenuItem Header="折叠(_C)"
-                                                  InputGestureText="-"
-                                                  Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CollapseSelectedItemCommand}" 
-                                                  IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CanExpandAndCollapseSelectedItem}" 
-                                                  />
-                                        <MenuItem Header="展开(_E)" 
-                                                  InputGestureText="+"
-                                                  Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ExpandSelectedItemCommand}"  
-                                                  IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CanExpandAndCollapseSelectedItem}"
-                                                  />
-                                        <MenuItem Header="全部折叠(_P)"
-                                                  InputGestureText="/"
-                                                  Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CollapseAllCommand}" 
-                                                  />
-                                        <MenuItem Header="全部展开(_X)"
-                                                  InputGestureText="*"
-                                                  Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ExpandAllCommand}" 
-                                                  />
-                                    </MenuItem>
-                                </Menu>-->
-                            </ToolBar>
-                            <Grid DockPanel.Dock="Bottom" Height="150"  Focusable="False">
-                                <DockPanel>
-                                    <ToolBar DockPanel.Dock="Top" Focusable="False">
-                                        <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Focusable="False" Content="清空" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ClearMessage}"/>
-                                        <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Focusable="False" Content="查看内存" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ShowMemory}"/>
-                                    </ToolBar>
-                                    <TextBox  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Message}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False"/>
-                                </DockPanel>
+                        </ToolBar>
+                        <Grid DockPanel.Dock="Bottom" Height="150"  Focusable="False">
+                            <DockPanel>
+                                <ToolBar DockPanel.Dock="Top" Focusable="False">
+                                    <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Focusable="False" Content="清空" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ClearMessage}"/>
+                                    <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Focusable="False" Content="查看内存" Command="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ShowMemory}"/>
+                                </ToolBar>
+                                <TextBox  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Message}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False"/>
+                            </DockPanel>
 
-                            </Grid>
-                            <ScrollViewer HorizontalScrollBarVisibility="Auto"  Focusable="False"
-                      VerticalScrollBarVisibility="Auto" Name="DesignerScrollViewer" Padding="10">
-                                <treeEditor:DesignerCanvas
-                                    Focusable="True" 
-                                    x:Name="Designer"
-                                    Background="White"
-                                    FocusVisualStyle="{x:Null}"
-                                    />
-                                <!--<s:DesignerCanvas
-                                    Focusable="true" 
-                                    x:Name="Designer"
-                                    Background="Azure"
-                                    Margin="2" 
-                                    FocusVisualStyle="{x:Null}"
-                                    />-->
-                            </ScrollViewer>
-                        </DockPanel>
-                    </GroupBox>
+                        </Grid>
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto"  Focusable="False"
+                      VerticalScrollBarVisibility="Auto" Name="DesignerScrollViewer" >
+                            <treeEditor:DesignerCanvas 
+                                Margin="10"
+                                Focusable="True" 
+                                x:Name="Designer"
+                                Background="Transparent"
+                                FocusVisualStyle="{x:Null}"/>
+                        </ScrollViewer>
+                    </DockPanel>
+                    <!--</GroupBox>-->
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

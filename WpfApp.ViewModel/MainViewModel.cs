@@ -23,37 +23,6 @@ namespace WpfApp.ViewModel
         public ObservableCollection<ItemData> DeletedItems { get; set; }
         public ItemData SelectedItem { get { return Get<ItemData>("SelectedItem"); } set { Set("SelectedItem", value); } }
         public bool IsAddAfter { get { return Get<bool>("IsAddAfter"); } set { Set("IsAddAfter", value); } }
-        public MainViewModel()
-        {
-            SingleRoot = false;
-            SelectedItems = new ObservableCollection<ItemData>();
-            DeletedItems = new ObservableCollection<ItemData>();
-            Title = "Tree Editor";
-            ItemsSource = new RangeObservableCollection<ItemData>();
-
-            SelectedItems.CollectionChanged += (d, e) =>
-            {
-                if (e.Action == NotifyCollectionChangedAction.Add)
-                {
-                    var item = SelectedItems.FirstOrDefault();
-                    if (item != null)
-                    {
-                        var data = item;
-                        if (data != null)
-                        {
-                            SelectedItem = data;
-                        }
-                    }
-
-                }
-            };
-        }
-
-        private void LoadData(int num)
-        {
-            ItemsSource = new RangeObservableCollection<ItemData>();
-            ItemsSource.AddRange(ItemDataRepository.Default.CreateData(num));
-        }
         public Point ClickPoint
         {
             get
@@ -66,6 +35,28 @@ namespace WpfApp.ViewModel
             }
         }
 
+        public MainViewModel()
+        {
+            Title = "Tree Editor";
+            SingleRoot = false;
+            SelectedItems = new ObservableCollection<ItemData>();
+            DeletedItems = new ObservableCollection<ItemData>();
+            ItemsSource = new RangeObservableCollection<ItemData>();
+            SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
+            //ReloadCommand.Execute(null);
+        }
+
+        private void SelectedItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                var item = SelectedItems.FirstOrDefault();
+                if (item == null) return;
+                var data = item;
+                SelectedItem = data;
+            }
+        }
+
         #region Commands
         public ICommand ReloadCommand
         {
@@ -73,7 +64,6 @@ namespace WpfApp.ViewModel
             {
                 return new RelayCommand(() =>
                 {
-                    //LoadData(Num);
                     ItemsSource.Clear();
                     var list = new List<ItemData>()
                     {
@@ -98,7 +88,6 @@ namespace WpfApp.ViewModel
             }
         }
         #region AddRootCommand
-
         public ICommand AddRootCommand
         {
             get
@@ -107,7 +96,6 @@ namespace WpfApp.ViewModel
 
             }
         }
-
         private bool CanAddRoot()
         {
             if (ItemsSource == null || !ItemsSource.Any()) { return true; }

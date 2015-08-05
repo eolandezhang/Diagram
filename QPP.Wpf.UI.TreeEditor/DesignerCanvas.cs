@@ -165,16 +165,16 @@ namespace QPP.Wpf.UI.TreeEditor
             var x = (canvasPosition.X - Shadow.X);
             SetTop(Shadow.ShadowItem, y <= 0 ? 0 : y);
             SetLeft(Shadow.ShadowItem, x <= 0 ? 0 : x);
-            var manager = _diagramControl.DiagramManager;
+            var manager = _diagramControl.Manager;
             NewParent = manager.ChangeParent(new Point(x, y), Shadow.DesignerItem, Shadow.SelectedItemsAllSubItems);
             if (!isGray)
             {
                 Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = true; });
                 isGray = true;
             }
-            DiagramControl.DiagramManager.CreateHelperConnection(NewParent, Shadow.ShadowItem);
+            DiagramControl.Manager.CreateHelperConnection(NewParent, Shadow.ShadowItem);
 
-            DiagramControl.DiagramManager.MoveUpAndDown(NewParent, Shadow.ShadowItem, root);
+            DiagramControl.Manager.MoveUpAndDown(NewParent, Shadow.ShadowItem, root);
 
         }
         IScrollInfo _scrollInfo;
@@ -249,7 +249,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 if (ox > 2 || oy > 2)
                 {
 
-                    _diagramControl.DiagramManager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x <= 0 ? 0 : x, y <= 0 ? 0 : y), Shadow.SelectedItemsAllSubItems);
+                    _diagramControl.Manager.AfterChangeParent(Shadow.DesignerItem, NewParent, new Point(x <= 0 ? 0 : x, y <= 0 ? 0 : y), Shadow.SelectedItemsAllSubItems);
                     Shadow.SelectedItemsAllSubItems.ForEach(c => { c.IsDragItemChild = false; });
                 }
             }

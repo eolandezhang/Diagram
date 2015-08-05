@@ -184,12 +184,12 @@
                         DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" Focusable="False">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
-                            <RowDefinition Height="5"></RowDefinition>
+                            <RowDefinition Height="4"></RowDefinition>
                         </Grid.RowDefinitions>
                         <ContentControl  Grid.Row="0" x:Name="TextContent" Focusable="False">
                             <Border x:Name="Border" IsHitTestVisible="True"
-                                 BorderBrush="Transparent" BorderThickness="3" Background="Transparent" Focusable="False"  CornerRadius="7,7,7,7" >
-                                <Grid Margin="1" Name="ContentGrid">
+                                 BorderBrush="Transparent" BorderThickness="2" Background="Transparent" Focusable="False"  CornerRadius="7,7,7,7" >
+                                <Grid Margin="0" Name="ContentGrid">
                                     <!-- PART_ResizeDecorator -->
                                     <Control Grid.Row="0"  x:Name="PART_ResizeDecorator" 
                                  Visibility="Collapsed"
@@ -223,33 +223,26 @@
                         </treeEditor:RelativePositionPanel>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <!--<MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},Path=IsSelected}" Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter TargetName="Border" Property="BorderBrush" Value="DeepSkyBlue"></Setter>
-                            <Setter TargetName="Border" Property="Background" Value="LightSkyBlue"></Setter>
-                        </MultiDataTrigger>-->
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsSelected}" Value="True">
+                        <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsSelected}" Value="True">
                             <Setter TargetName="Border" Property="BorderBrush" Value="DeepSkyBlue"/>
                             <Setter TargetName="Border" Property="Background" Value="LightSkyBlue"/>
-                        </DataTrigger>
+                        </DataTrigger>-->
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsNewParent}" Value="True">
                             <Setter TargetName="Border" Property="BorderBrush" Value="OrangeRed"/>
                             <Setter TargetName="Border" Property="Background" Value="GhostWhite"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsShadow}" Value="True">
+                        <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsShadow}" Value="True">
                             <Setter TargetName="Border" Property="BorderBrush" Value="DeepSkyBlue"></Setter>
                             <Setter TargetName="Border" Property="Background" Value="LightSkyBlue"></Setter>
-                        </DataTrigger>
+                        </DataTrigger>-->
                         <!--<DataTrigger Value="True" Binding="{Binding RelativeSource={RelativeSource Self},Path=IsGroup}">
                             <Setter TargetName="PART_DragThumb" Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>-->
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsDragItemChild}" Value="True">
+                        <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},Path=IsDragItemChild}" Value="True">
                             <Setter TargetName="Border" Property="BorderBrush" Value="LightGray"/>
                             <Setter TargetName="Border" Property="Background" Value="LightGray"/>
                             <Setter TargetName="PART_ContentPresenter" Property="TextBlock.Foreground" Value="Gray"/>
-                        </DataTrigger>
+                        </DataTrigger>-->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Value="True" Binding="{Binding RelativeSource={RelativeSource Self},Path=IsSelected}"/>
