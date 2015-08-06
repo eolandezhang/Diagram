@@ -35,6 +35,13 @@ namespace WpfApp.ViewModel
             }
         }
 
+        private CopyOrPasteType _type = CopyOrPasteType.None;
+        public CopyOrPasteType Type
+        {
+            get { return _type; }
+            set { _type = value; }
+        }
+        public enum CopyOrPasteType { None, Copy, Cut }
         public MainViewModel()
         {
             Title = "Tree Editor";
@@ -230,6 +237,7 @@ namespace WpfApp.ViewModel
                     Clipboard.Clear();
                     var list = SelectedItems.ToList();
                     Clipboard.SetDataObject(list, false);
+                    Type = CopyOrPasteType.Copy;
                 }, () => SelectedItems.Any());
             }
         }
@@ -244,14 +252,13 @@ namespace WpfApp.ViewModel
                     var cutItmes = SelectedItems.ToList();
                     var list = SelectedItems.ToList();
                     Clipboard.SetDataObject(list, false);
-                    foreach (var itemData in cutItmes)
-                    {
-                        ItemsSource.Remove(itemData);
-                    }
+                    DeleteAction();
+                    Type = CopyOrPasteType.Cut;
                 }, () => SelectedItems.Any());
             }
         }
 
+        
         public ICommand PasteCommand
         {
             get
@@ -262,6 +269,7 @@ namespace WpfApp.ViewModel
 
         void PasteAction()
         {
+
             IsAddAfter = true;
             var dataOnClipBoard = Clipboard.GetDataObject();
             if (dataOnClipBoard == null) return;
@@ -270,6 +278,7 @@ namespace WpfApp.ViewModel
             var copyedItemDatas = dataOnClipBoard.GetData(typeof(List<ItemData>)) as List<ItemData>;//从剪切板中取得数据
             if (copyedItemDatas == null) { return; }
             Paste(pasteToItemDatas, copyedItemDatas);
+            Type = CopyOrPasteType.None;
         }
 
         void Paste(List<ItemData> parentItemDatas, List<ItemData> copyedItemDatas)
@@ -335,13 +344,22 @@ namespace WpfApp.ViewModel
         List<ItemData> CopyedItems(List<ItemData> selectedItemDatas, List<ItemData> itemSource)
         {
             var list = GetAllCopyItem(selectedItemDatas, itemSource);
-            var id = new Dictionary<string, string>();
-            list.ForEach(itemData => { id[itemData.ItemId] = Guid.NewGuid().ToString("N"); });
-            foreach (var itemData in list)
+            if (Type == CopyOrPasteType.Copy)
             {
-                itemData.ItemId = id[itemData.ItemId];
-                itemData.ItemParentId = id.ContainsKey(itemData.ItemParentId) ?
-                    id[itemData.ItemParentId] : string.Empty;
+                var id = new Dictionary<string, string>();
+                list.ForEach(itemData => { id[itemData.ItemId] = Guid.NewGuid().ToString("N"); });
+                foreach (var itemData in list)
+                {
+                    itemData.ItemId = id[itemData.ItemId];
+                    itemData.ItemParentId = id.ContainsKey(itemData.ItemParentId)
+                        ? id[itemData.ItemParentId]
+                        : string.Empty;
+                }
+            }
+            else if (Type == CopyOrPasteType.Cut)
+            {
+                var u = list.Where(x => list.All(y=>y.ItemId!=x.ItemParentId)).ToList();
+                u.ForEach(x => x.ItemParentId = string.Empty);
             }
             return list;
         }

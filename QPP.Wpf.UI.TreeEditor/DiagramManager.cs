@@ -1287,6 +1287,7 @@ namespace QPP.Wpf.UI.TreeEditor
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
             {
                 var item = GetDesignerItemById(id);
+                if (item == null) return;
                 var parent = item.ParentDesignerItem;
                 if (parent.ChildrenDesignerItems != null)
                 { parent.ChildrenDesignerItems.Remove(item); }
