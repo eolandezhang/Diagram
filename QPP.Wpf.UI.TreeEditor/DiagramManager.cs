@@ -1289,8 +1289,12 @@ namespace QPP.Wpf.UI.TreeEditor
                 var item = GetDesignerItemById(id);
                 if (item == null) return;
                 var parent = item.ParentDesignerItem;
-                if (parent.ChildrenDesignerItems != null)
-                { parent.ChildrenDesignerItems.Remove(item); }
+                if (parent != null)
+                {
+                    if (parent.ChildrenDesignerItems != null)
+                    { parent.ChildrenDesignerItems.Remove(item); }
+                }
+
                 item.UpdateExpander();
                 item.ParentDesignerItem = null;
                 var connections = GetItemConnections(item).ToList();

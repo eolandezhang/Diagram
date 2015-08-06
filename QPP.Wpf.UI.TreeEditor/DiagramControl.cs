@@ -873,8 +873,16 @@ namespace QPP.Wpf.UI.TreeEditor
                         item.ApplyTemplate();
                         item.SetTemplate();
                         item.UpdateLayout();
-                        Canvas.SetTop(item, dc.GetTop(newItem) - item.ActualHeight / 2);
-                        Canvas.SetLeft(item, dc.GetLeft(newItem) - item.ActualWidth / 2);
+                        if (dc.ItemsSource.Count > 1)
+                        {
+                            Canvas.SetTop(item, dc.GetTop(newItem) - item.ActualHeight / 2);
+                            Canvas.SetLeft(item, dc.GetLeft(newItem) - item.ActualWidth / 2);
+                        }
+                        else
+                        {
+                            Canvas.SetTop(item, 0);
+                            Canvas.SetLeft(item, 0);
+                        }
                     }
                     dc.DesignerItems.Add(item);
                     dc.Manager.SetSelectItem(item);
