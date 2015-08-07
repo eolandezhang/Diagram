@@ -83,6 +83,8 @@
     <Compile Include="ZoomBoxControl.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="DiagramDesigner.vpp" />
+    <None Include="Introduction.ppt" />
     <None Include="Tree Editor feature.xmind" />
     <None Include="TreeEditor.doc" />
     <None Include="TreeEditor.xmind" />
