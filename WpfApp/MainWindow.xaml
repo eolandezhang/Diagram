@@ -74,37 +74,27 @@
                                         <DataTemplate>
                                             <Border x:Name="Bdr"  BorderThickness="1" BorderBrush="SkyBlue" Padding="0,2,0,2" CornerRadius="5,5,5,5"  >
                                                 <StackPanel Orientation="Horizontal">
-                                                    <Image Source="{Binding DataContext.ImageUri}" />
-                                                    <Border Width="10" Height="10" BorderThickness="1" x:Name="Expanded"/>
+                                                    <Image Source="{Binding DataContext.ImageUri}" /> 
                                                     <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
                                                 </StackPanel>
                                             </Border>
                                             <DataTemplate.Triggers>
-                                                
+                                                <!--选中-->
                                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsSelected}" Value="True">
                                                     <Setter TargetName="Bdr" Property="BorderBrush" Value="DeepSkyBlue"/>
                                                     <Setter TargetName="Bdr" Property="Background" Value="LightSkyBlue"/>
                                                 </DataTrigger>
-
+                                                <!--拖拽的影子-->
                                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsShadow}" Value="True">
                                                     <Setter TargetName="Bdr" Property="BorderBrush" Value="DeepSkyBlue"/>
                                                     <Setter TargetName="Bdr" Property="Background" Value="LightSkyBlue"/>
                                                 </DataTrigger>
-
+                                                <!--拖拽时元素的样式-->
                                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsDragItemChild}" Value="True">
                                                     <Setter TargetName="Bdr" Property="BorderBrush" Value="LightGray"/>
-                                                    <Setter TargetName="Bdr" Property="Background" Value="LightGray"/>
-                                                    <!--<Setter TargetName="Bdr" Property="TextBlock.Foreground" Value="Gray"/>-->
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsDragItemChild}" Value="True">
-                                                    <Setter TargetName="Bdr" Property="BorderBrush" Value="Transparent"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding  RelativeSource={RelativeSource TemplatedParent},Path=IsExpanded}" Value="true">
-                                                    <Setter TargetName="Expanded" Property="Background" Value="#FFC14343"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding  RelativeSource={RelativeSource TemplatedParent},Path=IsExpanded}" Value="false">
-                                                    <Setter TargetName="Expanded" Property="Background" Value="silver"/>
-                                                </DataTrigger>
+                                                    <Setter TargetName="Bdr" Property="Background" Value="LightGray"/>                                                    
+                                                </DataTrigger>                                             
+                                               
                                             </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </treeEditor:DiagramControl.DesignerItemTemplate>
