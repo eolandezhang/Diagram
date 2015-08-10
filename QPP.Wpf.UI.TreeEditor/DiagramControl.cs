@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Newtonsoft.Json;
 
 /*
  * 树状图控件
@@ -47,6 +48,17 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Dependency Property
+        #region Item Style Property
+
+        public static readonly DependencyProperty ItemStyleFieldProperty = DependencyProperty.Register(
+            "ItemStyleField", typeof(string), typeof(DiagramControl), new PropertyMetadata("ItemStyle"));
+
+        public string ItemStyleField
+        {
+            get { return (string)GetValue(ItemStyleFieldProperty); }
+            set { SetValue(ItemStyleFieldProperty, value); }
+        }
+        #endregion
         #region IdField Property
         public static readonly DependencyProperty IdFieldProperty = DependencyProperty.Register(
             "IdField", typeof(string), typeof(DiagramControl), new PropertyMetadata(default(string)));
@@ -370,7 +382,11 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 foreach (var r in roots)
                 {
-                    var d = new DesignerItem(r.Data, this) { ParentDesignerItem = null };
+                    var d = new DesignerItem(r.Data, this)
+                    {
+                        ParentDesignerItem = null,
+                        ItemStyle = JsonConvert.DeserializeObject<ItemStyle>(GetItemStyle(r.Data))
+                    };
                     list.Add(d);
                     var childs = dic.Where(x => x.PId == r.Id).ToList();
                     list.AddRange(CreateDesignerItem(dic, childs, d));
@@ -405,6 +421,7 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 var r = e;
                 var d = new DesignerItem(r.Data, this);
+                d.ItemStyle = JsonConvert.DeserializeObject<ItemStyle>(GetItemStyle(r.Data));
                 d.ParentDesignerItem = root;
                 root.ChildrenDesignerItems.Add(d);
                 list.Add(d);
@@ -546,8 +563,6 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
         #endregion
 
-
-
         #region Command
         public ICommand EditSelectedItemCommand
         {
@@ -688,6 +703,14 @@ namespace QPP.Wpf.UI.TreeEditor
             var textField = TextField;
             var id = oType.GetProperty(textField);
             return id.GetValue(item, null).ToString();
+        }
+
+        string GetItemStyle(object item)
+        {
+            var oType = item.GetType();
+            var itemStyleField = ItemStyleField;
+            var style = oType.GetProperty(itemStyleField);
+            return style.GetValue(item, null).ToString();
         }
         double GetLeft(object item)
         {

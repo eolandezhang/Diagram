@@ -57,18 +57,18 @@ namespace WpfApp.ViewModel
                     ItemsSource.Clear();
                     var list = new List<ItemData>()
                     {
-                        new ItemData("0", "", "0.0", "Root　Item1","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}", "Images/fix.png"),
-                        new ItemData("1", "0", "1.1", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}", "Images/green.png"),
-                        new ItemData("3", "1", "2.1", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}"),
-                        new ItemData("5", "3", "2.2", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}"),
-                        new ItemData("2", "0", "1.2", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}"),
-                        new ItemData("4", "2", "3.1", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}"),
-                        new ItemData("7", "4", "3.2", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}"),
-                        new ItemData("6", "0", "1.3", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}")
+                        new ItemData("0", "", "0.0", "Root　Item1","{'BorderBrush':'#FF87CEEB','Background':'#00FFFFFF'}", "Images/fix.png"),
+                        new ItemData("1", "0", "1.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}", "Images/green.png"),
+                        new ItemData("3", "1", "2.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
+                        new ItemData("5", "3", "2.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
+                        new ItemData("2", "0", "1.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
+                        new ItemData("4", "2", "3.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
+                        new ItemData("7", "4", "3.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
+                        new ItemData("6", "0", "1.3", "-","{'BorderBrush':'#FFFF0000','Background':'#000000FF'}")
                     };
                     for (var i = 0; i < Num; i++)
                     {
-                        list.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item " + i, "Images/green.png"));
+                        list.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item " + i, "{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}", "Images/green.png"));
                     }
                     ItemsSource.AddRange(list);
                 });

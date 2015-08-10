@@ -64,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Data\ItemData.cs" />
-    <Compile Include="App_Data\ItemStyle.cs" />
     <Compile Include="App_Data\RangeObservableCollection.cs" />
     <Compile Include="App_Data\DataHelper.cs" />
     <Compile Include="MainViewModel.cs" />

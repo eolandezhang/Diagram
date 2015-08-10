@@ -60,12 +60,12 @@ namespace WpfApp.ViewModel.App_Data
         }
         public ItemData AddNew(string pid, double left, double top, RangeObservableCollection<ItemData> itemsSource)
         {
-            return new ItemData(Guid.NewGuid().ToString(), pid, "Item " + itemsSource.Count, "", left, top, "");
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item " + itemsSource.Count, "", "{'BorderBrush':'#FF87CEEB','Background':'#00FFFFFF'}", left, top, "");
         }
         public ItemData AddNew(string pid, RangeObservableCollection<ItemData> itemsSource)
         {
             if (pid == null) return null;
-            return new ItemData(Guid.NewGuid().ToString(), pid, "Item" + itemsSource.Count(), "");
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item" + itemsSource.Count(), "{'BorderBrush':'#FF87CEEB','Background':'#00FFFFFF'}", "");
         }
 
         public ItemData GetSelectedItem(ObservableCollection<ItemData> selectedItems)
@@ -110,7 +110,7 @@ namespace WpfApp.ViewModel.App_Data
         {
             var itemSource =
                   itemsSource.Select(
-                      d => new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.Left, d.Top, d.ImageUri)).ToList();
+                      d => new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.ItemStyle, d.Left, d.Top, d.ImageUri)).ToList();
             foreach (var parentItemData in parentItemDatas)
             {
                 if (parentItemData == null) continue;
@@ -186,7 +186,7 @@ namespace WpfApp.ViewModel.App_Data
         List<ItemData> GetAllCopyItem(List<ItemData> selectedItemDatas, List<ItemData> itemSource)
         {
 
-            var list = selectedItemDatas.Select(d => new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.Left, d.Top, d.ImageUri)).ToList();
+            var list = selectedItemDatas.Select(d => new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.ItemStyle, d.Left, d.Top, d.ImageUri)).ToList();
 
             var childrens = new List<ItemData>();
             //把子节点也添加进来
@@ -196,7 +196,7 @@ namespace WpfApp.ViewModel.App_Data
                 foreach (var d in children)
                 {
                     if (childrens.Any(x => x.ItemId == d.ItemId)) continue;
-                    var data = new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.Left, d.Top, d.ImageUri);
+                    var data = new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.ItemStyle, d.Left, d.Top, d.ImageUri);
                     childrens.Add(data);
                 }
             }
