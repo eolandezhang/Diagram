@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using WpfApp.ViewModel.App_Data;
 
-namespace WpfApp.ViewModel
+namespace WpfApp.ViewModel.App_Data
 {
     public static class CopyOrPasteType
     {

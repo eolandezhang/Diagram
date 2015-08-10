@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Core\reference\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="QPP, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -60,8 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Data\ItemData.cs" />
+    <Compile Include="App_Data\ItemStyle.cs" />
     <Compile Include="App_Data\RangeObservableCollection.cs" />
-    <Compile Include="DataHelper.cs" />
+    <Compile Include="App_Data\DataHelper.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

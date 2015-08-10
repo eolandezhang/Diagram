@@ -22,25 +22,9 @@ namespace WpfApp.ViewModel
         public ObservableCollection<ItemData> DeletedItems { get; set; }
         public ItemData SelectedItem { get { return Get<ItemData>("SelectedItem"); } set { Set("SelectedItem", value); } }
         public bool IsAddAfter { get { return Get<bool>("IsAddAfter"); } set { Set("IsAddAfter", value); } }
-        public Point ClickPoint
-        {
-            get
-            {
-                return Get<Point>("ClickPoint");
-            }
-            set
-            {
-                Set("ClickPoint", value);
-            }
-        }
-
+        public Point ClickPoint { get { return Get<Point>("ClickPoint"); } set { Set("ClickPoint", value); } }
         private string _type = CopyOrPasteType.None;
-        public string Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }
-
+        public string Type { get { return _type; } set { _type = value; } }
         public MainViewModel()
         {
             Title = "Tree Editor";
@@ -73,14 +57,14 @@ namespace WpfApp.ViewModel
                     ItemsSource.Clear();
                     var list = new List<ItemData>()
                     {
-                        new ItemData("0", "", "0.0", "Root　Item1", "Images/fix.png"),
-                        new ItemData("1", "0", "1.1", "-", "Images/green.png"),
-                        new ItemData("3", "1", "2.1", "-"),
-                        new ItemData("5", "3", "2.2", "-"),
-                        new ItemData("2", "0", "1.2", "-"),
-                        new ItemData("4", "2", "3.1", "-"),
-                        new ItemData("7", "4", "3.2", "-"),
-                        new ItemData("6", "0", "1.3", "-")
+                        new ItemData("0", "", "0.0", "Root　Item1","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}", "Images/fix.png"),
+                        new ItemData("1", "0", "1.1", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}", "Images/green.png"),
+                        new ItemData("3", "1", "2.1", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}"),
+                        new ItemData("5", "3", "2.2", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}"),
+                        new ItemData("2", "0", "1.2", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}"),
+                        new ItemData("4", "2", "3.1", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}"),
+                        new ItemData("7", "4", "3.2", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}"),
+                        new ItemData("6", "0", "1.3", "-","{'BorderBrush':'#FFFF0000','Background':'#FF0000FF'}")
                     };
                     for (var i = 0; i < Num; i++)
                     {
@@ -161,8 +145,6 @@ namespace WpfApp.ViewModel
         }
 
         #endregion
-
-
 
         #region Copy Cut Past Command
         public ICommand CopyCommand { get { return new RelayCommand(CopyAction, () => SelectedItems.Any()); } }

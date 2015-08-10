@@ -1,5 +1,7 @@
 ﻿using QPP.ComponentModel;
 using System;
+using System.Windows.Media;
+
 /*
  * 用于测试
  * 模拟树状结构的数据
@@ -10,7 +12,6 @@ namespace WpfApp.ViewModel.App_Data
     [Serializable]
     public class ItemData : DataModel
     {
-        
         public string ItemId
         {
             get { return Get<string>("ItemId"); }
@@ -51,6 +52,12 @@ namespace WpfApp.ViewModel.App_Data
             set { Set("ImageUri", value); }
         }
 
+        public string ItemStyle
+        {
+            get { return Get<string>("ItemStyle"); }
+            set { Set("ItemStyle", value); }
+        }
+
         #endregion
         public ItemData() { }
         public ItemData(string id)
@@ -62,6 +69,7 @@ namespace WpfApp.ViewModel.App_Data
             string parentId,
             string text,
             string desc,
+            string itemStyle,
             string imageUri = "Images/blue.png")
         {
             ItemId = id;
@@ -69,12 +77,14 @@ namespace WpfApp.ViewModel.App_Data
             Text = text;
             Desc = desc;
             ImageUri = imageUri;
+            ItemStyle = itemStyle;
         }
         public ItemData(
             string id,
             string parentId,
             string text,
             string desc,
+            string itemStyle,
             double left,
             double top,
             string imageUri = "Images/blue.png")
@@ -86,6 +96,9 @@ namespace WpfApp.ViewModel.App_Data
             Left = left;
             Top = top;
             ImageUri = imageUri;
+            ItemStyle = itemStyle;
         }
     }
+
+
 }

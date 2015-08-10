@@ -25,9 +25,12 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
         public DesignerItem ShadowOrignal;/*当此节点为shadow时，记录shadow的原节点*/
         public DiagramControl DiagramControl;
+        #endregion
+
+        #region Property
+        
         public DesignerItem ParentDesignerItem { get; set; }
         private List<DesignerItem> _childDesignerItems;
-
         public List<DesignerItem> ChildrenDesignerItems
         {
             get
@@ -39,10 +42,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 return _childDesignerItems;
             }
         }
-
-        #endregion
-
-        #region Property
+        public object ItemStyle { get; set; }
 
         #region ItemId Property
         public static readonly DependencyProperty ItemIdProperty = DependencyProperty.Register(
@@ -169,20 +169,18 @@ namespace QPP.Wpf.UI.TreeEditor
         }
 
         #endregion
-        //#region ItemContextMenu Property 右键菜单
+        #region ItemContextMenu Property 右键菜单
         public static readonly DependencyProperty ItemContextMenuProperty =
             DependencyProperty.RegisterAttached("ItemContextMenu", typeof(ContextMenu), typeof(DesignerItem));
-
         public static ContextMenu GetItemContextMenu(UIElement element)
         {
             return (ContextMenu)element.GetValue(ItemContextMenuProperty);
         }
-
         public static void SetItemContextMenu(UIElement element, ContextMenu value)
         {
             element.SetValue(ItemContextMenuProperty, value);
         }
-        //#endregion
+        #endregion
         #region IsShadow Property 标识是否是拖拽阴影
 
         public static readonly DependencyProperty IsShadowProperty = DependencyProperty.Register(
@@ -277,6 +275,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #endregion
         #endregion
+        
         #endregion
 
         #region Constructors
@@ -468,14 +467,6 @@ namespace QPP.Wpf.UI.TreeEditor
                 }
             }
         }
-
-
-        //public object Clone()
-        //{
-        //    var data = (ItemData)Data.Clone();
-        //    return new DesignerItem(data.ItemId, DiagramControl) { Data = data, DiagramControl = DiagramControl };
-        //}
-
         public virtual int Level
         {
             get
@@ -491,7 +482,6 @@ namespace QPP.Wpf.UI.TreeEditor
                 return result;
             }
         }
-
         public virtual bool HasChild
         {
             get
