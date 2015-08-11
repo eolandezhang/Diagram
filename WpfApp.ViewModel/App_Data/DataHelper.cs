@@ -65,7 +65,7 @@ namespace WpfApp.ViewModel.App_Data
         public ItemData AddNew(string pid, RangeObservableCollection<ItemData> itemsSource)
         {
             if (pid == null) return null;
-            return new ItemData(Guid.NewGuid().ToString(), pid, "Item" + itemsSource.Count(), "{'BorderBrush':'#FF87CEEB','Background':'#00FFFFFF'}", "");
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item" + itemsSource.Count(), "", "{'BorderBrush':'#FF87CEEB','Background':'#00FFFFFF'}", "");
         }
 
         public ItemData GetSelectedItem(ObservableCollection<ItemData> selectedItems)

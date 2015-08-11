@@ -42,7 +42,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 return _childDesignerItems;
             }
         }
-        public object ItemStyle { get; set; }
+        //当样式变化，需要更新DataContext的ItemsStyle字段
+        public ItemStyle ItemStyle { get; set; }
 
         #region ItemId Property
         public static readonly DependencyProperty ItemIdProperty = DependencyProperty.Register(
