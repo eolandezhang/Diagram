@@ -398,6 +398,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 foreach (var item in r)
                 {
                     var d = new DesignerItem(item.Data, this);
+                    d.ItemStyle = JsonConvert.DeserializeObject<ItemStyle>(GetItemStyle(item.Data));
                     var parent = Manager.GetDesignerItemById(item.PId);
                     d.ParentDesignerItem = parent;
                     parent.ChildrenDesignerItems.Add(d);
@@ -836,6 +837,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     if (model == null) continue;
 
                     var item = new DesignerItem(newItem, dc);
+                    item.ItemStyle = JsonConvert.DeserializeObject<ItemStyle>(dc.GetItemStyle(newItem));
                     var parentid = dc.GetPId(newItem);
                     if (parentid.IsNotEmpty())
                     {
