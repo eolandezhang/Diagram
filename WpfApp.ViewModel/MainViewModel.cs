@@ -46,7 +46,7 @@ namespace WpfApp.ViewModel
             };
             BackgroundColors = new ObservableCollection<Color>()
             {
-                new Color("FF#A4FFC1"),new Color("#FFF3F781"),new Color("#000000FF")
+                new Color("#FFA4FFC1"),new Color("#FFF3F781"),new Color("#000000FF")
             };
         }
 
