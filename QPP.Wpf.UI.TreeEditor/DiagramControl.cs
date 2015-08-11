@@ -158,6 +158,17 @@ namespace QPP.Wpf.UI.TreeEditor
             set { SetValue(SelectedItemsProperty, value); }
         }
         #endregion
+        #region Selected DesignerItem
+
+        public static readonly DependencyProperty SelectedDesignerItemsProperty = DependencyProperty.Register(
+            "SelectedDesignerItems", typeof(IList<DesignerItem>), typeof(DiagramControl), new PropertyMetadata(null));
+
+        public IList<DesignerItem> SelectedDesignerItems
+        {
+            get { return (IList<DesignerItem>)GetValue(SelectedDesignerItemsProperty); }
+            set { SetValue(SelectedDesignerItemsProperty, value); }
+        }
+        #endregion
         #region DeletedItems 存储被删除的数据
 
         public static readonly DependencyProperty DeletedItemsProperty = DependencyProperty.Register(
@@ -387,6 +398,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         ParentDesignerItem = null,
                         ItemStyle = JsonConvert.DeserializeObject<ItemStyle>(GetItemStyle(r.Data))
                     };
+                    d.ItemStyle.designerItem = d;
                     list.Add(d);
                     var childs = dic.Where(x => x.PId == r.Id).ToList();
                     list.AddRange(CreateDesignerItem(dic, childs, d));
@@ -399,6 +411,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 {
                     var d = new DesignerItem(item.Data, this);
                     d.ItemStyle = JsonConvert.DeserializeObject<ItemStyle>(GetItemStyle(item.Data));
+                    d.ItemStyle.designerItem = d;
                     var parent = Manager.GetDesignerItemById(item.PId);
                     d.ParentDesignerItem = parent;
                     parent.ChildrenDesignerItems.Add(d);
@@ -423,6 +436,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 var r = e;
                 var d = new DesignerItem(r.Data, this);
                 d.ItemStyle = JsonConvert.DeserializeObject<ItemStyle>(GetItemStyle(r.Data));
+                d.ItemStyle.designerItem = d;
                 d.ParentDesignerItem = root;
                 root.ChildrenDesignerItems.Add(d);
                 list.Add(d);
@@ -706,12 +720,20 @@ namespace QPP.Wpf.UI.TreeEditor
             return id.GetValue(item, null).ToString();
         }
 
-        string GetItemStyle(object item)
+        public string GetItemStyle(object item)
         {
             var oType = item.GetType();
             var itemStyleField = ItemStyleField;
             var style = oType.GetProperty(itemStyleField);
             return style.GetValue(item, null).ToString();
+        }
+        public void SetItemStyle(DesignerItem designerItem, ItemStyle itemStyle)
+        {
+            string s = JsonConvert.SerializeObject(itemStyle);
+            var oType = designerItem.DataContext.GetType();
+            var itemStyleField = ItemStyleField;
+            var p = oType.GetProperty(itemStyleField);
+            p.SetValue(designerItem.DataContext, s, null);
         }
         double GetLeft(object item)
         {
@@ -838,6 +860,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
                     var item = new DesignerItem(newItem, dc);
                     item.ItemStyle = JsonConvert.DeserializeObject<ItemStyle>(dc.GetItemStyle(newItem));
+                    item.ItemStyle.designerItem = item;
                     var parentid = dc.GetPId(newItem);
                     if (parentid.IsNotEmpty())
                     {
@@ -920,5 +943,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         }
         #endregion
+
+
     }
 }

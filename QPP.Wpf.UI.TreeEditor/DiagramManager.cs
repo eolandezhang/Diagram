@@ -153,7 +153,9 @@ namespace QPP.Wpf.UI.TreeEditor
             if (_diagramControl.SelectedItems != null)
             {
                 _diagramControl.SelectedItems.Clear();
+                _diagramControl.SelectedDesignerItems.Clear();
                 _diagramControl.SelectedItems.Add(designerItem.DataContext);
+                _diagramControl.SelectedDesignerItems.Add(designerItem);
             }
             _diagramControl.Focus();
             _diagramControl.CanExpandAndCollapseSelectedItem = true;

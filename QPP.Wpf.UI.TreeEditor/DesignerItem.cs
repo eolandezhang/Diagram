@@ -28,7 +28,7 @@ namespace QPP.Wpf.UI.TreeEditor
         #endregion
 
         #region Property
-        
+
         public DesignerItem ParentDesignerItem { get; set; }
         private List<DesignerItem> _childDesignerItems;
         public List<DesignerItem> ChildrenDesignerItems
@@ -276,7 +276,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         #endregion
         #endregion
-        
+
         #endregion
 
         #region Constructors
@@ -335,6 +335,7 @@ namespace QPP.Wpf.UI.TreeEditor
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
             Loaded += DesignerItem_Loaded;
+            
         }
         public DesignerItem(object itemData, DiagramControl diagramControl)
         {
@@ -348,6 +349,7 @@ namespace QPP.Wpf.UI.TreeEditor
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
             Loaded += DesignerItem_Loaded;
+            
         }
         static DesignerItem()
         {
@@ -385,6 +387,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         if (DiagramControl.SelectedItems != null && DiagramControl.SelectedItems.Contains(DataContext))
                         {
                             DiagramControl.SelectedItems.Remove(DataContext);
+                            DiagramControl.SelectedDesignerItems.Remove(this);
                         }
                     }
                     else
@@ -394,6 +397,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         {
                             DiagramControl.SelectedItems.Add(DataContext);
                             DiagramControl.CanExpandAndCollapseSelectedItem = true;
+                            DiagramControl.SelectedDesignerItems.Add(this);
                         }
                     }
                 }
@@ -405,6 +409,8 @@ namespace QPP.Wpf.UI.TreeEditor
                         DiagramControl.SelectedItems.Clear();
                         DiagramControl.SelectedItems.Add(DataContext);
                         DiagramControl.CanExpandAndCollapseSelectedItem = true;
+                        DiagramControl.SelectedDesignerItems.Clear();
+                        DiagramControl.SelectedDesignerItems.Add(this);
                     }
                 }
                 //Focus();

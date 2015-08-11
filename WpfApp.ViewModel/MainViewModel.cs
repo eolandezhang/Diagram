@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using QPP.Wpf.UI.TreeEditor;
 using WpfApp.ViewModel.App_Data;
 
 namespace WpfApp.ViewModel
@@ -19,12 +20,16 @@ namespace WpfApp.ViewModel
         public bool SingleRoot { get { return Get<bool>("SingleRoot"); } set { Set("SingleRoot", value); } }
         public RangeObservableCollection<ItemData> ItemsSource { get; set; }
         public ObservableCollection<ItemData> SelectedItems { get; set; }
+        public ObservableCollection<DesignerItem> SelectedDesignerItems { get; set; }
         public ObservableCollection<ItemData> DeletedItems { get; set; }
         public ItemData SelectedItem { get { return Get<ItemData>("SelectedItem"); } set { Set("SelectedItem", value); } }
+        public DesignerItem SelectedDesignerItem { get { return Get<DesignerItem>("SelectedDesignerItem"); } set { Set("SelectedDesignerItem", value); } }
         public bool IsAddAfter { get { return Get<bool>("IsAddAfter"); } set { Set("IsAddAfter", value); } }
         public Point ClickPoint { get { return Get<Point>("ClickPoint"); } set { Set("ClickPoint", value); } }
         private string _type = CopyOrPasteType.None;
         public string Type { get { return _type; } set { _type = value; } }
+        public ObservableCollection<Color> BorderColors { get { return Get<ObservableCollection<Color>>("BorderColors"); } set { Set("BorderColors", value); } }
+        public ObservableCollection<Color> BackgroundColors { get { return Get<ObservableCollection<Color>>("BackgroundColors"); } set { Set("BackgroundColors", value); } }
         public MainViewModel()
         {
             Title = "Tree Editor";
@@ -32,8 +37,36 @@ namespace WpfApp.ViewModel
             SelectedItems = new ObservableCollection<ItemData>();
             DeletedItems = new ObservableCollection<ItemData>();
             ItemsSource = new RangeObservableCollection<ItemData>();
+            SelectedDesignerItems = new ObservableCollection<DesignerItem>();
             SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
-            //ReloadCommand.Execute(null);
+            SelectedDesignerItems.CollectionChanged += SelectedDesignerItems_CollectionChanged;
+            BorderColors = new ObservableCollection<Color>()
+            {
+                new Color("#FF87CEEB"),new Color("#FFFF0000"),new Color("#000000FF")
+            };
+            BackgroundColors = new ObservableCollection<Color>()
+            {
+                new Color("FF#A4FFC1"),new Color("#FFF3F781"),new Color("#000000FF")
+            };
+        }
+
+        public class Color
+        {
+            public Color(string color)
+            {
+                ItemColor = color;
+            }
+            public string ItemColor { get; set; }
+        }
+        private void SelectedDesignerItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                var item = SelectedDesignerItems.FirstOrDefault();
+                if (item == null) return;
+                var data = item;
+                SelectedDesignerItem = data;
+            }
         }
 
         private void SelectedItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -57,7 +90,7 @@ namespace WpfApp.ViewModel
                     ItemsSource.Clear();
                     var list = new List<ItemData>()
                     {
-                        new ItemData("0", "", "0.0", "Root　Item1","{'BorderBrush':'#FF87CEEB','Background':'#00FFFFFF'}", "Images/fix.png"),
+                        new ItemData("0", "", "0.0", "Root　Item1","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}", "Images/fix.png"),
                         new ItemData("1", "0", "1.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}", "Images/green.png"),
                         new ItemData("3", "1", "2.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
                         new ItemData("5", "3", "2.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
@@ -68,7 +101,7 @@ namespace WpfApp.ViewModel
                     };
                     for (var i = 0; i < Num; i++)
                     {
-                        list.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item " + i, "{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}", "Images/green.png"));
+                        list.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item " + i, "", "{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}", "Images/green.png"));
                     }
                     ItemsSource.AddRange(list);
                 });

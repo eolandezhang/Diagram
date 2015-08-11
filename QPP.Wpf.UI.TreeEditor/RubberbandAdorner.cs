@@ -65,6 +65,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 selectedItems.ForEach((selectedItem) =>
                 {
                     DiagramControl.SelectedItems.Add(selectedItem.DataContext);
+                    DiagramControl.SelectedDesignerItems.Add(selectedItem);
                 });
             }
         }
