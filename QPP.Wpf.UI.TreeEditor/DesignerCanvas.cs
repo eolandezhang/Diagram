@@ -152,6 +152,8 @@ namespace QPP.Wpf.UI.TreeEditor
                     Move(e, Root);
                     AutoScroll(e);
 
+
+
                 }
             }
         }

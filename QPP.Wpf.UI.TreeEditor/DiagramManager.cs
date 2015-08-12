@@ -533,10 +533,12 @@ namespace QPP.Wpf.UI.TreeEditor
                 var roots = items.Where(x => string.IsNullOrEmpty(x.ItemParentId)).ToList();
                 foreach (var root in roots)
                 {
-                    if (roots.All(x => Math.Abs(Canvas.GetTop(x)) < 1 && Math.Abs(Canvas.GetLeft(x)) < 1))
+                    var top = double.IsNaN(Canvas.GetTop(root)) ? 0 : Canvas.GetTop(root);
+                    var left = double.IsNaN(Canvas.GetLeft(root)) ? 0 : Canvas.GetLeft(root);
+                    if (roots.All(x => Math.Abs(top) < 1 && Math.Abs(left) < 1))
                     {
                         var newLeft = 400 * roots.IndexOf(root);
-                        root.Top = Canvas.GetTop(root);
+                        root.Top = top;
                         root.OriginalTop = root.Top;
                         root.Left = newLeft;
                         root.OriginalLeft = newLeft;
@@ -544,12 +546,13 @@ namespace QPP.Wpf.UI.TreeEditor
                     }
                     else
                     {
-                        root.Top = Canvas.GetTop(root);
+                        root.Top = top;
                         root.OriginalTop = root.Top;
-                        root.Left = Canvas.GetLeft(root);
+                        root.Left = left;
                         root.OriginalLeft = root.Left;
-                    }
-                    //root.UpdateLayout();
+                        Canvas.SetLeft(root, left);
+                        Canvas.SetTop(root, top);
+                    }                    
                     Arrange(root);
                 }
             });
@@ -567,7 +570,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 .OrderBy(x => Canvas.GetTop(x)).ToList();
             foreach (var sub in subItems)
             {
-                var top = Canvas.GetTop(designerItem) + designerItem.ActualHeight + list.Sum(x => x.ActualHeight);
+                var top =double.IsNaN(Canvas.GetTop(designerItem))?0: Canvas.GetTop(designerItem) + designerItem.ActualHeight + list.Sum(x => x.ActualHeight);
                 list.Add(sub);
                 var left = Canvas.GetLeft(designerItem) + GetOffset(designerItem);
                 Canvas.SetTop(sub, top);
