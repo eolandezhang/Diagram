@@ -60,12 +60,12 @@ namespace WpfApp.ViewModel.App_Data
         }
         public ItemData AddNew(string pid, double left, double top, RangeObservableCollection<ItemData> itemsSource)
         {
-            return new ItemData(Guid.NewGuid().ToString(), pid, "Item " + itemsSource.Count, "", "{'BorderBrush':'#FF87CEEB','Background':'#00FFFFFF','ImageUrl':'Images/fix.png'}", left, top);
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item " + itemsSource.Count, "", "{'BorderBrush':'#FF87CEEB','Background':'#00FFFFFF','ImageUrl':[{'Url':'Images/fix.png'}]}", left, top);
         }
         public ItemData AddNew(string pid, RangeObservableCollection<ItemData> itemsSource)
         {
             if (pid == null) return null;
-            return new ItemData(Guid.NewGuid().ToString(), pid, "Item" + itemsSource.Count(), "", "{'BorderBrush':'#FF87CEEB','Background':'#00FFFFFF','ImageUrl':'Images/fix.png'}");
+            return new ItemData(Guid.NewGuid().ToString(), pid, "Item" + itemsSource.Count(), "", "{'BorderBrush':'#FF87CEEB','Background':'#00FFFFFF','ImageUrl':[{'Url':'Images/fix.png'}]}");
         }
 
         public ItemData GetSelectedItem(ObservableCollection<ItemData> selectedItems)

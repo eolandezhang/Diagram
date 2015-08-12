@@ -82,7 +82,42 @@
                                                 Padding="0,2,0,2" 
                                                 CornerRadius="5,5,5,5"  >
                                                 <StackPanel Orientation="Horizontal">
-                                                    <Image Source="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=treeEditor:DesignerItem},Path=ItemStyle.ImageUrl}" />
+                                                    <!--<Image Source="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=treeEditor:DesignerItem},Path=ItemStyle.ImageUrl}" />-->
+                                                    <ListView 
+                                                        ItemsSource="{Binding 
+                                                                        RelativeSource={RelativeSource 
+                                                                        AncestorLevel=1,
+                                                                        AncestorType=treeEditor:DesignerItem},
+                                                                        Path=ItemStyle.ImageUrl}"
+                                                        SelectedValuePath="Url"
+                                                        SelectedItem="{Binding 
+                                                                        RelativeSource={RelativeSource 
+                                                                        AncestorLevel=1,
+                                                                        AncestorType=treeEditor:DesignerItem},Path=SelectedImage}"
+                                                       
+                                                        >
+                                                        <ListView.Template>
+                                                            <ControlTemplate>
+
+                                                                <Border BorderBrush="Transparent" BorderThickness="0">
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <ItemsPresenter/>
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </ListView.Template>
+                                                        <ListView.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Image Source="{Binding .Url}"></Image>
+                                                                <!--<TextBlock Text="{Binding .}"></TextBlock>-->
+                                                            </DataTemplate>
+                                                        </ListView.ItemTemplate>
+                                                        <ListView.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <StackPanel Orientation="Horizontal" IsItemsHost="True"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ListView.ItemsPanel>
+                                                    </ListView>
                                                     <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
                                                 </StackPanel>
                                             </Border>
@@ -191,17 +226,33 @@
                                                 </ComboBox.ItemTemplate>
                                             </ComboBox>
                                             <Label Content="Images" Grid.Row="6" Grid.Column="0"/>
-                                            <ComboBox  Grid.Row="6"  Grid.Column="1"  
+                                            <!--<ComboBox  Grid.Row="6"  Grid.Column="1"  
                                                        ItemsSource="{Binding Images}" SelectedValuePath="ItemImage" SelectedValue="{Binding Path=SelectedDesignerItem.ItemStyle.ImageUrl,UpdateSourceTrigger=PropertyChanged}">
                                                 <ComboBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal">
                                                             <Image Source="{Binding Path=ItemImage }" />
-                                                            <TextBlock Text="{Binding Path=ItemImage}"></TextBlock>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </ComboBox.ItemTemplate>
-                                            </ComboBox>
+                                            </ComboBox>-->
+                                            <ListView   
+                                                Grid.Row="6"  
+                                                Grid.Column="1"  
+                                                ItemsSource="{Binding Images}" 
+                                                Height="100"
+                                                SelectionMode="Single"
+                                                SelectedItem="{Binding SelectedImage}"
+                                                
+                                                        >
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Image Source="{Binding Path=.Url }" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
                                         </Grid>
                                     </treeEditor:DiagramDataEditorControl.Content>
                                 </treeEditor:DiagramDataEditorControl>

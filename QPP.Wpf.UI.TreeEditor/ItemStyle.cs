@@ -5,12 +5,33 @@ using System.Text;
 using System.Windows.Media;
 using Newtonsoft.Json;
 using QPP.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
+    public class ImageUrl
+    {
+        public ImageUrl(string url)
+        {
+            Url = url;
+        }
+        public string Url { get; set; }
+    }
     [Serializable]
     public class ItemStyle
     {
+        public ItemStyle()
+        {
+            ImageUrl = new ObservableCollection<ImageUrl>();
+            ImageUrl.CollectionChanged += ImageUrl_CollectionChanged;
+        }
+
+        private void ImageUrl_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (designerItem != null)
+                designerItem.DiagramControl.SetItemStyle(designerItem, this);
+        }
+
         [NonSerialized]
         public DesignerItem designerItem;
 
@@ -37,8 +58,8 @@ namespace QPP.Wpf.UI.TreeEditor
                     designerItem.DiagramControl.SetItemStyle(designerItem, this);
             }
         }
-        private string _ImageUrl;
-        public string ImageUrl
+        private ObservableCollection<ImageUrl> _ImageUrl;
+        public ObservableCollection<ImageUrl> ImageUrl
         {
             get { return _ImageUrl; }
             set

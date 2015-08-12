@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows;
 using QPP.Wpf.UI.TreeEditor;
 using WpfApp.ViewModel.App_Data;
+using System.Diagnostics;
 
 namespace WpfApp.ViewModel
 {
@@ -30,7 +31,19 @@ namespace WpfApp.ViewModel
         public string Type { get { return _type; } set { _type = value; } }
         public ObservableCollection<Color> BorderColors { get { return Get<ObservableCollection<Color>>("BorderColors"); } set { Set("BorderColors", value); } }
         public ObservableCollection<Color> BackgroundColors { get { return Get<ObservableCollection<Color>>("BackgroundColors"); } set { Set("BackgroundColors", value); } }
-        public ObservableCollection<Image> Images { get { return Get<ObservableCollection<Image>>("Images"); } set { Set("Images", value); } }
+        public ObservableCollection<ImageUrl> Images { get { return Get<ObservableCollection<ImageUrl>>("Images"); } set { Set("Images", value); } }
+        public ImageUrl SelectedImage { get { return Get<ImageUrl>("SelectedImage"); } set { Set("SelectedImage", value); } }
+        public object SelectedOne
+        {
+            get
+            {
+                return Get<object>("SelectedOne");
+            }
+            set
+            {
+                Set("SelectedOne", value);
+            }
+        }
         public MainViewModel()
         {
             Title = "Tree Editor";
@@ -49,12 +62,40 @@ namespace WpfApp.ViewModel
             {
                 new Color("#FFA4FFC1"),new Color("#FFF3F781"),new Color("#000000FF")
             };
-            Images=new ObservableCollection<Image>()
+            Images = new ObservableCollection<ImageUrl>()
             {
-                new Image("Images/fix.png"),
-                new Image("Images/blue.png"),
-                new Image("Images/green.png"),
+               new ImageUrl("Images/fix.png"),
+                new ImageUrl("Images/blue.png"),
+                new ImageUrl("Images/green.png")
             };
+            PropertyChanged += MainViewModel_PropertyChanged;
+        }
+
+        private void MainViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "SelectedImage":
+                    var imgList = SelectedDesignerItem.ItemStyle.ImageUrl;
+                    if (!imgList.Contains(SelectedImage))
+                    {
+                        SelectedDesignerItem.ItemStyle.ImageUrl.Add(SelectedImage);
+                    }
+                    else
+                    {
+                        SelectedDesignerItem.ItemStyle.ImageUrl.Remove(SelectedImage);
+                    }
+                    break;
+                case "SelectedOne":
+                    var list = SelectedDesignerItem.ItemStyle.ImageUrl;
+                    if (list.Contains(SelectedImage))
+                    {
+                        //SelectedDesignerItem.ItemStyle.ImageUrl.Remove(SelectedOne);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         public class Image
@@ -105,18 +146,18 @@ namespace WpfApp.ViewModel
                     ItemsSource.Clear();
                     var list = new List<ItemData>()
                     {
-                        new ItemData("0", "", "0.0", "Root　Item1","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
-                        new ItemData("1", "0", "1.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
-                        new ItemData("3", "1", "2.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
-                        new ItemData("5", "3", "2.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
-                        new ItemData("2", "0", "1.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
-                        new ItemData("4", "2", "3.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
-                        new ItemData("7", "4", "3.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
-                        new ItemData("6", "0", "1.3", "-","{'BorderBrush':'#FFFF0000','Background':'#000000FF','ImageUrl':'Images/fix.png'}")
+                        new ItemData("0", "", "0.0", "Root　Item1","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':[{'Url':'Images/fix.png'},{'Url':'Images/blue.png'}]}"),
+                        new ItemData("1", "0", "1.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':[{'Url':'Images/fix.png'}]}"),
+                        new ItemData("3", "1", "2.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':[{'Url':'Images/fix.png'}]}"),
+                        new ItemData("5", "3", "2.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':[{'Url':'Images/fix.png'}]}"),
+                        new ItemData("2", "0", "1.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':[{'Url':'Images/fix.png'}]}"),
+                        new ItemData("4", "2", "3.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':[{'Url':'Images/fix.png'}]}"),
+                        new ItemData("7", "4", "3.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':[{'Url':'Images/fix.png'}]}"),
+                        new ItemData("6", "0", "1.3", "-","{'BorderBrush':'#FFFF0000','Background':'#000000FF','ImageUrl':[{'Url':'Images/fix.png'}]}")
                     };
                     for (var i = 0; i < Num; i++)
                     {
-                        list.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item " + i, "", "{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"));
+                        list.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item " + i, "", "{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':[{'Url':'Images/fix.png'}]}"));
                     }
                     ItemsSource.AddRange(list);
                 });

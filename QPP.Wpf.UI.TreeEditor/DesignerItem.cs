@@ -44,10 +44,25 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         //当样式变化，需要更新DataContext的ItemsStyle字段
         public ItemStyle ItemStyle { get; set; }
-
+        ImageUrl _SelectedImage;
+        public ImageUrl SelectedImage
+        {
+            get { return _SelectedImage; }
+            set
+            {
+                _SelectedImage = value;
+                if (ItemStyle != null)
+                {
+                    if (ItemStyle.ImageUrl.Contains(value))
+                    {
+                        ItemStyle.ImageUrl.Remove(value);
+                    }
+                }
+            }
+        }
         #region ItemId Property
         public static readonly DependencyProperty ItemIdProperty = DependencyProperty.Register(
-            "ItemId", typeof(string), typeof(DesignerItem), new PropertyMetadata(default(string)));
+        "ItemId", typeof(string), typeof(DesignerItem), new PropertyMetadata(default(string)));
 
         public string ItemId
         {
@@ -335,7 +350,7 @@ namespace QPP.Wpf.UI.TreeEditor
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
             Loaded += DesignerItem_Loaded;
-            
+
         }
         public DesignerItem(object itemData, DiagramControl diagramControl)
         {
@@ -349,7 +364,7 @@ namespace QPP.Wpf.UI.TreeEditor
             ContextMenu = GetItemContextMenu(diagramControl);
             Focusable = false;
             Loaded += DesignerItem_Loaded;
-            
+
         }
         static DesignerItem()
         {
@@ -363,6 +378,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
+            if (e.OriginalSource != this) return;
             DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
             if (designer == null) return;
             DiagramControl.Focus();
@@ -374,6 +390,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
+
             //base.OnPreviewMouseDown(e);
             DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
             // update selection
