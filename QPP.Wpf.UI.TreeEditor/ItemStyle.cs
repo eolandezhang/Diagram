@@ -25,7 +25,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     designerItem.DiagramControl.SetItemStyle(designerItem, this);
             }
         }
-        // { get { return Get<SolidColorBrush>("BorderBrush"); } set { Set("BorderBrush", value); } }
+
         private SolidColorBrush _Background;
         public SolidColorBrush Background
         {
@@ -33,6 +33,17 @@ namespace QPP.Wpf.UI.TreeEditor
             set
             {
                 _Background = value;
+                if (designerItem != null)
+                    designerItem.DiagramControl.SetItemStyle(designerItem, this);
+            }
+        }
+        private string _ImageUrl;
+        public string ImageUrl
+        {
+            get { return _ImageUrl; }
+            set
+            {
+                _ImageUrl = value;
                 if (designerItem != null)
                     designerItem.DiagramControl.SetItemStyle(designerItem, this);
             }

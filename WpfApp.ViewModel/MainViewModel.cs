@@ -30,6 +30,7 @@ namespace WpfApp.ViewModel
         public string Type { get { return _type; } set { _type = value; } }
         public ObservableCollection<Color> BorderColors { get { return Get<ObservableCollection<Color>>("BorderColors"); } set { Set("BorderColors", value); } }
         public ObservableCollection<Color> BackgroundColors { get { return Get<ObservableCollection<Color>>("BackgroundColors"); } set { Set("BackgroundColors", value); } }
+        public ObservableCollection<Image> Images { get { return Get<ObservableCollection<Image>>("Images"); } set { Set("Images", value); } }
         public MainViewModel()
         {
             Title = "Tree Editor";
@@ -48,8 +49,22 @@ namespace WpfApp.ViewModel
             {
                 new Color("#FFA4FFC1"),new Color("#FFF3F781"),new Color("#000000FF")
             };
+            Images=new ObservableCollection<Image>()
+            {
+                new Image("Images/fix.png"),
+                new Image("Images/blue.png"),
+                new Image("Images/green.png"),
+            };
         }
 
+        public class Image
+        {
+            public Image(string img)
+            {
+                ItemImage = img;
+            }
+            public string ItemImage { get; set; }
+        }
         public class Color
         {
             public Color(string color)
@@ -90,18 +105,18 @@ namespace WpfApp.ViewModel
                     ItemsSource.Clear();
                     var list = new List<ItemData>()
                     {
-                        new ItemData("0", "", "0.0", "Root　Item1","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}", "Images/fix.png"),
-                        new ItemData("1", "0", "1.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}", "Images/green.png"),
-                        new ItemData("3", "1", "2.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
-                        new ItemData("5", "3", "2.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
-                        new ItemData("2", "0", "1.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
-                        new ItemData("4", "2", "3.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
-                        new ItemData("7", "4", "3.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}"),
-                        new ItemData("6", "0", "1.3", "-","{'BorderBrush':'#FFFF0000','Background':'#000000FF'}")
+                        new ItemData("0", "", "0.0", "Root　Item1","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
+                        new ItemData("1", "0", "1.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
+                        new ItemData("3", "1", "2.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
+                        new ItemData("5", "3", "2.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
+                        new ItemData("2", "0", "1.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
+                        new ItemData("4", "2", "3.1", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
+                        new ItemData("7", "4", "3.2", "-","{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"),
+                        new ItemData("6", "0", "1.3", "-","{'BorderBrush':'#FFFF0000','Background':'#000000FF','ImageUrl':'Images/fix.png'}")
                     };
                     for (var i = 0; i < Num; i++)
                     {
-                        list.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item " + i, "", "{'BorderBrush':'#FF87CEEB','Background':'#000000FF'}", "Images/green.png"));
+                        list.Add(new ItemData(Guid.NewGuid().ToString(), "0", "Item " + i, "", "{'BorderBrush':'#FF87CEEB','Background':'#000000FF','ImageUrl':'Images/fix.png'}"));
                     }
                     ItemsSource.AddRange(list);
                 });

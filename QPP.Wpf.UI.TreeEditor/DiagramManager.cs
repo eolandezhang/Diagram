@@ -180,7 +180,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         if (roots.All(x => Math.Abs(Canvas.GetTop(x)) < 1 && Math.Abs(Canvas.GetLeft(x)) < 1))
                         {
                             var newLeft = 400 * roots.IndexOf(root);
-                            root.Top = Canvas.GetTop(root);
+                            root.Top = double.IsNaN(Canvas.GetTop(root)) ? 0 : Canvas.GetTop(root);
                             root.OriginalTop = root.Top;
                             root.Left = newLeft;
                             root.OriginalLeft = newLeft;
@@ -189,7 +189,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         }
                         else
                         {
-                            root.Top = Canvas.GetTop(root);
+                            root.Top = double.IsNaN(Canvas.GetTop(root)) ? 0 : Canvas.GetTop(root);
                             root.OriginalTop = root.Top;
                             root.Left = Canvas.GetLeft(root);
                             root.OriginalLeft = root.Left;
@@ -225,6 +225,7 @@ namespace QPP.Wpf.UI.TreeEditor
             DrawDesignerItem(item);
             item.CanCollapsed = false;
             item.IsExpanderVisible = false;
+
         }
         public void DrawChild(DesignerItem designerItem, DesignerItem childItem, List<DesignerItem> list)
         {
@@ -552,7 +553,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         root.OriginalLeft = root.Left;
                         Canvas.SetLeft(root, left);
                         Canvas.SetTop(root, top);
-                    }                    
+                    }
                     Arrange(root);
                 }
             });
@@ -570,7 +571,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 .OrderBy(x => Canvas.GetTop(x)).ToList();
             foreach (var sub in subItems)
             {
-                var top =double.IsNaN(Canvas.GetTop(designerItem))?0: Canvas.GetTop(designerItem) + designerItem.ActualHeight + list.Sum(x => x.ActualHeight);
+                var top = double.IsNaN(Canvas.GetTop(designerItem)) ? 0 : Canvas.GetTop(designerItem) + designerItem.ActualHeight + list.Sum(x => x.ActualHeight);
                 list.Add(sub);
                 var left = Canvas.GetLeft(designerItem) + GetOffset(designerItem);
                 Canvas.SetTop(sub, top);

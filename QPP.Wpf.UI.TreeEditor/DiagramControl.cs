@@ -509,16 +509,8 @@ namespace QPP.Wpf.UI.TreeEditor
                     { Manager.DrawDesignerItems(designerItem.ParentDesignerItem); }
                 }
 
-
-
-                Manager.Arrange();
-
             }));
-            if (DesignerItems.Any())
-            {
-                // DiagramManager.Draw();
-            }
-            else
+            if (!DesignerItems.Any())
             {
                 DesignerCanvas.Children.Clear();
             }
