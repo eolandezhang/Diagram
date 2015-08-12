@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Windows;
 using System.Windows.Controls;
@@ -51,12 +52,19 @@ namespace QPP.Wpf.UI.TreeEditor
             set
             {
                 _SelectedImage = value;
-                if (ItemStyle != null)
+                if (ItemStyle != null && value != null)
                 {
-                    if (ItemStyle.ImageUrl.Contains(value))
+                    List<ImageUrl> list = new List<ImageUrl>();
+                    foreach (var item in ItemStyle.ImageUrl)
                     {
-                        ItemStyle.ImageUrl.Remove(value);
+                        list.Add(item);
                     }
+                    var img = list.Where(item => item.Url.Equals(value.Url, StringComparison.OrdinalIgnoreCase));
+                    foreach (var item in img)
+                    {
+                        ItemStyle.ImageUrl.Remove(item);
+                    }
+
                 }
             }
         }
@@ -378,15 +386,17 @@ namespace QPP.Wpf.UI.TreeEditor
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            if (e.OriginalSource != this) return;
             DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
             if (designer == null) return;
-            DiagramControl.Focus();
-            if (e.ClickCount == 1)
+            if ((e.OriginalSource as Image) == null)
             {
-                CreateShadow(designer, e);
-
+                DiagramControl.Focus();
+                if (e.ClickCount == 1)
+                {
+                    CreateShadow(designer, e);
+                }
             }
+
         }
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {

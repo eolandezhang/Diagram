@@ -33,17 +33,6 @@ namespace WpfApp.ViewModel
         public ObservableCollection<Color> BackgroundColors { get { return Get<ObservableCollection<Color>>("BackgroundColors"); } set { Set("BackgroundColors", value); } }
         public ObservableCollection<ImageUrl> Images { get { return Get<ObservableCollection<ImageUrl>>("Images"); } set { Set("Images", value); } }
         public ImageUrl SelectedImage { get { return Get<ImageUrl>("SelectedImage"); } set { Set("SelectedImage", value); } }
-        public object SelectedOne
-        {
-            get
-            {
-                return Get<object>("SelectedOne");
-            }
-            set
-            {
-                Set("SelectedOne", value);
-            }
-        }
         public MainViewModel()
         {
             Title = "Tree Editor";
@@ -77,23 +66,10 @@ namespace WpfApp.ViewModel
             {
                 case "SelectedImage":
                     var imgList = SelectedDesignerItem.ItemStyle.ImageUrl;
-                    if (!imgList.Contains(SelectedImage))
+                    if (imgList.All(x => !x.Url.Equals(SelectedImage.Url, StringComparison.OrdinalIgnoreCase)))
                     {
-                        SelectedDesignerItem.ItemStyle.ImageUrl.Add(SelectedImage);
+                        imgList.Add(SelectedImage);
                     }
-                    else
-                    {
-                        SelectedDesignerItem.ItemStyle.ImageUrl.Remove(SelectedImage);
-                    }
-                    break;
-                case "SelectedOne":
-                    var list = SelectedDesignerItem.ItemStyle.ImageUrl;
-                    if (list.Contains(SelectedImage))
-                    {
-                        //SelectedDesignerItem.ItemStyle.ImageUrl.Remove(SelectedOne);
-                    }
-                    break;
-                default:
                     break;
             }
         }

@@ -596,9 +596,12 @@ namespace QPP.Wpf.UI.TreeEditor
                 SavePosition(item);
             }
         }
-        void SetWidth(DesignerItem designerItem)
+        public void SetWidth(DesignerItem designerItem)
         {
-            designerItem.Width = GetWidth(designerItem);
+            double imgWidth = 0d;
+            if (designerItem.ItemStyle != null)
+            { imgWidth = 16d * designerItem.ItemStyle.ImageUrl.Count(); }
+            designerItem.Width = GetWidth(designerItem) + imgWidth;
         }
         double GetWidth(DesignerItem designerItem)
         {

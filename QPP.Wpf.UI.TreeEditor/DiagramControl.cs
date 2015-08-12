@@ -726,6 +726,8 @@ namespace QPP.Wpf.UI.TreeEditor
             var itemStyleField = ItemStyleField;
             var p = oType.GetProperty(itemStyleField);
             p.SetValue(designerItem.DataContext, s, null);
+            Manager.SetWidth(designerItem);
+            Manager.Arrange();
         }
         double GetLeft(object item)
         {
