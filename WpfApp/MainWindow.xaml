@@ -51,8 +51,7 @@
                                         <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="剪切" Command="{Binding Path=CutCommand}"/>
                                         <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="粘贴" Command="{Binding Path=PasteCommand}"/>
                                     </ToolBar>
-                                </ToolBarTray>
-                                <!--ZoomBoxControl="{Binding ElementName=ZoomBox}"-->
+                                </ToolBarTray>                               
                                 <treeEditor:DiagramControl x:Name="Diagram" 
                                        DiagramHeader="树状图"
                                        ItemsSource="{Binding ItemsSource}"

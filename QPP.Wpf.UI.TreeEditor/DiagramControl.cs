@@ -216,6 +216,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
 
         #endregion
+
         #region DiagramHeaderProperty 画板区域标题
 
         public static readonly DependencyProperty DiagramHeaderProperty = DependencyProperty.Register(
@@ -725,9 +726,7 @@ namespace QPP.Wpf.UI.TreeEditor
             var oType = designerItem.DataContext.GetType();
             var itemStyleField = ItemStyleField;
             var p = oType.GetProperty(itemStyleField);
-            p.SetValue(designerItem.DataContext, s, null);
-            Manager.SetWidth(designerItem);
-            Manager.Arrange();
+            p.SetValue(designerItem.DataContext, s, null);            
         }
         double GetLeft(object item)
         {

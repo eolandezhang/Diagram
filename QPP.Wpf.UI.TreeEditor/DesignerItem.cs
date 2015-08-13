@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
@@ -51,7 +52,10 @@ namespace QPP.Wpf.UI.TreeEditor
             get { return _SelectedImage; }
             set
             {
+                if (_SelectedImage == value) return;
                 _SelectedImage = value;
+                //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                //{
                 if (ItemStyle != null && value != null)
                 {
                     List<ImageUrl> list = new List<ImageUrl>();
@@ -59,13 +63,16 @@ namespace QPP.Wpf.UI.TreeEditor
                     {
                         list.Add(item);
                     }
-                    var img = list.Where(item => item.Url.Equals(value.Url, StringComparison.OrdinalIgnoreCase));
+                    var img = list.Where(item => item.Url.Equals(value.Url, StringComparison.OrdinalIgnoreCase)).ToList();
                     foreach (var item in img)
                     {
-                        ItemStyle.ImageUrl.Remove(item);
+                        //ItemStyle.ImageUrl.Remove(item); 
+                        DiagramControl.AddToMessage("image", item.Url);                       
                     }
-
                 }
+                //}));
+                //DiagramControl.Manager.SetWidth(this);
+                //DiagramControl.Manager.Arrange();
             }
         }
         #region ItemId Property
