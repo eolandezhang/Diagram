@@ -1,13 +1,13 @@
-﻿using System;
+﻿using QPP.Wpf.Command;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
@@ -54,25 +54,6 @@ namespace QPP.Wpf.UI.TreeEditor
             {
                 if (_SelectedImage == value) return;
                 _SelectedImage = value;
-                //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
-                //{
-                if (ItemStyle != null && value != null)
-                {
-                    List<ImageUrl> list = new List<ImageUrl>();
-                    foreach (var item in ItemStyle.ImageUrl)
-                    {
-                        list.Add(item);
-                    }
-                    var img = list.Where(item => item.Url.Equals(value.Url, StringComparison.OrdinalIgnoreCase)).ToList();
-                    foreach (var item in img)
-                    {
-                        //ItemStyle.ImageUrl.Remove(item); 
-                        DiagramControl.AddToMessage("image", item.Url);                       
-                    }
-                }
-                //}));
-                //DiagramControl.Manager.SetWidth(this);
-                //DiagramControl.Manager.Arrange();
             }
         }
         #region ItemId Property
@@ -320,7 +301,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         void DesignerItem_Loaded(object sender, RoutedEventArgs e)
         {
-
+            this.KeyUp += DesignerItem_KeyUp;
             if (Template != null)
             {
                 ContentPresenter contentPresenter =
@@ -337,6 +318,10 @@ namespace QPP.Wpf.UI.TreeEditor
                             if (template != null) thumb.Template = template;
                         }
                     }
+                    //InitImage();
+
+
+
                 }
 
                 var c = Template.FindName("TextContent", this) as ContentControl;
@@ -348,8 +333,20 @@ namespace QPP.Wpf.UI.TreeEditor
                         b.Handled = true;
                     };
                 }
+
             }
         }
+
+        private void DesignerItem_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Back)
+            {
+                if (SelectedImage != null)
+                    ItemStyle.ImageUrl.Remove(SelectedImage);
+                SelectedImage = null;
+            }
+        }
+
         public DesignerItem(DiagramControl diagramControl)
             : this(Guid.NewGuid().ToString(), diagramControl)
         { }
@@ -487,8 +484,6 @@ namespace QPP.Wpf.UI.TreeEditor
             #endregion
         }
 
-
-
         #endregion
 
 
@@ -535,5 +530,17 @@ namespace QPP.Wpf.UI.TreeEditor
             if (ParentDesignerItem != null)
                 ParentDesignerItem.IsExpanderVisible = ParentDesignerItem.HasChild && ParentDesignerItem.CanCollapsed;
         }
+
+        #region Command
+        public ICommand DeleteImage
+        {
+            get { return new RelayCommand<ImageUrl>(DeleteImageAction); }
+        }
+        private void DeleteImageAction(ImageUrl param)
+        {
+            SelectedImage = param;
+        }
+
+        #endregion
     }
 }
