@@ -32,7 +32,7 @@ namespace WpfApp.ViewModel
         public ObservableCollection<Color> BorderColors { get { return Get<ObservableCollection<Color>>("BorderColors"); } set { Set("BorderColors", value); } }
         public ObservableCollection<Color> BackgroundColors { get { return Get<ObservableCollection<Color>>("BackgroundColors"); } set { Set("BackgroundColors", value); } }
         public ObservableCollection<ImageUrl> Images { get { return Get<ObservableCollection<ImageUrl>>("Images"); } set { Set("Images", value); } }
-        public ImageUrl SelectedImage { get { return Get<ImageUrl>("SelectedImage"); } set { Set("SelectedImage", value); } }
+
         public MainViewModel()
         {
             Title = "Tree Editor";
@@ -57,22 +57,9 @@ namespace WpfApp.ViewModel
                 new ImageUrl("Images/blue.png"),
                 new ImageUrl("Images/green.png")
             };
-            PropertyChanged += MainViewModel_PropertyChanged;
         }
 
-        private void MainViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "SelectedImage":
-                    var imgList = SelectedDesignerItem.ItemStyle.ImageUrl;
-                    if (imgList.All(x => !x.Url.Equals(SelectedImage.Url, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        imgList.Add(SelectedImage);
-                    }
-                    break;
-            }
-        }
+
 
         public class Image
         {
@@ -240,6 +227,22 @@ namespace WpfApp.ViewModel
             Type = CopyOrPasteType.None;
         }
 
+        #endregion
+
+        #region AddImageCommand
+        public ICommand AddImageCommand
+        {
+            get { return new RelayCommand<ImageUrl>(AddImageAction); }
+        }
+
+        private void AddImageAction(ImageUrl imageUrl)
+        {
+            var imgList = SelectedDesignerItem.ItemStyle.ImageUrl;
+            if (imgList.All(x => !x.Url.Equals(imageUrl.Url, StringComparison.OrdinalIgnoreCase)))
+            {
+                imgList.Add(imageUrl);
+            }
+        }
         #endregion
         #endregion
     }

@@ -93,7 +93,7 @@
                                                                         RelativeSource={RelativeSource 
                                                                         AncestorLevel=1,
                                                                         AncestorType=treeEditor:DesignerItem},Path=SelectedImage}"
-                                                       
+                                                       Focusable="False"
                                                         >
                                                         <ListView.Template>
                                                             <ControlTemplate>
@@ -247,15 +247,14 @@
                                                 Grid.Row="6"  
                                                 Grid.Column="1"  
                                                 ItemsSource="{Binding Images}" 
-                                                Height="100"
-                                                SelectionMode="Single"
-                                                SelectedItem="{Binding SelectedImage}"
-                                                
-                                                        >
+                                                Height="100">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <Image Source="{Binding Path=.Url}" />
+                                                            <Button Style="{x:Null}" BorderThickness="0" Background="Transparent" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.AddImageCommand}"
+                                                                        CommandParameter="{Binding .}">
+                                                                <Image Width="16" Height="16" Source="{Binding Path=.Url}" />
+                                                            </Button>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>

@@ -540,7 +540,7 @@ namespace QPP.Wpf.UI.TreeEditor
         {
             SelectedImage = param;
         }
-
+       
         #endregion
     }
 }
