@@ -51,7 +51,7 @@
                                         <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="剪切" Command="{Binding Path=CutCommand}"/>
                                         <Button  Margin="4,0,4,0" Padding="5,4,5,4"  Content="粘贴" Command="{Binding Path=PasteCommand}"/>
                                     </ToolBar>
-                                </ToolBarTray>                               
+                                </ToolBarTray>
                                 <treeEditor:DiagramControl x:Name="Diagram" 
                                        DiagramHeader="树状图"
                                        ItemsSource="{Binding ItemsSource}"
@@ -82,7 +82,7 @@
                                                 CornerRadius="5,5,5,5"  >
                                                 <StackPanel Orientation="Horizontal">
                                                     <!--<Image Source="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=treeEditor:DesignerItem},Path=ItemStyle.ImageUrl}" />-->
-                                                    <ListView 
+                                                    <ListView x:Name="lst"
                                                         ItemsSource="{Binding 
                                                                         RelativeSource={RelativeSource 
                                                                         AncestorLevel=1,
@@ -102,7 +102,12 @@
                                                         </ListView.Template>
                                                         <ListView.ItemTemplate>
                                                             <DataTemplate>
-                                                                <Image Source="{Binding .Url}"></Image>
+                                                                <Button Style="{x:Null}" x:Name="btn" Background="Transparent" BorderThickness="0" 
+                                                                        Command="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=treeEditor:DesignerItem},Path=DeleteImage}"
+                                                                        CommandParameter="{Binding .}">
+                                                                    <Image Source="{Binding .Url}" />
+                                                                </Button>
+
                                                             </DataTemplate>
                                                         </ListView.ItemTemplate>
                                                         <ListView.ItemsPanel>

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media;
-using Newtonsoft.Json;
-using QPP.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Windows.Media;
 
 namespace QPP.Wpf.UI.TreeEditor
 {
@@ -35,6 +30,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 if (designerItem != null)
                 {
                     designerItem.DiagramControl.SetItemStyle(designerItem, this);
+                    
                     designerItem.DiagramControl.Manager.SetWidth(designerItem);
                     designerItem.DiagramControl.Manager.Arrange();
                 }
