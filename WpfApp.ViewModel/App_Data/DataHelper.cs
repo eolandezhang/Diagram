@@ -111,11 +111,19 @@ namespace WpfApp.ViewModel.App_Data
             var itemSource =
                   itemsSource.Select(
                       d => new ItemData(d.ItemId, d.ItemParentId, d.Text, d.Desc, d.ItemStyle, d.Left, d.Top)).ToList();
-            foreach (var parentItemData in parentItemDatas)
+            if (parentItemDatas.Any())
             {
-                if (parentItemData == null) continue;
-                var copys = GetItemDatasToBeCopy(copyedItemDatas, parentItemData, itemSource, type);
-                PasteItemDatas(copys, parentItemData, itemsSource, clickPoint);
+                foreach (var parentItemData in parentItemDatas)
+                {
+                    if (parentItemData == null) continue;
+                    var copys = GetItemDatasToBeCopy(copyedItemDatas, parentItemData, itemSource, type);
+                    PasteItemDatas(copys, parentItemData, itemsSource, clickPoint);
+                }
+            }
+            else
+            {
+                var copys = GetItemDatasToBeCopy(copyedItemDatas, null, itemSource, type);
+                PasteItemDatas(copys, null, itemsSource, clickPoint);
             }
         }
         List<ItemData> GetItemDatasToBeCopy(List<ItemData> dataItemOnClipBoard, ItemData parentItemData, List<ItemData> itemSource, string type)
@@ -126,7 +134,12 @@ namespace WpfApp.ViewModel.App_Data
             {
                 if (copyItem.ItemParentId == string.Empty)
                 {
-                    copyItem.ItemParentId = parentItemData.ItemId;
+                    if (parentItemData != null)
+                    { copyItem.ItemParentId = parentItemData.ItemId; }
+                    else
+                    {
+                        copyItem.ItemParentId = string.Empty;
+                    }
                 }
                 copys.Add(copyItem);
             }
@@ -136,18 +149,38 @@ namespace WpfApp.ViewModel.App_Data
         {
             var list = new List<ItemData>();
             var item = selectedItem;
-            var roots = copys.Where(x => x.ItemParentId == item.ItemId);
-            foreach (var itemData in roots)
+            if (selectedItem != null)
             {
-                if (itemData.ItemParentId.IsNullOrEmpty())
+                var roots = copys.Where(x => x.ItemParentId == item.ItemId);
+                foreach (var itemData in roots)
                 {
-                    itemData.Left = clickPoint.X;
-                    itemData.Top = clickPoint.Y;
+                    if (itemData.ItemParentId.IsNullOrEmpty())
+                    {
+                        itemData.Left = clickPoint.X;
+                        itemData.Top = clickPoint.Y;
+                    }
+                    list.Add(itemData);
+                    list.AddRange(AddChild(copys, itemData));
                 }
-                list.Add(itemData);
-                list.AddRange(AddChild(copys, itemData));
+                itemsSource.AddRange(list);
             }
-            itemsSource.AddRange(list);
+            else
+            {
+                var roots = copys.Where(x => copys.All(y => y.ItemId != x.ItemParentId));
+                foreach (var r in roots)
+                {
+                    if (r.ItemParentId.IsNullOrEmpty())
+                    {
+                        r.Left = clickPoint.X;
+                        r.Top = clickPoint.Y;
+                    }
+                    r.ItemParentId = string.Empty;
+                    list.Add(r);
+                    list.AddRange(AddChild(copys, r));
+                }
+                itemsSource.AddRange(list);
+            }
+
         }
         List<ItemData> AddChild(List<ItemData> itemDatas, ItemData itemData)
         {

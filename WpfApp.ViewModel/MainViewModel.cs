@@ -18,49 +18,20 @@ namespace WpfApp.ViewModel
     {
         public int Num { get { return Get<int>("Num"); } set { Set("Num", value); } }
         public string Title { get { return Get<string>("Title"); } set { Set("Title", value); } }
+        #region DiagramControl Control Property
         public bool SingleRoot { get { return Get<bool>("SingleRoot"); } set { Set("SingleRoot", value); } }
         public RangeObservableCollection<ItemData> ItemsSource { get; set; }
         public ObservableCollection<ItemData> SelectedItems { get; set; }
         public ObservableCollection<DesignerItem> SelectedDesignerItems { get; set; }
         public ObservableCollection<ItemData> DeletedItems { get; set; }
+        public Point ClickPoint { get { return Get<Point>("ClickPoint"); } set { Set("ClickPoint", value); } }
+        public bool IsAddAfter { get { return Get<bool>("IsAddAfter"); } set { Set("IsAddAfter", value); } }
         public ItemData SelectedItem { get { return Get<ItemData>("SelectedItem"); } set { Set("SelectedItem", value); } }
         public DesignerItem SelectedDesignerItem { get { return Get<DesignerItem>("SelectedDesignerItem"); } set { Set("SelectedDesignerItem", value); } }
-        public bool IsAddAfter { get { return Get<bool>("IsAddAfter"); } set { Set("IsAddAfter", value); } }
-        public Point ClickPoint { get { return Get<Point>("ClickPoint"); } set { Set("ClickPoint", value); } }
         private string _type = CopyOrPasteType.None;
         public string Type { get { return _type; } set { _type = value; } }
-        public ObservableCollection<Color> BorderColors { get { return Get<ObservableCollection<Color>>("BorderColors"); } set { Set("BorderColors", value); } }
-        public ObservableCollection<Color> BackgroundColors { get { return Get<ObservableCollection<Color>>("BackgroundColors"); } set { Set("BackgroundColors", value); } }
-        public ObservableCollection<ImageUrl> Images { get { return Get<ObservableCollection<ImageUrl>>("Images"); } set { Set("Images", value); } }
-
-        public MainViewModel()
-        {
-            Title = "Tree Editor";
-            SingleRoot = false;
-            SelectedItems = new ObservableCollection<ItemData>();
-            DeletedItems = new ObservableCollection<ItemData>();
-            ItemsSource = new RangeObservableCollection<ItemData>();
-            SelectedDesignerItems = new ObservableCollection<DesignerItem>();
-            SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
-            SelectedDesignerItems.CollectionChanged += SelectedDesignerItems_CollectionChanged;
-            BorderColors = new ObservableCollection<Color>()
-            {
-                new Color("#FF87CEEB"),new Color("#FFFF0000"),new Color("#000000FF")
-            };
-            BackgroundColors = new ObservableCollection<Color>()
-            {
-                new Color("#FFA4FFC1"),new Color("#FFF3F781"),new Color("#000000FF")
-            };
-            Images = new ObservableCollection<ImageUrl>()
-            {
-               new ImageUrl("Images/fix.png"),
-                new ImageUrl("Images/blue.png"),
-                new ImageUrl("Images/green.png")
-            };
-        }
-
-
-
+        #endregion
+        #region 编辑器
         public class Image
         {
             public Image(string img)
@@ -77,6 +48,45 @@ namespace WpfApp.ViewModel
             }
             public string ItemColor { get; set; }
         }
+        public ObservableCollection<Color> BorderColors { get { return Get<ObservableCollection<Color>>("BorderColors"); } set { Set("BorderColors", value); } }
+        public ObservableCollection<Color> BackgroundColors { get { return Get<ObservableCollection<Color>>("BackgroundColors"); } set { Set("BackgroundColors", value); } }
+        public ObservableCollection<ImageUrl> Images { get { return Get<ObservableCollection<ImageUrl>>("Images"); } set { Set("Images", value); } }
+        #endregion
+        public MainViewModel()
+        {
+            Title = "Tree Editor";
+
+            #region DiagramControl
+            SingleRoot = false;
+            SelectedItems = new ObservableCollection<ItemData>();
+            DeletedItems = new ObservableCollection<ItemData>();
+            ItemsSource = new RangeObservableCollection<ItemData>();
+            SelectedDesignerItems = new ObservableCollection<DesignerItem>();
+            SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
+            SelectedDesignerItems.CollectionChanged += SelectedDesignerItems_CollectionChanged;
+            #endregion
+
+            #region DiagramControl 编辑器
+            BorderColors = new ObservableCollection<Color>()
+            {
+                new Color("#FF87CEEB"),new Color("#FFFF0000"),new Color("#000000FF")
+            };
+            BackgroundColors = new ObservableCollection<Color>()
+            {
+                new Color("#FFA4FFC1"),new Color("#FFF3F781"),new Color("#000000FF")
+            };
+            Images = new ObservableCollection<ImageUrl>()
+            {
+               new ImageUrl("Images/fix.png"),
+                new ImageUrl("Images/blue.png"),
+                new ImageUrl("Images/green.png")
+            };
+            #endregion
+        }
+
+
+
+
         private void SelectedDesignerItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -99,7 +109,7 @@ namespace WpfApp.ViewModel
             }
         }
 
-        #region Commands
+        #region Diagram Control 数据操作 Commands
         public ICommand ReloadCommand
         {
             get
@@ -213,7 +223,7 @@ namespace WpfApp.ViewModel
             DataHelper.Default.Cut(SelectedItems, ItemsSource);
             Type = CopyOrPasteType.Cut;
         }
-        public ICommand PasteCommand { get { return new RelayCommand(PasteAction, () => SelectedItems.Any()); } }
+        public ICommand PasteCommand { get { return new RelayCommand(PasteAction); } }
         void PasteAction()
         {
             IsAddAfter = true;
@@ -222,14 +232,19 @@ namespace WpfApp.ViewModel
             var copyedItemDatas = dataOnClipBoard.GetData(typeof(List<ItemData>)) as List<ItemData>;//从剪切板中取得数据
             if (copyedItemDatas == null) { return; }
             var pasteToItemDatas = SelectedItems.ToList();
-            if (!pasteToItemDatas.Any()) { return; }
-            DataHelper.Default.Paste(pasteToItemDatas, copyedItemDatas, Type, ItemsSource, ClickPoint);
+            if (pasteToItemDatas.Any())//如果没有选根节点，则无法粘贴
+            {
+                if (pasteToItemDatas.Any() || (!pasteToItemDatas.Any() && !SingleRoot))
+                { DataHelper.Default.Paste(pasteToItemDatas, copyedItemDatas, Type, ItemsSource, ClickPoint); }
+            }
+
             Type = CopyOrPasteType.None;
         }
 
         #endregion
 
-        #region AddImageCommand
+        #endregion
+        #region 编辑器 AddImageCommand
         public ICommand AddImageCommand
         {
             get { return new RelayCommand<ImageUrl>(AddImageAction); }
@@ -244,6 +259,6 @@ namespace WpfApp.ViewModel
             }
         }
         #endregion
-        #endregion
+
     }
 }
