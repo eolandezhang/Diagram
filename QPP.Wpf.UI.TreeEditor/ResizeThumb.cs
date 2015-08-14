@@ -71,8 +71,8 @@ namespace QPP.Wpf.UI.TreeEditor
                     }
                 }
                 e.Handled = true;
-                var diagramControl = designer.TemplatedParent as DiagramControl;
-                if (diagramControl != null) diagramControl.Manager.Arrange();/*重新布局*/
+                //var diagramControl = designer.TemplatedParent as DiagramControl;
+                //if (diagramControl != null) diagramControl.Manager.Arrange();/*重新布局*/
             }
         }
 

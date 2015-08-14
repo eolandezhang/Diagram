@@ -95,7 +95,8 @@
             <treeEditor:Connector x:Name="Top" Orientation="Top" treeEditor:RelativePositionPanel.RelativePosition="0.1,0"/>
             <treeEditor:Connector x:Name="Left" Orientation="Left" treeEditor:RelativePositionPanel.RelativePosition="0,0.5"/>
             <treeEditor:Connector x:Name="Right" Orientation="Right" treeEditor:RelativePositionPanel.RelativePosition="1,0.5"/>
-            <treeEditor:Connector x:Name="Bottom" Orientation="Bottom" treeEditor:RelativePositionPanel.RelativePosition="0.1,1"/>
+            <!--<treeEditor:Connector x:Name="Bottom" Orientation="Bottom" treeEditor:RelativePositionPanel.RelativePosition="0.1,1"/>-->
+            <treeEditor:Connector x:Name="Bottom" Orientation="Bottom" treeEditor:RelativePositionPanel.RelativePosition="0,1"/>
         </treeEditor:RelativePositionPanel>
     </ControlTemplate>
 
@@ -188,7 +189,7 @@
                         </Grid.RowDefinitions>
                         <ContentControl  Grid.Row="0" x:Name="TextContent" Focusable="False">
                             <Border x:Name="Border" IsHitTestVisible="True"
-                                 BorderBrush="Transparent" BorderThickness="2" Background="Transparent" Focusable="False"  CornerRadius="7,7,7,7" >
+                                 BorderBrush="Transparent" BorderThickness="2" Background="Transparent" Focusable="False"  >
                                 <Grid Margin="0" Name="ContentGrid">
                                     <!-- PART_ResizeDecorator -->
                                     <Control Grid.Row="0"  x:Name="PART_ResizeDecorator" 
@@ -213,10 +214,10 @@
                         </ContentControl>
 
 
-                        <treeEditor:RelativePositionPanel  Grid.Row="1"  x:Name="PART_IsExpanderVisible"  Margin="-3,0,0,0">
+                        <treeEditor:RelativePositionPanel  Grid.Row="1"  x:Name="PART_IsExpanderVisible"  Margin="-6,0,0,0">
                             <ToggleButton
                                 x:Name="PART_ToggleButton" 
-                                treeEditor:RelativePositionPanel.RelativePosition="0.1,1"
+                                treeEditor:RelativePositionPanel.RelativePosition="0,1"
                                 Style="{StaticResource ButtonTemplate}" 
                                 IsChecked="{Binding IsExpanded}"
                                 Focusable="False"/>

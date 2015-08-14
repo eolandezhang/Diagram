@@ -13,7 +13,7 @@ namespace QPP.Wpf.UI.TreeEditor
     // Helper class to provide an orthogonal connection path
     internal class PathFinder
     {
-        private const int margin =0;
+        private const int margin = 0;
 
         internal static List<Point> GetConnectionLine(ConnectorInfo source, ConnectorInfo sink, bool showLastLine)
         {
@@ -608,7 +608,7 @@ namespace QPP.Wpf.UI.TreeEditor
                         startPoint = new Point(source.Position.X + marginPath, source.Position.Y);
                         break;
                     case ConnectorOrientation.Bottom:
-                        startPoint = new Point(source.Position.X, source.Position.Y + marginPath);
+                        startPoint = new Point(source.Position.X + 2, source.Position.Y + marginPath - 2);
                         break;
                     default:
                         break;

@@ -70,7 +70,6 @@
     <Compile Include="DiagramItem.cs" />
     <Compile Include="DiagramManager.cs" />
     <Compile Include="DragThumb.cs" />
-    <Compile Include="IDiagramManager.cs" />
     <Compile Include="IGroupable.cs" />
     <Compile Include="InputBindingManager.cs" />
     <Compile Include="InputBindingsBehavior.cs" />

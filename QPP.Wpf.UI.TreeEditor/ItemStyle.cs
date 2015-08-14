@@ -32,7 +32,7 @@ namespace QPP.Wpf.UI.TreeEditor
                     designerItem.DiagramControl.SetItemStyle(designerItem, this);
                     
                     designerItem.DiagramControl.Manager.SetWidth(designerItem);
-                    designerItem.DiagramControl.Manager.Arrange();
+                    //designerItem.DiagramControl.Manager.Arrange();
                 }
             }
         }
