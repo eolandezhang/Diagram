@@ -301,7 +301,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         void DesignerItem_Loaded(object sender, RoutedEventArgs e)
         {
-            this.KeyUp += DesignerItem_KeyUp;
+            //this.KeyUp += DesignerItem_KeyUp;
             if (Template != null)
             {
                 ContentPresenter contentPresenter =
@@ -539,6 +539,7 @@ namespace QPP.Wpf.UI.TreeEditor
         private void DeleteImageAction(ImageUrl param)
         {
             SelectedImage = param;
+            ItemStyle.ImageUrl.Remove(SelectedImage);
         }
        
         #endregion

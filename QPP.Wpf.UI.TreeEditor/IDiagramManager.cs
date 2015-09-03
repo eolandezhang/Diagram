@@ -7,7 +7,7 @@ namespace QPP.Wpf.UI.TreeEditor
     public interface IDiagramManager
     {
         void Arrange();
-        void AddNewArrange(DesignerItem newItem);
+        //void AddNewArrange(DesignerItem newItem);
         void DeleteArrange(DesignerItem delItem);
 
 
