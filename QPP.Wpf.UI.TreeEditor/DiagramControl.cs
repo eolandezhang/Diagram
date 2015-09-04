@@ -334,25 +334,25 @@ namespace QPP.Wpf.UI.TreeEditor
             //否则上下左右键，会让其它元素获得焦点
             if (!IsOnEditing)
             {
-                if (Keyboard.Modifiers == ModifierKeys.None &&
-                       ((int)e.Key >= 74 && (int)e.Key <= 83))
-                {
-                    Manager.Edit(e.Key.ToString());
-                    e.Handled = true;
-                }
+                //if (Keyboard.Modifiers == ModifierKeys.None &&
+                //       ((int)e.Key >= 74 && (int)e.Key <= 83))
+                //{
+                //    Manager.Edit(e.Key.ToString());
+                //    e.Handled = true;
+                //}
 
-                else if (Keyboard.Modifiers == ModifierKeys.None &&
-                    ((int)e.Key >= 44 && (int)e.Key <= 69))
-                {
-                    Manager.Edit(e.Key.ToString().ToLower());
-                    e.Handled = true;
-                }
-                else if (Keyboard.Modifiers == ModifierKeys.Shift &&
-                    ((int)e.Key >= 44 && (int)e.Key <= 69))
-                {
-                    Manager.Edit(e.Key.ToString().ToUpper());
-                    e.Handled = true;
-                }
+                //else if (Keyboard.Modifiers == ModifierKeys.None &&
+                //    ((int)e.Key >= 44 && (int)e.Key <= 69))
+                //{
+                //    Manager.Edit(e.Key.ToString().ToLower());
+                //    e.Handled = true;
+                //}
+                //else if (Keyboard.Modifiers == ModifierKeys.Shift &&
+                //    ((int)e.Key >= 44 && (int)e.Key <= 69))
+                //{
+                //    Manager.Edit(e.Key.ToString().ToUpper());
+                //    e.Handled = true;
+                //}
                 switch (e.Key)
                 {
                     case Key.Up: { Manager.SelectUpDown(true); e.Handled = true; } break;
@@ -364,6 +364,19 @@ namespace QPP.Wpf.UI.TreeEditor
                     case Key.Multiply: { Manager.ExpandAll(); e.Handled = true; } break;
                     case Key.Add: { Manager.ExpandSelectedItem(); e.Handled = true; } break;
                     case Key.Subtract: { Manager.CollapseSelectedItem(); e.Handled = true; } break;
+                    default:
+                        {
+                            if (e.Key != Key.Enter
+                                && e.Key != Key.Tab
+                                && e.Key != Key.Insert
+                                && e.Key != Key.Delete
+                                && !(e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.C)
+                                && !(e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.V)
+                                && !(e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.X)
+                                )
+                                Manager.Edit();// e.Handled = true;
+                        }
+                        break;
                 }
             }
 
@@ -726,7 +739,7 @@ namespace QPP.Wpf.UI.TreeEditor
             var oType = designerItem.DataContext.GetType();
             var itemStyleField = ItemStyleField;
             var p = oType.GetProperty(itemStyleField);
-            p.SetValue(designerItem.DataContext, s, null);            
+            p.SetValue(designerItem.DataContext, s, null);
         }
         double GetLeft(object item)
         {

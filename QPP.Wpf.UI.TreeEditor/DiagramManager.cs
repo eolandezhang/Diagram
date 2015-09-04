@@ -24,7 +24,7 @@ namespace QPP.Wpf.UI.TreeEditor
         }
 
         #region Setters
-        private const double LEFT_OFFSET = 20;
+        private const double LEFT_OFFSET = 25;
         private const double MIN_ITEM_WIDTH = 200d;
         private const double FONT_SIZE = 12d;
         private static readonly SolidColorBrush SHADOW_FONT_COLOR_BRUSH = Brushes.Gray;
@@ -483,7 +483,8 @@ namespace QPP.Wpf.UI.TreeEditor
         double GetOffset(FrameworkElement item)
         {
             //item.UpdateLayout();
-            return item.ActualWidth.Equals(0) ? 30 : (item.ActualWidth * 0.1 + LEFT_OFFSET);
+            //return item.ActualWidth.Equals(0) ? 30 : (item.ActualWidth * 0.1 + LEFT_OFFSET);
+            return LEFT_OFFSET;
         }
         //public void UpdateExpander(DesignerItem parent)
         //{

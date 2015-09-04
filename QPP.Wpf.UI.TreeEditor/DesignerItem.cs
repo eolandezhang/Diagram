@@ -301,7 +301,6 @@ namespace QPP.Wpf.UI.TreeEditor
         }
         void DesignerItem_Loaded(object sender, RoutedEventArgs e)
         {
-            //this.KeyUp += DesignerItem_KeyUp;
             if (Template != null)
             {
                 ContentPresenter contentPresenter =
@@ -319,9 +318,6 @@ namespace QPP.Wpf.UI.TreeEditor
                         }
                     }
                     //InitImage();
-
-
-
                 }
 
                 var c = Template.FindName("TextContent", this) as ContentControl;
@@ -337,18 +333,8 @@ namespace QPP.Wpf.UI.TreeEditor
             }
         }
 
-        private void DesignerItem_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Back)
-            {
-                if (SelectedImage != null)
-                    ItemStyle.ImageUrl.Remove(SelectedImage);
-                SelectedImage = null;
-            }
-        }
-
         public DesignerItem(DiagramControl diagramControl)
-            : this(Guid.NewGuid().ToString(), diagramControl)
+     : this(Guid.NewGuid().ToString(), diagramControl)
         { }
         public DesignerItem(DiagramItem diagramItem, DiagramControl diagramControl)
         {
@@ -542,7 +528,7 @@ namespace QPP.Wpf.UI.TreeEditor
             SelectedImage = param;
             ItemStyle.ImageUrl.Remove(SelectedImage);
         }
-       
+
         #endregion
     }
 }
