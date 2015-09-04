@@ -370,6 +370,10 @@ namespace QPP.Wpf.UI.TreeEditor
                                 && e.Key != Key.Tab
                                 && e.Key != Key.Insert
                                 && e.Key != Key.Delete
+                                && e.KeyboardDevice.Modifiers != ModifierKeys.Control
+                                && e.KeyboardDevice.Modifiers != ModifierKeys.Alt
+                                && e.KeyboardDevice.Modifiers != ModifierKeys.Shift
+                                && e.KeyboardDevice.Modifiers != ModifierKeys.Windows
                                 && !(e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.C)
                                 && !(e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.V)
                                 && !(e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.X)
