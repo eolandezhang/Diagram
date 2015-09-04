@@ -894,8 +894,8 @@ namespace QPP.Wpf.UI.TreeEditor
                 {
                     designerItem.ParentDesignerItem.ChildrenDesignerItems.Remove(designerItem);
                 }
-                designerItem.UpdateExpander();
                 designerItem.ParentDesignerItem = newParent;
+                designerItem.UpdateExpander();
                 if (newParent != null)
                 { newParent.ChildrenDesignerItems.Add(designerItem); }
                 designerItem.ItemParentId = newParent == null ? "" : newParent.ItemId;
