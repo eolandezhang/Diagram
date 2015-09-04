@@ -477,6 +477,7 @@ namespace QPP.Wpf.UI.TreeEditor
 
             shadow.ApplyTemplate();
             shadow.SetTemplate();
+            //shadow.UpdateLayout();
 
             designer.Shadow.ShadowItem.Visibility = Visibility.Collapsed;
             designer.IsMouseDown = true;

@@ -1,6 +1,5 @@
 ﻿using QPP.ComponentModel;
 using System;
-using System.Windows.Media;
 
 /*
  * 用于测试

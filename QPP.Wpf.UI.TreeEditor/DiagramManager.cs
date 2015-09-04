@@ -1012,6 +1012,7 @@ namespace QPP.Wpf.UI.TreeEditor
                 Left = item.Left,
                 Top = item.Top,
                 Width = item.Width,
+                ItemStyle = item.ItemStyle
             };
             Canvas.SetLeft(shadow, item.OriginalLeft);
             Canvas.SetTop(shadow, item.OriginalTop);
