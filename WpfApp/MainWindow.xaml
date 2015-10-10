@@ -18,6 +18,7 @@
         <KeyBinding Key="V" Modifiers="Control" Command="{Binding PasteCommand}"/>
         <KeyBinding Key="X" Modifiers="Control" Command="{Binding CutCommand}"/>
     </Window.InputBindings>
+    
     <wpf:DockingManager>
         <wpf:DockingManager.Theme>
             <wpf:GenericTheme/>
@@ -43,7 +44,7 @@
                             IsSnapToTickEnabled="True"
                             IsMoveToPointEnabled="False" Width="100" />
                                         <TextBlock Text="{Binding Num}"/>
-                                        <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(根)" Command="{Binding Path=AddRootCommand}" ToolTip="Enter"/>
+                                        <Button  Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(根)" Command="{Binding Path=AddRootCommand}" ToolTip="Enter"/>
                                         <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(相邻)" Command="{Binding Path=AddSiblingCommand}" ToolTip="Enter"/>
                                         <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="增加(之后)" Command="{Binding Path=AddAfterCommand}" ToolTip="Tab or Insert"/>
                                         <Button Margin="4,0,4,0" Padding="5,4,5,4" Content="移除" Command="{Binding Path=DeleteCommand}" ToolTip="Delete"/>
@@ -101,7 +102,8 @@
                                                         </ListView.Template>
                                                         <ListView.ItemTemplate>
                                                             <DataTemplate>
-                                                                <Button Style="{x:Null}" x:Name="btn" Background="Transparent" BorderThickness="0" 
+
+                                                                <Button  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" x:Name="btn" Background="Transparent" BorderThickness="0"  BorderBrush="{x:Null}"
                                                                         Command="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=treeEditor:DesignerItem},Path=DeleteImage}"
                                                                         CommandParameter="{Binding .}">
                                                                     <Image Source="{Binding .Url}" />
@@ -250,8 +252,11 @@
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <Button Style="{x:Null}" BorderThickness="0" Background="Transparent" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.AddImageCommand}"
-                                                                        CommandParameter="{Binding .}">
+                                                            <Button  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                                                Background="Transparent" 
+                                                                Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.AddImageCommand}"  
+                                                                
+                                                                CommandParameter="{Binding .}">
                                                                 <Image Width="16" Height="16" Source="{Binding Path=.Url}" />
                                                             </Button>
                                                         </StackPanel>
